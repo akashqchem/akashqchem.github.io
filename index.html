@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Akash Shil — Quantum Chemistry · ML</title>
+  <meta name="description" content="Akash Shil — Quantum Chemistry & Machine Learning. Projects, publications, education and contact.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root{--accent:#0d6efd}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    .hero{padding:4rem 0;background:linear-gradient(180deg,#0d6efd22,transparent)}
+    .profile-img{width:140px;height:140px;object-fit:cover;border-radius:50%;border:4px solid white}
+    .section-title{margin-bottom:1.25rem}
+    .project-card img{height:160px; object-fit:cover}
+    footer{padding:2rem 0;border-top:1px solid #eee}
+    @media (max-width:576px){ .profile-img{width:110px;height:110px} }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="#">AkashQChem</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div id="navmenu" class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
+        <li class="nav-item"><a class="nav-link" href="#publications">Publications</a></li>
+        <li class="nav-item"><a class="nav-link" href="#education">Education</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container text-center">
+    <img src="assets/img/profile.jpg" alt="Akash Shil" class="profile-img shadow mb-3">
+    <h1 class="fw-bold">Akash Shil</h1>
+    <p class="lead text-muted mb-2">Quantum Chemistry • Density Functional Theory • Machine Learning for Drug Discovery</p>
+    <p>
+      <a class="btn btn-primary btn-sm me-2" href="#projects">View Projects</a>
+      <a class="btn btn-outline-primary btn-sm" href="assets/cv.pdf" target="_blank">Download CV</a>
+    </p>
+  </div>
+</section>
+
+<section id="about" class="py-5">
+  <div class="container">
+    <h2 class="section-title">About</h2>
+    <p>I’m a computational chemist focusing on quantum chemistry (DFT) and machine learning for drug discovery. Currently preparing projects on covalent inhibitors, descriptor-based models, and QM-informed features. I enjoy building robust ML pipelines for chemistry problems and sharing reproducible code.</p>
+  </div>
+</section>
+
+<section id="projects" class="py-5 bg-light">
+  <div class="container">
+    <h2 class="section-title">Selected Projects</h2>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="card project-card h-100">
+          <img src="assets/img/project1.jpg" class="card-img-top" alt="Project screenshot">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">Drug Potency Regression</h5>
+            <p class="card-text text-muted small">Regression models predicting pIC50 using RDKit + QM descriptors and scikit-learn.</p>
+            <div class="mt-auto">
+              <a class="btn btn-sm btn-outline-primary" href="#">Repository</a>
+              <a class="btn btn-sm btn-primary ms-2" href="#">Read more</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="publications" class="py-5">
+  <div class="container">
+    <h2 class="section-title">Publications & Preprints</h2>
+    <ul class="list-group">
+      <li class="list-group-item">MSc project summary (IIT Tirupati). <a href="#">Read summary</a></li>
+    </ul>
+  </div>
+</section>
+
+<section id="education" class="py-5 bg-light">
+  <div class="container">
+    <h2 class="section-title">Education</h2>
+    <div>
+      <strong>MSc — Quantum Chemistry</strong> — IIT Tirupati<br>
+      <small class="text-muted">Thesis: DFT study of ... (Year)</small>
+    </div>
+    <div class="mt-3">
+      <strong>BSc — Chemistry</strong> — (Institution)
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="py-5">
+  <div class="container">
+    <h2 class="section-title">Contact</h2>
+    <div class="row">
+      <div class="col-md-6">
+        <p>If you'd like to collaborate or learn more, email me at <a href="mailto:akashshil22363@gmail.com">akashshil22363@gmail.com</a>.</p>
+        <p>Also on GitHub: <a href="https://github.com/akashqchem" target="_blank">@akashqchem</a></p>
+      </div>
+      <div class="col-md-6">
+        <form action="https://formspree.io/f/your-form-id" method="POST">
+          <div class="mb-2">
+            <input name="name" class="form-control" placeholder="Your name" required>
+          </div>
+          <div class="mb-2">
+            <input type="email" name="email" class="form-control" placeholder="Your email" required>
+          </div>
+          <div class="mb-2">
+            <textarea name="message" class="form-control" rows="4" placeholder="Message"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">Send</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container text-center">
+    <small class="text-muted">© <span id="year"></span> Akash Shil — Quantum Chemistry & ML • <a href="https://github.com/akashqchem" target="_blank">GitHub</a></small>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
