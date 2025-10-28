@@ -242,7 +242,13 @@ body::before {
   .animated-bg { opacity: 0.06 !important; }
   .hero { padding-top: 2rem; }
 }
-
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(255,255,255,0.05); }
+  50% { box-shadow: 0 0 14px rgba(255,255,255,0.12); }
+}
+#publications .card {
+  animation: pulseGlow 6s ease-in-out infinite;
+}
   </style>
 </head>
 <body>
@@ -374,7 +380,7 @@ body::before {
     <h2 class="section-title">Publications</h2>
     <div class="card mx-auto" style="max-width:600px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:1.8rem;">
       <p style="font-family:'Times New Roman', Times, serif; color:#dce4ff; font-size:1.05rem; line-height:1.6;">
-        <em>“My research journey in computational and theoretical chemistry continues — upcoming publications on
+        <em>“My research journey in computational and theoretical chemistry continues - upcoming publications on
         <strong>quantum-informed machine learning models</strong> and 
         <strong>covalent drug discovery</strong> will be shared here soon.”</em>
       </p>
