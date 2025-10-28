@@ -1,24 +1,44 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Akash Shil — Quantum Chemistry · ML</title>
-  <meta name="description" content="Akash Shil — Quantum Chemistry & Machine Learning. Projects, publications, education and contact.">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Akash Shil — Quantum Chemistry & ML</title>
+  <meta name="description" content="Akash Shil — Computational & Theoretical Chemistry. DFT, TDDFT, QM-driven ML for drug discovery.">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
   <style>
-    :root{--accent:#0d6efd}
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
-    .hero{padding:4rem 0;background:linear-gradient(180deg,#0d6efd22,transparent)}
-    .profile-img{width:140px;height:140px;object-fit:cover;border-radius:50%;border:4px solid white}
-    .section-title{margin-bottom:1.25rem}
-    .project-card img{height:160px; object-fit:cover}
-    footer{padding:2rem 0;border-top:1px solid #eee}
-    @media (max-width:576px){ .profile-img{width:110px;height:110px} }
+    :root{--accent:#0d6efd;--muted:#6c757d}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0;color:#222;-webkit-font-smoothing:antialiased}
+    .hero{padding:5rem 0 3rem;background:linear-gradient(180deg,rgba(13,110,253,0.06),#fff);text-align:center}
+    .profile-img{width:168px;height:168px;object-fit:cover;border-radius:50%;border:6px solid #fff;box-shadow:0 10px 30px rgba(13,110,253,0.12);transition:transform .35s,box-shadow .35s;background:#fff}
+    .profile-img:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 16px 36px rgba(13,110,253,0.16)}
+    h1.hero-title{font-family:Poppins,Inter,sans-serif;font-weight:700;font-size:clamp(28px,4vw,44px);margin-top:1rem}
+    p.lead-muted{color:var(--muted);margin-bottom:1rem;font-size:18px}
+    .section-title{font-weight:700;font-size:22px;margin-bottom:1rem}
+    .project-card{border:none;transition:transform .28s,box-shadow .28s;border-radius:12px;overflow:hidden}
+    .project-card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(31,41,55,0.08)}
+    .project-card img{height:180px;object-fit:cover}
+    .timeline-item{padding:.8rem 0;border-left:3px solid rgba(13,110,253,0.06);margin-left:0.5rem}
+    .timeline-item strong{display:block}
+    footer{padding:2.25rem 0;color:#6b7280;text-align:center;border-top:1px solid #edf2f7;margin-top:3rem}
+    @media(max-width:576px){.profile-img{width:120px;height:120px;border-width:4px}.lead-muted{font-size:15px}}
+    .badge-role{background:linear-gradient(90deg,var(--accent),#0a58ca);color:#fff;padding:.35rem .6rem;border-radius:.45rem;font-weight:600}
+    .muted-small{color:var(--muted);font-size:0.95rem}
+    .contact-icon{color:var(--muted);transition:color .2s}
+    .contact-icon:hover{color:var(--accent)}
   </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
   <div class="container">
     <a class="navbar-brand fw-bold" href="#">AkashQChem</a>
@@ -37,78 +57,161 @@
   </div>
 </nav>
 
+<!-- HERO -->
 <section class="hero">
-  <div class="container text-center">
-    <img src="assets/img/profile_akash.jpg" alt="Akash Shil" class="profile-img shadow mb-3" style="width:160px;height:160px;object-fit:cover;border-radius:50%;border:5px solid white;">
+  <div class="container" data-aos="fade-up">
+    <img src="assets/img/profile_akash.jpg" alt="Akash Shil" class="profile-img">
+    <h1 class="hero-title">Akash Shil</h1>
+    <p class="lead-muted">Computational & Theoretical Chemistry — DFT, TDDFT, and ML for molecular modeling</p>
 
-    <h1 class="fw-bold">Akash Shil</h1>
-    <p class="lead text-muted mb-2">Quantum Chemistry • Density Functional Theory • Machine Learning for Drug Discovery</p>
-    <p>
-      <a class="btn btn-primary btn-sm me-2" href="#projects">View Projects</a>
+    <div class="d-flex justify-content-center gap-2">
+      <a class="btn btn-primary btn-sm" href="#projects">View Projects</a>
       <a class="btn btn-outline-primary btn-sm" href="assets/CV.pdf" target="_blank">Download CV</a>
+    </div>
 
-    </p>
+    <div class="mt-4 d-flex justify-content-center gap-3" data-aos="fade-up" data-aos-delay="120">
+      <a class="contact-icon" href="https://github.com/akashqchem" target="_blank" title="GitHub"><i class="fab fa-github fa-lg"></i></a>
+      <a class="contact-icon" href="https://www.linkedin.com/in/YOUR-LINKEDIN" target="_blank" title="LinkedIn"><i class="fab fa-linkedin fa-lg"></i></a>
+      <a class="contact-icon" href="mailto:akash.shil@ucalgary.ca" title="Email"><i class="fa-solid fa-envelope fa-lg"></i></a>
+    </div>
   </div>
 </section>
 
+<!-- ABOUT (use your provided text, formatted nicely) -->
 <section id="about" class="py-5">
-  <div class="container">
+  <div class="container" data-aos="fade-up">
     <h2 class="section-title">About</h2>
-    <p>I’m a computational chemist focusing on quantum chemistry (DFT) and machine learning for drug discovery. Currently preparing projects on covalent inhibitors, descriptor-based models, and QM-informed features. I enjoy building robust ML pipelines for chemistry problems and sharing reproducible code.</p>
+
+    <div class="row">
+      <div class="col-lg-8">
+        <p>Hi, I'm <strong>Akash Shil</strong> — a passionate chemist focused on computational and theoretical chemistry. I work at the intersection of electronic structure theory and machine learning to design and model molecules for photoredox and drug discovery applications.</p>
+
+        <div class="mt-3">
+          <p><strong>Education & highlights</strong></p>
+          <ul>
+            <li><strong>Gold Medal (Rank 1)</strong> — B.Sc. Chemistry, The ICFAI University Tripura (Sept 2020 – Sept 2023). Graduated as university topper.</li>
+            <li><strong>M.Sc. in Chemistry</strong> — IIT Tirupati (July 2023 – July 2025). Thesis under Dr. Arun K. Manna.</li>
+            <li><strong>Incoming</strong> — University of Calgary, MSc (thesis-based) under Dr. Viki Kumar Prasad, Winter 2026 (working on ML for covalent drug discovery; transfer-to-PhD possible).</li>
+          </ul>
+        </div>
+
+        <div class="mt-3">
+          <p><strong>Research summary</strong></p>
+          <p>My MSc research focused on the computational design of BODIPY-based dyes: I explored how halogenation and π-conjugation affect redox and excited-state properties using DFT and TDDFT. The results provide design guidelines for metal-free photocatalysts in advanced photoredox applications.</p>
+        </div>
+
+        <div class="mt-3">
+          <p><strong>Looking ahead</strong></p>
+          <p>I will develop machine learning models for covalent drug discovery at the University of Calgary, combining quantum-chemistry databases and molecular modeling. I’m keen on collaborations in molecular modeling, electronic structure theory, and ML for chemistry.</p>
+        </div>
+
+        <p class="muted-small">📩 Reach me at <a href="mailto:akash.shil@ucalgary.ca">akash.shil@ucalgary.ca</a></p>
+      </div>
+
+      <div class="col-lg-4" data-aos="fade-left">
+        <div class="card h-100 p-3">
+          <div class="mb-2">
+            <span class="badge-role">Gold Medalist — B.Sc. (Rank 1)</span>
+          </div>
+          <div class="mt-3 timeline-item">
+            <strong>M.Sc. — IIT Tirupati</strong>
+            <small class="muted-small">July 2023 – July 2025</small>
+            <div class="mt-1">Thesis supervised by <em>Dr. Arun K. Manna</em>. DFT/TDDFT study on BODIPY dyes.</div>
+          </div>
+
+          <div class="mt-3 timeline-item">
+            <strong>B.Sc. — The ICFAI University Tripura</strong>
+            <small class="muted-small">Sept 2020 – Sept 2023</small>
+            <div class="mt-1">University topper — Gold Medal (Rank 1).</div>
+          </div>
+
+          <div class="mt-3 timeline-item">
+            <strong>Incoming — University of Calgary</strong>
+            <small class="muted-small">Winter 2026 (MSc thesis-based)</small>
+            <div class="mt-1">Research with <em>Dr. Viki Kumar Prasad</em> on ML for covalent drug discovery (possible PhD transfer).</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
+<!-- PROJECTS (placeholders — replace with your real project links/images) -->
 <section id="projects" class="py-5 bg-light">
   <div class="container">
-    <h2 class="section-title">Selected Projects</h2>
-    <div class="row g-3">
-      <div class="col-md-4">
+    <h2 class="section-title" data-aos="fade-up">Selected Projects</h2>
+    <div class="row g-4">
+      <!-- project 1 -->
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="40">
         <div class="card project-card h-100">
-          <img src="assets/img/project1.jpg" class="card-img-top" alt="Project screenshot">
+          <img src="assets/img/project1.jpg" class="card-img-top" alt="Drug Potency">
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title">Drug Potency Regression</h5>
-            <p class="card-text text-muted small">Regression models predicting pIC50 using RDKit + QM descriptors and scikit-learn.</p>
+            <h5 class="card-title">DFT design of BODIPY dyes</h5>
+            <p class="card-text text-muted small">Halogenation and π-conjugation effects on redox and excited states (DFT/TDDFT). Find summary in my thesis.</p>
             <div class="mt-auto">
-              <a class="btn btn-sm btn-outline-primary" href="#">Repository</a>
-              <a class="btn btn-sm btn-primary ms-2" href="#">Read more</a>
+              <a class="btn btn-sm btn-outline-primary" href="#" target="_blank">Read summary</a>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- project 2 -->
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="90">
+        <div class="card project-card h-100">
+          <img src="assets/img/project2.jpg" class="card-img-top" alt="QM features">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">QM-informed descriptors</h5>
+            <p class="card-text text-muted small">HOMO-LUMO gaps, dipole moments and descriptors to improve ML models for molecular properties.</p>
+            <div class="mt-auto">
+              <a class="btn btn-sm btn-outline-primary" href="#" target="_blank">Repository</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- project 3 -->
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="140">
+        <div class="card project-card h-100">
+          <img src="assets/img/project3.jpg" class="card-img-top" alt="Reproducible pipeline">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">Reproducible QM–ML pipelines</h5>
+            <p class="card-text text-muted small">Notebooks and workflows combining ORCA/Gaussian outputs with RDKit features and scikit-learn/PyTorch models.</p>
+            <div class="mt-auto">
+              <a class="btn btn-sm btn-outline-primary" href="#" target="_blank">Repository</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
+<!-- PUBLICATIONS -->
 <section id="publications" class="py-5">
-  <div class="container">
+  <div class="container" data-aos="fade-up">
     <h2 class="section-title">Publications & Preprints</h2>
     <ul class="list-group">
-      <li class="list-group-item">MSc project summary (IIT Tirupati). <a href="#">Read summary</a></li>
+      <li class="list-group-item">MSc thesis: DFT & TDDFT study of BODIPY dyes — (IIT Tirupati). <a href="#" target="_blank">Thesis summary</a></li>
+      <!-- Add DOIs or PDFs as they publish -->
     </ul>
   </div>
 </section>
 
-<section id="education" class="py-5 bg-light">
-  <div class="container">
-    <h2 class="section-title">Education</h2>
-    <div>
-      <strong>MSc — Quantum Chemistry</strong> — IIT Tirupati<br>
-      <small class="text-muted">Thesis: DFT study of ... (Year)</small>
-    </div>
-    <div class="mt-3">
-      <strong>BSc — Chemistry</strong> — (Institution)
-    </div>
-  </div>
-</section>
-
-<section id="contact" class="py-5">
-  <div class="container">
+<!-- CONTACT -->
+<section id="contact" class="py-5 bg-light">
+  <div class="container" data-aos="fade-up">
     <h2 class="section-title">Contact</h2>
     <div class="row">
       <div class="col-md-6">
-        <p>If you'd like to collaborate or learn more, email me at <a href="mailto:akashshil22363@gmail.com">akashshil22363@gmail.com</a>.</p>
-        <p>Also on GitHub: <a href="https://github.com/akashqchem" target="_blank">@akashqchem</a></p>
+        <p>I'm open to collaboration and discussion in molecular modelling, electronic structure theory, and ML for chemistry.</p>
+        <p><strong>Email:</strong> <a href="mailto:akash.shil@ucalgary.ca">akash.shil@ucalgary.ca</a></p>
+        <p><strong>GitHub:</strong> <a href="https://github.com/akashqchem" target="_blank">@akashqchem</a></p>
+        <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/YOUR-LINKEDIN" target="_blank">Connect</a></p>
       </div>
+
       <div class="col-md-6">
         <form action="https://formspree.io/f/your-form-id" method="POST">
           <div class="mb-2">
@@ -128,12 +231,17 @@
 </section>
 
 <footer>
-  <div class="container text-center">
-    <small class="text-muted">© <span id="year"></span> Akash Shil — Quantum Chemistry & ML • <a href="https://github.com/akashqchem" target="_blank">GitHub</a></small>
+  <div class="container">
+    <small>© <span id="year"></span> <strong>Akash Shil</strong> — Quantum Chemistry & ML • <a href="https://github.com/akashqchem" target="_blank">GitHub</a></small>
   </div>
 </footer>
 
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init({ duration: 700, once: true });
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
