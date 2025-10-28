@@ -147,6 +147,28 @@
   footer{ padding:2rem 0; color: #b5c2ff; text-align:center; border-top:1px solid rgba(255,255,255,0.03); }
 
   @media (max-width:768px){ .particle{display:none;} }
+  footer{ padding:2rem 0; color:#b5c2ff; text-align:center; border-top:1px solid rgba(255,255,255,0.03); }
+
+@media (max-width:768px){ .particle{display:none;} }
+
+/* Ensure profile image sits above animated background/particles */
+.profile-img {
+  position: relative;
+  z-index: 5;              /* bring image to front */
+}
+
+/* Make hero area slightly smaller so content below is visible faster */
+.hero {
+  padding: 3.5rem 0 1.5rem; /* reduce top/bottom so About section is nearer */
+  z-index: 2;
+}
+
+/* Reduce overlay brightness a touch so content below is readable */
+.animated-bg { opacity: 0.12 !important; }
+
+/* In case body::before SVG overlay is too strong */
+body::before { opacity: 0.04 !important; }
+</style>
   </style>
 </head>
 <body>
