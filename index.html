@@ -146,10 +146,42 @@
 
   footer{ padding:2rem 0; color: #b5c2ff; text-align:center; border-top:1px solid rgba(255,255,255,0.03); }
 
-  @media (max-width:768px){ .particle{display:none;} }
+    @media (max-width:768px){ .particle{display:none;} }
   footer{ padding:2rem 0; color:#b5c2ff; text-align:center; border-top:1px solid rgba(255,255,255,0.03); }
 
-@media (max-width:768px){ .particle{display:none;} }
+/* Mobile-friendly particle rules (replace the old "display:none" block) */
+@media (max-width:768px) {
+  /* show a simplified, lighter version of particles on phones */
+  .particle {
+    display: block !important;
+    position: absolute;
+    font-size: 13px;           /* smaller text */
+    padding: 6px 8px;
+    border-radius: 8px;
+    opacity: 0.85;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    box-shadow: none;         /* remove heavy shadows for performance */
+    pointer-events: none;
+    z-index: 4;               /* make sure particles sit above bg but below hero content */
+    transform: none;
+    transition: none;
+  }
+
+  /* make dim particles even subtler */
+  .particle.dim { opacity: 0.65; font-size: 12px; background: transparent; }
+
+  /* shorter float animations so they don't appear jittery on mobile */
+  .p1, .p2, .p3 {
+    animation-duration: 6s !important;
+    will-change: transform;
+  }
+
+  /* reduce number of floating elements if you added many — hide extras via class */
+  .particle.extra { display: none !important; } /* add class="extra" to particles you want hidden on phones */
+
+  /* Slightly reduce overlay strength on small screens */
+  .animated-bg { opacity: 0.06 !important; }
+}
 
 /* Ensure profile image sits above animated background/particles */
 .profile-img {
