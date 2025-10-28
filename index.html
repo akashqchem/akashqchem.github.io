@@ -264,6 +264,11 @@ body::before {
   color: #00aaff !important;
   text-shadow: 0 0 10px rgba(0, 170, 255, 0.6);
 }
+  @media (max-width: 768px) {
+  .project-card img {
+    width: 85% !important;
+  }
+}
   </style>
 </head>
 <body>
@@ -382,7 +387,7 @@ body::before {
   <div class="card project-card h-100 text-center">
     <!-- Circular container for BODIPY image -->
     <div class="d-flex justify-content-center mt-3">
-      <div style="width:180px; height:180px; border-radius:50%; background:#ffffff; display:flex; justify-content:center; align-items:center; box-shadow:0 0 25px rgba(255,255,255,0.08); overflow:hidden;">
+      <div style="width:240px; height:240px; border-radius:50%; background:#ffffff; display:flex; justify-content:center; align-items:center; box-shadow:0 0 25px rgba(255,255,255,0.08); overflow:hidden;">
         <img src="assets/img/bodipy_structure.png" 
              alt="BODIPY Molecular Structure" 
              style="width:90%; height:auto;">
