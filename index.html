@@ -168,7 +168,81 @@
 
 /* In case body::before SVG overlay is too strong */
 body::before { opacity: 0.04 !important; }
-</style>
+
+    /* ---------- VISIBILITY & TYPOGRAPHY FIXES ---------- */
+
+/* Use Times New Roman everywhere for good readability */
+body, h1, h2, h3, p, a, li {
+  font-family: "Times New Roman", Times, serif !important;
+}
+
+/* Ensure any SVG/body overlay is subtle & behind content */
+.animated-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;               /* background layer */
+  opacity: 0.10 !important; /* lighten background so content is readable */
+  pointer-events: none;
+}
+
+/* If you used body::before overlay, make it faint and behind */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.03 !important;
+  pointer-events: none;
+}
+
+/* Ensure hero section and everything inside it sits above the animated background */
+.hero, .hero * {
+  position: relative;
+  z-index: 5; /* bring hero content to front */
+}
+
+/* Make sure profile image is above overlay and centered nicely */
+.profile-img {
+  position: relative;
+  z-index: 6; /* above hero content */
+  display: inline-block;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+}
+
+/* make hero a bit shorter (optional) so About section is nearer */
+.hero {
+  padding-top: 3rem;
+  padding-bottom: 1.5rem;
+}
+
+/* Subtitle style and container for typing text */
+.subtitle {
+  font-size: 1.15rem;
+  color: rgba(255,255,255,0.9);
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+/* Typing word container */
+#subtitle-typed {
+  font-weight: 600;
+  margin-left: 0.5rem;
+  white-space: nowrap;
+}
+
+/* small visual improvements for hero buttons and social icons */
+.btn {
+  z-index: 6;
+}
+
+/* reduce overlay strength on mobile a bit more */
+@media (max-width: 768px) {
+  .animated-bg { opacity: 0.06 !important; }
+  .hero { padding-top: 2rem; }
+}
+
   </style>
 </head>
 <body>
@@ -315,12 +389,59 @@ body::before { opacity: 0.04 !important; }
   <script>
   AOS.init({ duration:700, once:true });
 
+  /* ---------- Typing effect (robust & unobtrusive) ---------- */
   const phrases = [
     'DFT, TDDFT, and machine learning for covalent drug discovery',
     'Computational Chemist',
     'Quantum Researcher',
     'ML for Covalent Drug Discovery'
   ];
-  let el = document.getElementById('subtitle-typed');
-  let idx = 0, char = 0, forward = true;
- 
+
+  const el = document.getElementById('subtitle-typed');
+  let phraseIndex = 0;
+  let letterIndex = 0;
+  let typingSpeed = 40;    // ms per character
+  let pauseBetween = 1400; // pause at end of phrase
+  let deletingSpeed = 28;
+  let isDeleting = false;
+
+  function tick() {
+    if (!el) return; // safe guard
+
+    const current = phrases[phraseIndex % phrases.length];
+    if (!isDeleting) {
+      // typing
+      el.textContent = current.slice(0, ++letterIndex);
+      if (letterIndex === current.length) {
+        // finished typing, pause, then delete
+        isDeleting = true;
+        setTimeout(tick, pauseBetween);
+        return;
+      }
+      setTimeout(tick, typingSpeed + Math.random()*20);
+    } else {
+      // deleting
+      el.textContent = current.slice(0, --letterIndex);
+      if (letterIndex === 0) {
+        isDeleting = false;
+        phraseIndex++;
+        setTimeout(tick, 220); // small pause before next word
+        return;
+      }
+      setTimeout(tick, deletingSpeed + Math.random()*16);
+    }
+  }
+
+  // Start when DOM is ready
+  document.addEventListener('DOMContentLoaded', function() {
+    // small initial delay so AOS animations don't clash
+    setTimeout(tick, 600);
+    // set copyright year
+    const y = new Date().getFullYear();
+    const yEl = document.getElementById('year');
+    if (yEl) yEl.textContent = y;
+  });
+
+  </script>
+</body>
+</html>
