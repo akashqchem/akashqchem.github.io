@@ -917,13 +917,25 @@ body::before {
 
     <div class="row g-4">
       <!-- Card 1: Gold Medal, IUT'23 -->
-      <div class="col-md-6 col-lg-4">
-        <article class="card project-card h-100 text-center p-3 highlight-card">
-          <img src="assets/img/medal.jpg" alt="Gold medal - ICFAI University" class="highlight-thumb mb-3" data-full="assets/img/medal.jpg">
-          <h5 class="fw-bold">Honoured with the Gold Medal - BSc Class of 2023</h5>
-          <p class="muted-small"><em>Grateful to have received the Gold Medal for highest academic excellence from The ICFAI University, Tripura. This achievement is not mine alone - I’m deeply thankful to my professors, batchmates, and family for their unwavering support.</em></p>
-        </article>
-      </div>
+<div class="col-md-6 col-lg-4">
+  <article class="card project-card h-100 text-center p-3 highlight-card achievement-card">
+    <div style="position: relative; border-radius: 10px; overflow: hidden;">
+      <!-- Image -->
+      <img src="assets/img/medal.jpg" alt="Gold medal - ICFAI University" class="highlight-thumb mb-3 ach-image" data-full="assets/img/medal.jpg">
+      <!-- Date overlay on image -->
+      <span class="ach-date-overlay">29 September, 2023</span>
+    </div>
+
+    <!-- Title -->
+    <h5 class="fw-bold mt-3">Honoured with the Gold Medal - BSc Class of 2023</h5>
+
+    <!-- Date below title -->
+    <p class="achievement-date">29 September, 2023</p>
+
+    <!-- Description -->
+    <p class="muted-small"><em>Grateful to have received the Gold Medal for highest academic excellence from The ICFAI University, Tripura. This achievement is not mine alone - I’m deeply thankful to my professors, batchmates, and family for their unwavering support.</em></p>
+  </article>
+</div>
 
       <!-- Card 2: Degree -->
       <div class="col-md-6 col-lg-4">
@@ -1109,6 +1121,43 @@ form input:focus, form textarea:focus {
 
 @media (max-width:768px) {
   .contact-form-wrapper { padding: 1.5rem; }
+}
+/* --- Date overlay + caption style --- */
+.achievement-card {
+  position: relative;
+}
+
+.achievement-card .ach-image {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.ach-date-overlay {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  background: rgba(10,12,20,0.6);
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #f5ebff;
+  font-family: "French Script MT", "Brush Script MT", cursive;
+  font-size: 17px;
+  font-style: italic;
+  letter-spacing: 0.5px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+}
+
+.achievement-date {
+  color: #a5b4ff;
+  font-family: "French Script MT", "Brush Script MT", cursive;
+  font-size: 18px;
+  font-style: italic;
+  margin-top: 6px;
+  margin-bottom: 10px;
+  display: block;
 }
 </style>
 
