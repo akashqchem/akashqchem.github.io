@@ -1,137 +1,1372 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Akash Shil — Quantum Chemistry · ML</title>
-  <meta name="description" content="Akash Shil — Quantum Chemistry & Machine Learning. Projects, publications, education and contact.">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Akash Shil — Quantum Chemistry & ML</title>
+  <meta name="description" content="Akash Shil - Computational & Theoretical Chemistry.">
+
+  <!-- Bootstrap & AOS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
   <style>
-    :root{--accent:#0d6efd}
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
-    .hero{padding:4rem 0;background:linear-gradient(180deg,#0d6efd22,transparent)}
-    .profile-img{width:140px;height:140px;object-fit:cover;border-radius:50%;border:4px solid white}
-    .section-title{margin-bottom:1.25rem}
-    .project-card img{height:160px; object-fit:cover}
-    footer{padding:2rem 0;border-top:1px solid #eee}
-    @media (max-width:576px){ .profile-img{width:110px;height:110px} }
+  /* ---------- THEME COLORS ---------- */
+  :root{
+    --accent-start:#6a11cb;   /* violet */
+    --accent-end:#2575fc;     /* blue */
+    --bg-dark:#05060b;
+    --card-bg: rgba(255,255,255,0.03);
+    --muted: #cbd6ff;
+  }
+
+  /* ---------- GLOBAL STYLE ---------- */
+  body{
+    margin:0;
+    font-family:"Times New Roman", Times, serif;
+    background: var(--bg-dark);
+    color:#eef2ff;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.6;
+  }
+
+  /* ---------- ANIMATED BACKGROUND ---------- */
+  .animated-bg{
+    position:fixed; inset:0; z-index:-3;
+    background: linear-gradient(120deg,var(--accent-start),var(--accent-end) 60%, #081029);
+    background-size:400% 400%;
+    opacity:0.20;
+    animation:gradientShift 20s ease infinite;
+    filter: blur(28px) saturate(120%);
+  }
+  @keyframes gradientShift{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+  }
+
+  /* ---------- MOLECULE SVG BACKGROUND ---------- */
+  body::before{
+    content:"";
+    position:fixed; inset:0; z-index:-2;
+    background-image: url("data:image/svg+xml;utf8, \
+      <svg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'> \
+      <defs><g id='m'><circle cx='24' cy='24' r='4' fill='%23ffffff' fill-opacity='0.06'/> \
+      <circle cx='70' cy='24' r='3' fill='%23ffffff' fill-opacity='0.05'/> \
+      <line x1='28' y1='24' x2='66' y2='24' stroke='%23ffffff' stroke-opacity='0.03' stroke-width='1'/> \
+      <circle cx='150' cy='60' r='5' fill='%23ffffff' fill-opacity='0.04'/> \
+      </g></defs> \
+      <rect width='100%' height='100%' fill='transparent'/> \
+      <use href='%23m' x='0' y='0'/> \
+      <use href='%23m' x='120' y='80'/> \
+      <use href='%23m' x='40' y='180'/> \
+      </svg>");
+    background-repeat: repeat;
+    opacity:0.06;
+    pointer-events:none;
+  }
+
+  /* ---------- NAV ---------- */
+  .navbar{
+    background: rgba(6,8,18,0.55) !important;
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .navbar-brand, .nav-link{ color: #fff !important; font-family:"Times New Roman", Times, serif; }
+  .nav-link:hover{ color: #ffd166 !important; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:5.5rem 0 2.5rem;
+    text-align:center;
+    position:relative;
+  }
+  .profile-img{
+    width:176px;height:176px;object-fit:cover;border-radius:50%;
+    border:6px solid rgba(255,255,255,0.98);
+    box-shadow: 0 8px 36px rgba(94,46,255,0.18);
+    transition:transform .35s,box-shadow .35s;
+    background:#fff;
+  }
+  .profile-img:hover{ transform:translateY(-6px) scale(1.03); box-shadow: 0 18px 56px rgba(94,46,255,0.28); }
+
+  h1.hero-title{
+    font-weight:700;
+    font-size: clamp(30px, 4vw, 46px);
+    margin-top:1rem;
+    color:#fff;
+  }
+  .subtitle{
+    color:var(--muted);
+    font-size:18px;
+    margin-bottom:1rem;
+    min-height:28px;
+  }
+  .typing { display:inline-block; border-right:2px solid rgba(255,255,255,0.65); padding-right:4px; margin-left:6px; }
+
+  .btn-primary{
+    background:linear-gradient(90deg,var(--accent-start),var(--accent-end));
+    border:none;
+    box-shadow:0 8px 30px rgba(37,117,252,0.12);
+  }
+  .btn-outline-primary{ color:#fff; border-color: rgba(255,255,255,0.12); }
+
+  /* ---------- FLOATING FORMULA PARTICLES ---------- */
+  .particle {
+    position: absolute;
+    color: rgba(255,255,255,0.92);
+    font-family:"Times New Roman", Times, serif;
+    font-size: 15px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    box-shadow:0 6px 18px rgba(0,0,0,0.45);
+    opacity:0.92;
+    pointer-events:none;
+  }
+  .particle.small{ font-size:14px; opacity:0.9; }
+  .particle.dim{ opacity:0.6; background:transparent; box-shadow:none; color: rgba(220,230,255,0.85); }
+    
+    /* ---------- Kohn-Sham small card styling ---------- */
+.ks-equation {
+  max-width: 480px;      /* keeps the box compact */
+  padding: 14px 18px;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(5,6,15,0.55);
+  backdrop-filter: blur(4px) saturate(110%);
+  color: #dfeff6;
+  pointer-events: none;  /* non-interactive (like your other floating particles) */
+  font-family: "Georgia", "Times New Roman", serif;
+  line-height: 1.12;
+}
+
+/* title (bold) */
+.ks-title {
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  opacity: 1 !important;
+  text-align: center;
+  letter-spacing: 0.2px;
+}
+/* equation single-line */
+.ks-eqn-single {
+  font-style: normal; /* upright for math */
+  color: #cfeff0;
+  margin: 6px 0;
+  font-size: clamp(0.95rem, 1.02vw, 1.02rem);
+  white-space: nowrap;
+  display: inline-block;
+}
+
+/* smaller screens: hide to avoid overlap */
+@media (max-width: 740px) {
+  .ks-equation { display:none; }
+}
+/* responsive: hide floating particle on narrow screens */
+@media (max-width: 740px) {
+  .ks-equation { display:none; }
+}
+/* title */
+.ks-title { 
+  font-weight:700;
+  color: #ffffff;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  opacity: 0.98;
+}
+
+/* equation */
+.ks-eqn {
+  font-style: normal; /* keep upright for math */
+  font-family: "Georgia", "Times New Roman", serif;
+  color: #cfeff0;
+  margin: 6px 0;
+  line-height: 1.12;
+  font-size: clamp(0.9rem, 1.05vw, 1.05rem);
+}
+
+/* break equation into lines and emphasize RHS */
+.ks-line { display:block; white-space:nowrap; }
+.ks-line.equals { margin-top: 6px; font-weight:700; color:#ffffff; }
+
+/* small caption under equation */
+.ks-caption {
+  margin-top: 8px;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.72);
+  font-style: italic;
+}
+
+/* responsive: keep things neat on smaller screens */
+@media (max-width: 740px) {
+  .ks-equation { display:none; } /* hide floating particle on narrow screens to avoid overlap */
+}   
+  @keyframes float1 { 0%{transform:translateY(0)}50%{transform:translateY(-18px)}100%{transform:translateY(0)}}
+  @keyframes float2 { 0%{transform:translateY(0)}50%{transform:translateY(-28px)}100%{transform:translateY(0)}}
+  @keyframes float3 { 0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
+  .p1{ animation: float1 6.8s ease-in-out infinite; }
+  .p2{ animation: float2 8.6s ease-in-out infinite; }
+  .p3{ animation: float3 7.4s ease-in-out infinite; }
+
+  /* ---------- CONTENT ---------- */
+  section{ padding:3.25rem 0; }
+  .section-title{ font-weight:bold; color:#fff; font-size:22px; border-left:4px solid rgba(255,255,255,0.06); padding-left:10px; margin-bottom:1rem; }
+  .card{ background:var(--card-bg); border:none; color:#eef2ff; font-family:"Times New Roman", Times, serif; }
+  .project-card{ border-radius:14px; overflow:hidden; transition:transform .28s, box-shadow .28s; }
+  .project-card:hover{ transform:translateY(-10px); box-shadow:0 20px 60px rgba(40,40,120,0.14); }
+  .muted-small{ color: #cbd6ff; opacity:0.8; font-size:1rem; }
+    /* Ensure justified text on all devices */
+p, li, .section-text {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+}
+
+/* Adjust readability for small screens */
+@media (max-width: 768px) {
+  p, li, .section-text {
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    word-spacing: 1px;
+    line-height: 1.6;
+  }
+}
+
+  footer{ padding:2rem 0; color: #b5c2ff; text-align:center; border-top:1px solid rgba(255,255,255,0.03); }
+
+    @media (max-width:768px){ .particle{display:none;} }
+  footer{ padding:2rem 0; color:#b5c2ff; text-align:center; border-top:1px solid rgba(255,255,255,0.03); }
+
+/* Mobile-friendly particle rules (replace the old "display:none" block) */
+@media (max-width:768px) {
+  /* show a simplified, lighter version of particles on phones */
+  .particle {
+    display: block !important;
+    position: absolute;
+    font-size: 13px;           /* smaller text */
+    padding: 6px 8px;
+    border-radius: 8px;
+    opacity: 0.85;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    box-shadow: none;         /* remove heavy shadows for performance */
+    pointer-events: none;
+    z-index: 4;               /* make sure particles sit above bg but below hero content */
+    transform: none;
+    transition: none;
+  }
+
+  /* make dim particles even subtler */
+  .particle.dim { opacity: 0.65; font-size: 12px; background: transparent; }
+
+  /* shorter float animations so they don't appear jittery on mobile */
+  .p1, .p2, .p3 {
+    animation-duration: 6s !important;
+    will-change: transform;
+  }
+
+  /* reduce number of floating elements if you added many — hide extras via class */
+  .particle.extra { display: none !important; } /* add class="extra" to particles you want hidden on phones */
+
+  /* Slightly reduce overlay strength on small screens */
+  .animated-bg { opacity: 0.06 !important; }
+}
+
+/* Ensure profile image sits above animated background/particles */
+.profile-img {
+  position: relative;
+  z-index: 5;              /* bring image to front */
+}
+
+/* Make hero area slightly smaller so content below is visible faster */
+.hero {
+  padding: 3.5rem 0 1.5rem; /* reduce top/bottom so About section is nearer */
+  z-index: 2;
+}
+
+/* Reduce overlay brightness a touch so content below is readable */
+.animated-bg { opacity: 0.12 !important; }
+
+/* In case body::before SVG overlay is too strong */
+body::before { opacity: 0.04 !important; }
+
+    /* ---------- VISIBILITY & TYPOGRAPHY FIXES ---------- */
+
+/* Use Times New Roman everywhere for good readability */
+body, h1, h2, h3, p, a, li {
+  font-family: "Times New Roman", Times, serif !important;
+}
+
+/* Ensure any SVG/body overlay is subtle & behind content */
+.animated-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;               /* background layer */
+  opacity: 0.10 !important; /* lighten background so content is readable */
+  pointer-events: none;
+}
+
+/* If you used body::before overlay, make it faint and behind */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.03 !important;
+  pointer-events: none;
+}
+
+/* Ensure hero section and everything inside it sits above the animated background */
+.hero, .hero * {
+  position: relative;
+  z-index: 5; /* bring hero content to front */
+}
+
+/* Make sure profile image is above overlay and centered nicely */
+.profile-img {
+  position: relative;
+  z-index: 6; /* above hero content */
+  display: inline-block;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+}
+
+/* make hero a bit shorter (optional) so About section is nearer */
+.hero {
+  padding-top: 3rem;
+  padding-bottom: 1.5rem;
+}
+
+/* Subtitle style and container for typing text */
+.subtitle {
+  font-size: 1.15rem;
+  color: rgba(255,255,255,0.9);
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+/* Typing word container */
+#subtitle-typed {
+  font-weight: 600;
+  margin-left: 0.5rem;
+  white-space: nowrap;
+}
+
+/* small visual improvements for hero buttons and social icons */
+.btn {
+  z-index: 6;
+}
+
+/* reduce overlay strength on mobile a bit more */
+@media (max-width: 768px) {
+  .animated-bg { opacity: 0.06 !important; }
+  .hero { padding-top: 2rem; }
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(255,255,255,0.05); }
+  50% { box-shadow: 0 0 14px rgba(255,255,255,0.12); }
+}
+#publications .card {
+  animation: pulseGlow 6s ease-in-out infinite;
+}
+  #contact a:hover i {
+  opacity: 0.8;
+  transform: scale(1.05);
+  transition: all 0.2s ease-in-out;
+}
+  #about a:hover {
+  color: #d8e9ff !important;
+  text-decoration: underline;
+  text-shadow: 0 0 6px rgba(166, 220, 239, 0.4);
+  transition: all 0.2s ease-in-out;
+}
+  a.text-white:hover {
+  color: #00aaff !important;
+  text-shadow: 0 0 10px rgba(0, 170, 255, 0.6);
+}
+  @media (max-width: 768px) {
+  .project-card img {
+    width: 85% !important;
+  }
+}
+  /* ---------------- Animated checkmark thank-you overlay ---------------- */
+#thankyou-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(3,6,12,0.6);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .35s ease;
+}
+
+#thankyou-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.thank-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border-radius: 14px;
+  padding: 26px 32px;
+  width: min(560px, 90vw);
+  text-align: center;
+  box-shadow: 0 14px 50px rgba(0,0,0,0.45);
+  color: #eef2ff;
+  font-family: "Times New Roman", Times, serif;
+}
+
+/* svg container */
+.thank-svg {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 14px;
+  display:block;
+}
+
+/* circle pulse */
+.check-circle {
+  fill: none;
+  stroke: rgba(94,46,255,0.18);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 6px 18px rgba(37,117,252,0.12));
+  transform-origin: 50% 50%;
+  transform: scale(.92);
+  opacity: 0;
+  transition: all .45s cubic-bezier(.2,.9,.2,1);
+}
+
+/* check path: ready to animate */
+.check {
+  fill: none;
+  stroke: #6cf0d8;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transition: stroke-dashoffset .6s cubic-bezier(.2,.9,.2,1) .15s;
+}
+
+/* small pop */
+.thank-card.visible .check-circle {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.thank-card.visible .check {
+  stroke-dashoffset: 0;
+}
+
+/* heading + message */
+.thank-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 8px 0 6px;
+  color: #ffffff;
+}
+.thank-msg {
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 12px;
+  font-size: 0.98rem;
+}
+
+/* close button */
+.thank-close {
+  display:inline-block;
+  margin-top: 10px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: #fff;
+  cursor:pointer;
+  transition: background .18s ease, transform .12s ease;
+}
+.thank-close:hover { background: rgba(255,255,255,0.06); transform: translateY(-2px); }
+
+/* small responsive tweak */
+@media (max-width:560px){
+  .thank-card { padding: 18px 18px; }
+  .thank-svg { width: 84px; height:84px; }
+  .thank-title { font-size:1.1rem; }
+}
+  /* ---------- THANK-YOU OVERLAY ANIMATIONS ---------- */
+/* overlay container hidden by default */
+#thankyou-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;           /* shown by JS */
+  align-items: center;
+  justify-content: center;
+  background: rgba(4,6,12,0.6);
+  z-index: 9999;
+}
+
+/* the card */
+.thank-card {
+  width: min(520px, 90%);
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  backdrop-filter: blur(6px) saturate(110%);
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 18px 50px rgba(5,6,15,0.6);
+  transform: translateY(18px) scale(.98);
+  opacity: 0;
+  transition: transform .45s cubic-bezier(.2,.9,.3,1), opacity .35s ease;
+  text-align: center;
+}
+
+/* when visible, pop in */
+#thankyou-overlay.show .thank-card {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* svg circle and check animation */
+.thank-svg { width: 120px; height: 120px; margin: 0 auto 14px; display:block; }
+.check-circle { fill: none; stroke: rgba(42, 255, 160, 0.12); stroke-width: 10; }
+.check-path {
+  fill: none;
+  stroke: #2CFFB0;           /* bright check color */
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 140;     /* initial stroke dash for animate */
+  stroke-dashoffset: 140;
+  transition: stroke-dashoffset .7s cubic-bezier(.2,.9,.3,1);
+}
+
+/* small scale / glow on success */
+#thankyou-overlay.show .check-path {
+  stroke-dashoffset: 0;
+  filter: drop-shadow(0 6px 14px rgba(44,255,176,0.14));
+}
+
+/* subtle card glow after check */
+#thankyou-overlay.show .thank-card {
+  box-shadow: 0 30px 80px rgba(28,32,56,0.65), 0 6px 28px rgba(44,255,176,0.04);
+}
+
+/* nice entrance for text */
+.thank-title { font-size:1.25rem; font-weight:700; margin-top:6px; color:#e9fff3; }
+.thank-msg  { color: rgba(255,255,255,0.85); margin-top:8px; line-height:1.5; }
+
+/* small accessible close button styling */
+.thank-close { margin-top:18px; border:0; background:transparent; color: rgba(255,255,255,0.7); cursor:pointer; }
+  
+  /* Center tagline under name */
+.tagline {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #ffffffd0;
+  margin-top: 6px;
+  line-height: 1.6;
+}
+/* ===== subtle glow behind hero name ===== */
+.hero-title {
+  position: relative;    /* create positioning context for pseudo */
+  z-index: 2;            /* keep text above the glow */
+  display: inline-block; /* shrink-wrap for nicer glow placement */
+  padding: 0 6px;
+  text-shadow: 0 6px 18px rgba(5,10,30,0.35); /* subtle lift */
+}
+/* radial glow (behind the text) */
+.hero-title::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(680px, 78vw);   /* responsive width */
+  height: min(220px, 34vw);  /* responsive height */
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;                 /* behind the text (hero-title is z-index:2) */
+  background: radial-gradient(
+    circle at 50% 45%,
+    rgba(99,102,241,0.16) 0%,
+    rgba(99,102,241,0.10) 20%,
+    rgba(99,102,241,0.04) 40%,
+    rgba(99,102,241,0.00) 70%
+  );
+  filter: blur(26px);
+  opacity: 0.95;
+}
+
+/* tune for smaller screens */
+@media (max-width: 520px) {
+  .hero-title::after {
+    width: min(420px, 86vw);
+    height: min(160px, 40vw);
+    filter: blur(20px);
+  }
+}
+    
+/* Subtitle styling (for typing line) */
+.subtitle {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #ffffffd0;
+  margin-top: 6px;
+  line-height: 1.6;
+}
+
+/* Typing cursor blinking effect */
+.typing::after {
+  content: '|';
+  animation: blink 0.8s infinite;
+  color: #a5b4ff;
+  font-weight: 300;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
   </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
-  <div class="container">
-    <a class="navbar-brand fw-bold" href="#">AkashQChem</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div id="navmenu" class="collapse navbar-collapse">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-        <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
-        <li class="nav-item"><a class="nav-link" href="#publications">Publications</a></li>
-        <li class="nav-item"><a class="nav-link" href="#education">Education</a></li>
-        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-      </ul>
+  <div class="animated-bg" aria-hidden="true"></div>
+
+  <!-- NAV -->
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#">AkashQChem</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div id="navmenu" class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
+          <li class="nav-item"><a class="nav-link" href="#publications">Publications</a></li>
+          <li class="nav-item"><a class="nav-link" href="#education">Education</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="container position-relative">
+
+      <!-- floating ML equations -->
+     <div class="particle p1 small" style="left:12%; top:14%;">
+  <div><strong>Gradient Descent:</strong></div>
+  <div>θ : = θ - α ∇<sub>θ</sub>J(θ)</div>
+</div>
+<!-- Kohn–Sham equation (single-line version) -->
+<div class="particle p2 small dim ks-equation" style="left:14%; top:22%;">
+  <div class="ks-title"><strong>Kohn-Sham equation:</strong></div>
+
+  <div class="ks-eqn-single">
+    (− &#8463;<sup>2</sup> / 2m &nbsp;∇<sup>2</sup> + V<sub>ion</sub>(r) + V<sub>H</sub>(r) + V<sub>xc</sub>[ρ(r)])
+    &nbsp;ψ<sub>i</sub>(r) = E<sub>i</sub> &nbsp;ψ<sub>i</sub>(r)
+  </div>
+</div>
+<div class="particle p3 small" style="left:22%; top:52%;">
+        <div><strong>Loss Function:</strong></div>
+        <div>L(w) = (1/2n)‖y−Xw‖<sub>2</sub><sup>2</sup> + (λ/2)‖w‖<sub>2</sub><sup>2</sup></div>
+      </div>
+
+      <img src="assets/img/profile_akash.jpg" alt="Akash Shil" class="profile-img mb-3" data-aos="zoom-in">
+      <h1 class="hero-title" data-aos="fade-up">Akash Shil</h1>
+
+      <p class="subtitle" data-aos="fade-up" data-aos-delay="120">
+  <span id="subtitle-static">Computational & Theoretical Chemistry - </span>
+  <span id="subtitle-typed" class="typing" aria-live="polite"></span>
+</p>
+
+      <div class="d-flex justify-content-center gap-2" data-aos="fade-up" data-aos-delay="180">
+        <a class="btn btn-primary btn-sm" href="#projects">View Projects</a>
+        <a class="btn btn-outline-primary btn-sm" href="assets/CV.pdf" target="_blank" rel="noopener">Download CV</a>
+      </div>
+
+      <div class="mt-3 d-flex justify-content-center gap-3" data-aos="fade-up" data-aos-delay="220">
+  <a class="text-white" href="https://github.com/akashqchem" target="_blank"><i class="fab fa-github fa-lg"></i></a>
+  <a class="text-white" href="https://www.linkedin.com/in/akash-shil-9b5039268" target="_blank"><i class="fab fa-linkedin fa-lg"></i></a>
+  <a class="text-white" href="mailto:akash.shil@ucalgary.ca"><i class="fa-solid fa-envelope fa-lg"></i></a>
+</div>
+    </div>
+  </header>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container" data-aos="fade-up">
+      <h2 class="section-title">About</h2>
+      <p>Hi, I'm <strong>Akash Shil</strong> - a chemist specializing in computational and theoretical chemistry. My work blends DFT/TDDFT and machine learning to design molecules and predictive models for covalent drug discovery.</p>
+
+      <h5 id="education">Education & Highlights</h5>
+<ul>
+  <li>
+    <strong>Gold Medal (Rank 1)</strong> - B.Sc. Chemistry, The ICFAI University, Tripura (2020-2023).
+  </li>
+
+  <li>
+    <strong>M.Sc. Chemistry</strong> - Indian Institute of Technology (IIT) Tirupati (2023-2025),
+    Thesis under 
+    <a href="https://mannaarun17.wixsite.com/manna" 
+       target="_blank" 
+       style="color:#a6dcef; text-decoration:none;"
+       title="Visit Dr. Arun K. Manna’s Research Page">
+       Dr. Arun K. Manna
+    </a>.
+  </li>
+
+  <li>
+    <strong>Incoming MSc (Thesis-based)</strong> - University of Calgary, Canada (Winter 2026)
+    under 
+    <a href="https://www.prasadresearchgroup.ca/" 
+       target="_blank" 
+       style="color:#a6dcef; text-decoration:none;"
+       title="Visit Dr. Viki Kumar Prasad’s Research Group">
+       Dr. Viki Kumar Prasad
+    </a>. 
+    Focus: ML for covalent drug discovery.
+  </li>
+</ul>
+      <h5>Research Summary</h5>
+      <p>My MSc work at IIT Tirupati studied halogenation and π-conjugation effects on BODIPY dyes via DFT and TDDFT, yielding design insights for metal-free photocatalysts. My next step involves developing machine learning models for covalent drug discovery, leveraging quantum chemistry databases.</p>
+       </div>
+  </section>
+
+  <!-- PROJECTS -->
+<section id="projects" class="bg-dark">
+  <div class="container" data-aos="fade-up">
+    <h2 class="section-title">Selected Projects</h2>
+    <div class="row g-4 mt-2">
+
+      <!-- Project 1: MSc work (IIT Tirupati) -->
+<div class="col-md-6">
+  <div class="card project-card h-100 text-center">
+    <!-- Rectangular container for BODIPY image -->
+    <div class="d-flex justify-content-center mt-3">
+  <div style="
+      width: 100%;
+      max-width: 320px;
+      height: auto;
+      background: rgba(255,255,255,0.03);
+      box-shadow: 0 0 25px rgba(255,255,255,0.08);
+      border-radius: 12px;
+      overflow: hidden;
+      padding: 6px;
+    margin-bottom: 12px;">
+    <img src="assets/img/bodipy_structure.png"
+         alt="BODIPY Molecular Structure"
+         style="width: 100%; height: auto; object-fit: contain;">
+  </div>
+</div>
+
+    <div class="card-body">
+      <h5 class="card-title mt-3">
+        Tailored Ground and Excited-State Redox Potentials Through Halogenation and/or Extended π-Conjugation in BODIPY Dye: A Computational Perspective
+        <span class="badge bg-info text-dark ms-2">Ongoing</span>
+      </h5>
+      <p class="muted-small">
+        <em>
+          This computational study investigates the effects of halogenation and π-extended conjugation 
+          on the ground-state and excited-state redox potentials of meso-substituted BODIPY using 
+          density functional theory (DFT) and time-dependent DFT (TDDFT). Systematically, we examine 
+          the electronic structure, optical properties, and redox behaviour of ethynyl and non-ethynyl 
+          substituted BODIPYs with halogens (F, Cl, Br, I). Our results reveal that heavy halogenation 
+          stabilizes both singlet and triplet excited states and reduces their energy gaps, while 
+          π-extension via ethynyl group enhances charge transfer and improves the dyes' ability to 
+          accept electrons. These changes suggest large systematic shifts in the redox potentials 
+          and will provide an opportunity to systematically tune BODIPYs for unique performance in 
+          photoredox catalysis. Overall, this research provides insights to design new efficient 
+          metal-free photocatalysts with enhanced electronic properties, advancing sustainable energy 
+          and catalysis.
+        </em>
+      </p>
     </div>
   </div>
-</nav>
-
-<section class="hero">
-  <div class="container text-center">
-    <img src="assets/img/profile.jpg" alt="Akash Shil" class="profile-img shadow mb-3">
-    <h1 class="fw-bold">Akash Shil</h1>
-    <p class="lead text-muted mb-2">Quantum Chemistry • Density Functional Theory • Machine Learning for Drug Discovery</p>
-    <p>
-      <a class="btn btn-primary btn-sm me-2" href="#projects">View Projects</a>
-      <a class="btn btn-outline-primary btn-sm" href="assets/cv.pdf" target="_blank">Download CV</a>
-    </p>
-  </div>
-</section>
-
-<section id="about" class="py-5">
-  <div class="container">
-    <h2 class="section-title">About</h2>
-    <p>I’m a computational chemist focusing on quantum chemistry (DFT) and machine learning for drug discovery. Currently preparing projects on covalent inhibitors, descriptor-based models, and QM-informed features. I enjoy building robust ML pipelines for chemistry problems and sharing reproducible code.</p>
-  </div>
-</section>
-
-<section id="projects" class="py-5 bg-light">
-  <div class="container">
-    <h2 class="section-title">Selected Projects</h2>
-    <div class="row g-3">
-      <div class="col-md-4">
+</div>
+      <!-- Project 2: Upcoming work (UCalgary) -->
+      <div class="col-md-6">
         <div class="card project-card h-100">
-          <img src="assets/img/project1.jpg" class="card-img-top" alt="Project screenshot">
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">Drug Potency Regression</h5>
-            <p class="card-text text-muted small">Regression models predicting pIC50 using RDKit + QM descriptors and scikit-learn.</p>
-            <div class="mt-auto">
-              <a class="btn btn-sm btn-outline-primary" href="#">Repository</a>
-              <a class="btn btn-sm btn-primary ms-2" href="#">Read more</a>
-            </div>
+          <img src="assets/img/project_future1.jpg" class="w-100" style="height:180px;object-fit:cover" alt="Future ML Project Image">
+          <div class="card-body">
+            <h5 class="card-title">Machine Learning for Covalent Drug Discovery (Coming Soon)</h5>
+            <p class="muted-small">
+              Upcoming research at the University of Calgary integrating quantum-chemical databases with 
+              advanced machine learning architectures to predict covalent binding sites and molecular 
+              reactivity - paving the way for data-driven drug discovery.
+            </p>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </section>
 
-<section id="publications" class="py-5">
-  <div class="container">
-    <h2 class="section-title">Publications & Preprints</h2>
-    <ul class="list-group">
-      <li class="list-group-item">MSc project summary (IIT Tirupati). <a href="#">Read summary</a></li>
-    </ul>
-  </div>
-</section>
-
-<section id="education" class="py-5 bg-light">
-  <div class="container">
-    <h2 class="section-title">Education</h2>
-    <div>
-      <strong>MSc — Quantum Chemistry</strong> — IIT Tirupati<br>
-      <small class="text-muted">Thesis: DFT study of ... (Year)</small>
-    </div>
-    <div class="mt-3">
-      <strong>BSc — Chemistry</strong> — (Institution)
+  <!-- PUBLICATIONS -->
+<section id="publications">
+  <div class="container text-center" data-aos="fade-up">
+    <h2 class="section-title">Publications</h2>
+    <div class="card mx-auto" style="max-width:600px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:1.8rem;">
+      <p style="font-family:'Times New Roman', Times, serif; color:#dce4ff; font-size:1.05rem; line-height:1.6;">
+        <em>“My research journey in computational and theoretical chemistry continues - upcoming publications on
+        <strong>quantum-informed machine learning models</strong> and 
+        <strong>covalent drug discovery</strong> will be shared here soon.”</em>
+      </p>
+      <p style="color:#aebaff; margin-top:1rem;">
+         <strong>Stay tuned for exciting updates!</strong>
+      </p>
     </div>
   </div>
 </section>
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container" data-aos="fade-up">
+      <h2 class="section-title">Contact</h2>
+      <p>Open to collaboration in molecular modeling, electronic structure theory, and ML for covalent drug discovery.</p>
+      <p><strong>Email:</strong> 
+  <a href="mailto:akash.shil@ucalgary.ca" class="text-info">akash.shil@ucalgary.ca</a>
+</p>
 
+<p><strong>GitHub:</strong> 
+  <a href="https://github.com/akashqchem" class="text-info" target="_blank">@akashqchem</a>
+</p>
+
+<p><strong>ORCID:</strong> 
+  <a href="https://orcid.org/0009-0002-3160-5961" 
+     class="text-info" 
+     target="_blank" 
+     style="text-decoration: none;">
+     <i class="fa-brands fa-orcid" style="color:#a6dcef; margin-right:6px;"></i>
+     https://orcid.org/0009-0002-3160-5961
+  </a>
+</p>
+    </div>
+  </section>
+
+<!-- ===== Contact / Message Section ===== -->
 <section id="contact" class="py-5">
-  <div class="container">
-    <h2 class="section-title">Contact</h2>
-    <div class="row">
-      <div class="col-md-6">
-        <p>If you'd like to collaborate or learn more, email me at <a href="mailto:akashshil22363@gmail.com">akashshil22363@gmail.com</a>.</p>
-        <p>Also on GitHub: <a href="https://github.com/akashqchem" target="_blank">@akashqchem</a></p>
-      </div>
-      <div class="col-md-6">
-        <form action="https://formspree.io/f/your-form-id" method="POST">
-          <div class="mb-2">
-            <input name="name" class="form-control" placeholder="Your name" required>
-          </div>
-          <div class="mb-2">
-            <input type="email" name="email" class="form-control" placeholder="Your email" required>
-          </div>
-          <div class="mb-2">
-            <textarea name="message" class="form-control" rows="4" placeholder="Message"></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary btn-sm">Send</button>
-        </form>
-      </div>
+  <div class="container" data-aos="fade-up">
+    <h2 class="section-title">Drop Me a Message 💬</h2>
+    <p class="muted-small" style="margin-bottom:1.5rem; text-align:center;">
+      Have a thought, collaboration idea, or just want to say hello? I’d love to hear from you.
+    </p>
+
+    <div class="contact-form-wrapper">
+      <form id="contactForm" action="https://formspree.io/f/mnnodbnj" method="POST">
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" name="name" required placeholder="Enter your name">
+        </div>
+
+        <div class="form-group">
+          <label for="email">Your Email</label>
+          <input type="email" id="email" name="_replyto" required placeholder="Enter your email">
+        </div>
+
+        <div class="form-group">
+          <label for="message">Your Message</label>
+          <textarea id="message" name="message" rows="5" required placeholder="Write your message here..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="sendBtn">Send Message</button>
+
+        <div id="thankYouMessage" style="display:none; margin-top:1rem; color:#b7f5c7; font-size:1.1rem;">
+          ✅ Thank you for reaching out! I appreciate your time and will get back to you soon.
+        </div>
+      </form>
     </div>
   </div>
 </section>
 
-<footer>
-  <div class="container text-center">
-    <small class="text-muted">© <span id="year"></span> Akash Shil — Quantum Chemistry & ML • <a href="https://github.com/akashqchem" target="_blank">GitHub</a></small>
-  </div>
-</footer>
+<!-- Styling -->
+<style>
+#contact {
+  font-family: "Times New Roman", Times, serif;
+  text-align: center;
+  color: #eef2ff;
+}
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+.contact-form-wrapper {
+  background: rgba(255,255,255,0.02);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 600px;
+  margin: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+form label {
+  display: block;
+  text-align: left;
+  font-weight: bold;
+  margin-bottom: 0.4rem;
+}
+
+form input, form textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #fff;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  outline: none;
+}
+
+form input:focus, form textarea:focus {
+  border-color: #7d8aff;
+  box-shadow: 0 0 10px rgba(125,138,255,0.3);
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #5a4eff, #7d8aff);
+  color: #fff;
+  padding: 0.6rem 1.6rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(90deg, #7d8aff, #a6b1ff);
+}
+
+@media (max-width:768px) {
+  .contact-form-wrapper { padding: 1.5rem; }
+}
+</style>
+
+<!-- JavaScript for thank-you message -->
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const thankYou = document.getElementById('thankYouMessage');
+  const sendBtn = document.getElementById('sendBtn');
+
+  fetch(form.action, {
+    method: 'POST',
+    body: new FormData(form),
+    headers: { 'Accept': 'application/json' }
+  }).then(response => {
+    if (response.ok) {
+      form.reset();
+      sendBtn.style.display = 'none';
+      thankYou.style.display = 'block';
+    } else {
+      thankYou.style.color = '#ffb4b4';
+      thankYou.textContent = '❌ Oops! Something went wrong. Please try again later.';
+      thankYou.style.display = 'block';
+    }
+  }).catch(() => {
+    thankYou.style.color = '#ffb4b4';
+    thankYou.textContent = '⚠️ Network error. Please try again.';
+    thankYou.style.display = 'block';
+  });
+});
+</script>  
+  <footer>
+    <div class="container">
+      <small>© <span id="year"></span> <strong>Akash Shil</strong> - DFT, TDDFT & ML for Covalent Drug Discovery</small>
+    </div>
+  </footer>
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<script>
+/* Init AOS */
+AOS.init({ duration: 700, once: true });
+
+/* ---------- Typing effect (robust & unobtrusive) ---------- */
+const phrases = [
+  'Quantum Researcher',
+  'ML for Covalent Drug Discovery',
+  'Molecular Modeling & Simulation'
+];
+
+const el = () => document.getElementById('subtitle-typed'); // lazily fetch in DOMContentLoaded
+let phraseIndex = 0;
+let letterIndex = 0;
+let typingSpeed = 40;    // ms per character
+let pauseBetween = 1400; // pause at end of phrase
+let deletingSpeed = 28;
+let isDeleting = false;
+
+function tick() {
+  const node = el();
+  if (!node) return; // safe guard
+
+  const current = phrases[phraseIndex % phrases.length];
+  if (!isDeleting) {
+    // typing
+    node.textContent = current.slice(0, ++letterIndex);
+    if (letterIndex === current.length) {
+      // finished typing, pause, then delete
+      isDeleting = true;
+      setTimeout(tick, pauseBetween);
+      return;
+    }
+    setTimeout(tick, typingSpeed + Math.random() * 20);
+  } else {
+    // deleting
+    node.textContent = current.slice(0, --letterIndex);
+    if (letterIndex === 0) {
+      isDeleting = false;
+      phraseIndex++;
+      setTimeout(tick, 220); // small pause before next word
+      return;
+    }
+    setTimeout(tick, deletingSpeed + Math.random() * 16);
+  }
+}
+
+/* Wait for DOM ready and start */
+document.addEventListener('DOMContentLoaded', function () {
+  // small initial delay so AOS animations don't clash
+  setTimeout(() => {
+    // ensure element exists
+    if (el()) setTimeout(tick, 250);
+  }, 450);
+
+  // set copyright year if element exists
+  const y = new Date().getFullYear();
+  const yEl = document.getElementById('year');
+  if (yEl) yEl.textContent = y;
+});
+</script>
+
+<!-- Thank you overlay (hidden by default) -->
+<div id="thankyou-overlay" aria-hidden="true">
+  <div class="thank-card" role="dialog" aria-modal="true" aria-labelledby="thank-title" tabindex="-1">
+    <svg class="thank-svg" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+      <circle class="check-circle" cx="60" cy="60" r="44"></circle>
+      <path class="check" d="M40 62 L54 76 L80 46" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+
+    <div id="thank-title" class="thank-title">Thank you — message received</div>
+    <div class="thank-msg">I appreciate your note. I’ll read it and get back to you soon.</div>
+    <button type="button" class="thank-close" id="thank-close">Close</button>
+  </div>
+</div>
+<script>
+/* Animated checkmark thank-you behavior
+   - Ensure your form has id="contact-form"
+   - Formspree endpoint used: https://formspree.io/f/mnnodbnj
+*/
+(function(){
+  const endpoint = 'https://formspree.io/f/mnnodbnj'; // my formspree endpoint
+  const form = document.getElementById('contact-form'); // make sure your form uses this id
+  const overlay = document.getElementById('thankyou-overlay');
+  const card = overlay ? overlay.querySelector('.thank-card') : null;
+  const closeBtn = document.getElementById('thank-close');
+
+  function showThankYou() {
+    if(!overlay || !card) return;
+    overlay.classList.add('visible');
+    // slight delay for SVG pop
+    setTimeout(()=> card.classList.add('visible'), 40);
+    // auto close after 3.7s (optional)
+    setTimeout(hideThankYou, 3700);
+    // announce for screen readers
+    overlay.setAttribute('aria-hidden','false');
+  }
+
+  function hideThankYou() {
+    if(!overlay || !card) return;
+    card.classList.remove('visible');
+    overlay.classList.remove('visible');
+    overlay.setAttribute('aria-hidden','true');
+  }
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', hideThankYou);
+  }
+
+  // intercept form submit and POST to Formspree via fetch
+  if(form){
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+      // optional: you can disable submit button here to prevent double-submits
+      const submitBtn = form.querySelector('[type="submit"]');
+      if(submitBtn) submitBtn.disabled = true;
+
+      try {
+        const data = new FormData(form);
+        // send
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json'
+          },
+          body: data
+        });
+
+        if (res.ok) {
+          // clear form inputs (optional)
+          form.reset();
+          window.showThankYou();
+        } else {
+          // if formspree returns error, try to read message
+          const payload = await res.json().catch(()=>({}));
+          const msg = payload.error || 'Something went wrong — please try again.';
+          alert('Error sending message: ' + msg);
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Network error while sending message. Please try again later.');
+      } finally {
+        if(submitBtn) submitBtn.disabled = false;
+      }
+    });
+  } else {
+    // If your form id is different, log hint
+    console.warn('Contact form not found. Please add id="contact-form" to your <form> element.');
+  }
+
+  // allow closing overlay by pressing Escape
+  document.addEventListener('keydown', function(ev){
+    if(ev.key === 'Escape') hideThankYou();
+  });
+
+})();
+</script>
+<script>
+/* show / hide thank-you overlay + optional chime */
+(function(){
+  const overlay = document.getElementById('thankyou-overlay');
+  const thankClose = document.querySelector('.thank-close');
+
+  function showThankYou() {
+    if(!overlay) return;
+    // make it visible and trigger CSS transitions
+    overlay.style.display = 'flex';
+    // small delay to allow CSS to pick up display -> then add class
+    requestAnimationFrame(()=>{
+      overlay.classList.add('show');
+    });
+
+    // optional subtle sound (uncomment if you add file to assets)
+    // const audio = new Audio('assets/snd/chime.mp3');
+    // audio.volume = 0.15;
+    // audio.play().catch(()=>{ /* ignore autoplay blocked */ });
+  }
+
+  function hideThankYou() {
+    if(!overlay) return;
+    overlay.classList.remove('show');
+    // wait for transition then hide fully
+    setTimeout(()=> overlay.style.display = 'none', 450);
+  }
+
+  // close button
+  if(thankClose) thankClose.addEventListener('click', hideThankYou);
+
+  // close on Escape
+  document.addEventListener('keydown', function(ev){
+    if(ev.key === 'Escape') hideThankYou();
+  });
+
+  // Expose globally so your form code can call it:
+  window.showThankYou = showThankYou;
+  window.hideThankYou = hideThankYou;
+
+})();
+</script>
+<!-- ===== Quote slideshow (paste before </body>) ===== -->
+<section id="quote-section" aria-label="Inspirational quotes" style="padding:48px 12px 96px;">
+  <div class="quote-wrap" tabindex="0" aria-live="polite">
+    <div class="quote-slider">
+      <!-- QUOTE 1 -->
+      <blockquote class="quote">
+        <p class="quote-text">“A goal without a plan is just a wish.”</p>
+        <footer class="quote-author">- Antoine de Saint-Exupéry</footer>
+      </blockquote>
+
+      <!-- QUOTE 2 -->
+      <blockquote class="quote">
+        <p class="quote-text">“When the why is clear, the how is easy.”</p>
+        <footer class="quote-author">- Jim Rohn</footer>
+      </blockquote>
+
+      <!-- QUOTE 3 -->
+      <blockquote class="quote">
+        <p class="quote-text">“where there is a will, there is a way.”</p>
+        <footer class="quote-author">- George Herbert</footer>
+      </blockquote>
+      
+      <!-- Add additional quotes below by copying one of the <blockquote class="quote"> blocks -->
+    </div>
+
+    <!-- dots will be generated automatically by JS -->
+    <div class="quote-controls" aria-hidden="true"></div>
+  </div>
+</section>
+
+<style>
+  /* ===== Quote slideshow styles (dark-theme-friendly) ===== */
+  #quote-section { background: transparent; display:flex; justify-content:center; align-items:center; }
+  .quote-wrap { max-width:960px; width:100%; text-align:center; margin:0 auto; outline: none; }
+  .quote-slider { position:relative; min-height:110px; }
+
+  .quote {
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding: 18px 28px;
+    box-sizing:border-box;
+    opacity:0;
+    transform: translateY(10px);
+    transition: opacity .56s cubic-bezier(.2,.9,.3,1), transform .56s cubic-bezier(.2,.9,.3,1);
+    pointer-events:none;
+  }
+
+  .quote.active {
+    opacity:1;
+    transform: translateY(0);
+    pointer-events:auto;
+  }
+
+  .quote-text {
+    font-style: italic;
+    font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+    color: #e9f6f3;
+    margin: 0 0 10px;
+    line-height:1.4;
+    max-width:880px;
+  }
+  
+  .quote-author {
+    font-weight:700;
+    color:#bfead6;
+    font-size:0.95rem;
+    margin-top:6px;
+  }
+
+  /* Dots container (auto-generated) */
+  .quote-controls { margin-top:18px; display:flex; gap:8px; justify-content:center; }
+  .q-dot {
+    width:10px; height:10px; border-radius:50%;
+    border:none; background: rgba(255,255,255,0.12);
+    cursor:pointer; transition: transform .18s, background .18s;
+  }
+  .q-dot:hover{ transform: scale(1.15); }
+  .q-dot.active { background: #7cf6b2; box-shadow: 0 4px 14px rgba(124,246,178,0.12); }
+
+  /* small screens */
+  @media (max-width:520px){
+    .quote-wrap { padding: 10px; }
+    .quote-text { font-size: 1rem; }
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .quote { transition: none; transform: none; }
+    .quote.active { opacity:1; }
+  }
+</style>
+
+<script>
+/*
+  Quote slideshow:
+  - Auto-generates pager dots from number of .quote elements
+  - Auto-advances, pauses on hover/focus
+  - Accessible: container is focusable and aria-live="polite"
+*/
+(function(){
+  const slider = document.querySelector('.quote-slider');
+  if(!slider) return;
+
+  const quotes = Array.from(slider.querySelectorAll('.quote'));
+  if(quotes.length === 0) return;
+
+  const controls = document.querySelector('.quote-controls');
+  // build dots automatically
+  controls.innerHTML = '';
+  const dots = quotes.map((_, i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'q-dot' + (i === 0 ? ' active' : '');
+    btn.setAttribute('data-idx', String(i));
+    btn.setAttribute('aria-label', 'Show quote ' + (i+1));
+    controls.appendChild(btn);
+    return btn;
+  });
+
+  let idx = 0;
+  const delay = 5000; // milliseconds per quote
+  let timer = null;
+  let paused = false;
+
+  function show(i){
+    i = ((i % quotes.length) + quotes.length) % quotes.length;
+    quotes.forEach((q, j) => q.classList.toggle('active', j === i));
+    dots.forEach((d, j) => d.classList.toggle('active', j === i));
+    idx = i;
+  }
+
+  function next(){
+    show(idx + 1);
+  }
+
+  function start(){
+    stop();
+    timer = setInterval(() => { if(!paused) next(); }, delay);
+  }
+  function stop(){ if(timer){ clearInterval(timer); timer = null; } }
+
+  // dot click handlers
+  dots.forEach(btn => {
+    btn.addEventListener('click', (ev) => {
+      const i = Number(btn.getAttribute('data-idx'));
+      show(i);
+      start(); // reset interval so user sees chosen quote for full delay
+    });
+  });
+
+  // Pause when user hovers/focuses (friendly)
+  slider.addEventListener('mouseenter', ()=> paused = true);
+  slider.addEventListener('mouseleave', ()=> paused = false);
+  slider.addEventListener('focusin', ()=> paused = true);
+  slider.addEventListener('focusout', ()=> paused = false);
+
+  // Keyboard support: left/right arrows when quote-wrap is focused
+  const wrap = document.querySelector('.quote-wrap');
+  if(wrap){
+    wrap.addEventListener('keydown', (ev)=>{
+      if(ev.key === 'ArrowRight') { next(); start(); ev.preventDefault(); }
+      if(ev.key === 'ArrowLeft') { show(idx - 1); start(); ev.preventDefault(); }
+    });
+  }
+
+  // initialize & start
+  show(0);
+  start();
+
+  // Expose small API for debugging or manual control if desired
+  window._quoteSlider = { show, next, start, stop };
+})();
+</script>
+<!-- ===== end quotes slideshow ===== -->
 </body>
 </html>
