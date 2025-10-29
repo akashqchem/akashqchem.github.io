@@ -535,6 +535,132 @@ body::before {
     </div>
   </section>
 
+<!-- ===== Contact / Message Section ===== -->
+<section id="contact" class="py-5">
+  <div class="container" data-aos="fade-up">
+    <h2 class="section-title">Drop Me a Message 💬</h2>
+    <p class="muted-small" style="margin-bottom:1.5rem; text-align:center;">
+      Have a thought, collaboration idea, or just want to say hello? I’d love to hear from you.
+    </p>
+
+    <div class="contact-form-wrapper">
+      <form id="contactForm" action="https://formspree.io/f/mnnodbnj" method="POST">
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" name="name" required placeholder="Enter your name">
+        </div>
+
+        <div class="form-group">
+          <label for="email">Your Email</label>
+          <input type="email" id="email" name="_replyto" required placeholder="Enter your email">
+        </div>
+
+        <div class="form-group">
+          <label for="message">Your Message</label>
+          <textarea id="message" name="message" rows="5" required placeholder="Write your message here..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="sendBtn">Send Message</button>
+
+        <div id="thankYouMessage" style="display:none; margin-top:1rem; color:#b7f5c7; font-size:1.1rem;">
+          ✅ Thank you for reaching out! I appreciate your time and will get back to you soon.
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Styling -->
+<style>
+#contact {
+  font-family: "Times New Roman", Times, serif;
+  text-align: center;
+  color: #eef2ff;
+}
+
+.contact-form-wrapper {
+  background: rgba(255,255,255,0.02);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 600px;
+  margin: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+form label {
+  display: block;
+  text-align: left;
+  font-weight: bold;
+  margin-bottom: 0.4rem;
+}
+
+form input, form textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #fff;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  outline: none;
+}
+
+form input:focus, form textarea:focus {
+  border-color: #7d8aff;
+  box-shadow: 0 0 10px rgba(125,138,255,0.3);
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #5a4eff, #7d8aff);
+  color: #fff;
+  padding: 0.6rem 1.6rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(90deg, #7d8aff, #a6b1ff);
+}
+
+@media (max-width:768px) {
+  .contact-form-wrapper { padding: 1.5rem; }
+}
+</style>
+
+<!-- JavaScript for thank-you message -->
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const thankYou = document.getElementById('thankYouMessage');
+  const sendBtn = document.getElementById('sendBtn');
+
+  fetch(form.action, {
+    method: 'POST',
+    body: new FormData(form),
+    headers: { 'Accept': 'application/json' }
+  }).then(response => {
+    if (response.ok) {
+      form.reset();
+      sendBtn.style.display = 'none';
+      thankYou.style.display = 'block';
+    } else {
+      thankYou.style.color = '#ffb4b4';
+      thankYou.textContent = '❌ Oops! Something went wrong. Please try again later.';
+      thankYou.style.display = 'block';
+    }
+  }).catch(() => {
+    thankYou.style.color = '#ffb4b4';
+    thankYou.textContent = '⚠️ Network error. Please try again.';
+    thankYou.style.display = 'block';
+  });
+});
+</script>  
   <footer>
     <div class="container">
       <small>© <span id="year"></span> <strong>Akash Shil</strong> - DFT, TDDFT & ML for Covalent Drug Discovery</small>
