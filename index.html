@@ -495,7 +495,29 @@ body::before {
   margin-top: 6px;
   line-height: 1.6;
 }
-</style>
+/* Subtitle styling (for typing line) */
+.subtitle {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #ffffffd0;
+  margin-top: 6px;
+  line-height: 1.6;
+}
+
+/* Typing cursor blinking effect */
+.typing::after {
+  content: '|';
+  animation: blink 0.8s infinite;
+  color: #a5b4ff;
+  font-weight: 300;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+  </style>
 </head>
 <body>
 
