@@ -896,7 +896,7 @@ body::before {
     <div class="card-body">
       <h5 class="card-title mt-3">
         Machine Learning for Covalent Drug Discovery
-        <span class="badge bg-secondary text-light ms-2">Coming Soon</span>
+        <span class="badge badge-comingsoon ms-2">Coming Soon</span>
       </h5>
       <p class="muted-small">
         <em>
@@ -1148,7 +1148,14 @@ form input:focus, form textarea:focus {
   margin-bottom: 10px;
   text-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
-  </style>
+  .badge-comingsoon {
+  background: linear-gradient(135deg, #00bcd4, #3f51b5);
+  color: #fff;
+  font-weight: 500;
+  border: none;
+  box-shadow: 0 0 10px rgba(63, 81, 181, 0.5);
+}
+</style>
 <!-- JavaScript for thank-you message -->
 <script>
 document.getElementById('contactForm').addEventListener('submit', function(e) {
