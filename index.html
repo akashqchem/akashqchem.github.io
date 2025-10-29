@@ -495,6 +495,47 @@ body::before {
   margin-top: 6px;
   line-height: 1.6;
 }
+/* ===== subtle glow behind hero name ===== */
+.hero-title {
+  position: relative;    /* create positioning context for pseudo */
+  z-index: 2;            /* keep text above the glow */
+  display: inline-block; /* shrink-wrap for nicer glow placement */
+  padding: 0 6px;
+  text-shadow: 0 6px 18px rgba(5,10,30,0.35); /* subtle lift */
+}
+
+/* radial glow (behind the text) */
+.hero-title::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(680px, 78vw);   /* responsive width */
+  height: min(220px, 34vw);  /* responsive height */
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;                 /* behind the text (hero-title is z-index:2) */
+  background: radial-gradient(
+    circle at 50% 45%,
+    rgba(99,102,241,0.16) 0%,
+    rgba(99,102,241,0.10) 20%,
+    rgba(99,102,241,0.04) 40%,
+    rgba(99,102,241,0.00) 70%
+  );
+  filter: blur(26px);
+  opacity: 0.95;
+}
+
+/* tune for smaller screens */
+@media (max-width: 520px) {
+  .hero-title::after {
+    width: min(420px, 86vw);
+    height: min(160px, 40vw);
+    filter: blur(20px);
+  }
+}
+    
 /* Subtitle styling (for typing line) */
 .subtitle {
   text-align: center;
