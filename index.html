@@ -132,7 +132,7 @@
     
     /* ---------- Kohn-Sham small card styling ---------- */
 .ks-equation {
-  max-width: 420px;
+  max-width: 480px;      /* keeps the box compact */
   padding: 14px 18px;
   text-align: center;
   background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
@@ -140,33 +140,35 @@
   box-shadow: 0 12px 40px rgba(5,6,15,0.55);
   backdrop-filter: blur(4px) saturate(110%);
   color: #dfeff6;
-  pointer-events: none;
+  pointer-events: none;  /* non-interactive (like your other floating particles) */
+  font-family: "Georgia", "Times New Roman", serif;
+  line-height: 1.12;
 }
 
-/* title */
-.ks-title {
-  font-weight:700;
+/* title (bold) */
+.ks-title { 
+  font-weight: 800;
   color: #ffffff;
   margin-bottom: 8px;
-  font-size: 0.95rem;
+  font-size: 0.98rem;
   opacity: 0.98;
+  letter-spacing: 0.2px;
 }
 
-/* single-line equation */
+/* equation single-line */
 .ks-eqn-single {
-  font-style: normal;
-  font-family: "Georgia", "Times New Roman", serif;
+  font-style: normal; /* upright for math */
   color: #cfeff0;
-  line-height: 1.25;
-  font-size: clamp(0.9rem, 1.05vw, 1.05rem);
-  white-space: nowrap;   /* keep everything on one line */
+  margin: 6px 0;
+  font-size: clamp(0.95rem, 1.02vw, 1.02rem);
+  white-space: nowrap;
+  display: inline-block;
 }
 
-/* optional subtle neon-like glow — uncomment if you want it */
-.ks-eqn-single {
-  text-shadow: 0 2px 8px rgba(46,255,200,0.06);
+/* smaller screens: hide to avoid overlap */
+@media (max-width: 740px) {
+  .ks-equation { display:none; }
 }
-
 /* responsive: hide floating particle on narrow screens */
 @media (max-width: 740px) {
   .ks-equation { display:none; }
@@ -674,7 +676,8 @@ body::before {
   <div class="ks-title"><strong>Kohn–Sham equation:</strong></div>
 
   <div class="ks-eqn-single">
-    (&minus; &#8463;<sup>2</sup>/2m) &nabla;<sup>2</sup> ψ<sub>i</sub>(r) + V<sub>ion</sub>(r) + V<sub>H</sub>(r) + V<sub>xc</sub>[ρ(r)] ψ<sub>i</sub>(r) = E<sub>i</sub> ψ<sub>i</sub>(r)
+    (− &#8463;<sup>2</sup> / 2m &nbsp;∇<sup>2</sup> + V<sub>ion</sub>(r) + V<sub>H</sub>(r) + V<sub>xc</sub>[ρ(r)])
+    &nbsp;ψ<sub>i</sub>(r) = E<sub>i</sub> &nbsp;ψ<sub>i</sub>(r)
   </div>
 </div>
 <div class="particle p3 small" style="left:22%; top:52%;">
