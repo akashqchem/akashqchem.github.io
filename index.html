@@ -486,82 +486,118 @@ body::before {
 
 /* small accessible close button styling */
 .thank-close { margin-top:18px; border:0; background:transparent; color: rgba(255,255,255,0.7); cursor:pointer; }
-  /* --- Thank-you overlay + animations --- */
+  /* ---------- THANK-YOU OVERLAY & ANIMATION ---------- */
 #thankyou-overlay {
   position: fixed;
   inset: 0;
-  display: grid;
-  place-items: center;
-  background: rgba(4,6,16,0.55);
+  display: none;             /* hidden by default */
+  align-items: center;
+  justify-content: center;
+  background: rgba(3,8,18,0.64);
   z-index: 9999;
-  opacity: 0;
   pointer-events: none;
-  transition: opacity .35s ease;
+  transition: opacity .32s ease;
+  opacity: 0;
 }
 
 #thankyou-overlay.visible {
-  opacity: 1;
+  display: flex;
   pointer-events: auto;
+  opacity: 1;
 }
 
-/* the card that pops */
-.thank-card {
-  width: min(520px, 88%);
-  max-width: 720px;
-  padding: 28px 28px;
-  border-radius: 14px;
+/* card */
+.thank-card{
+  width: min(92%, 520px);
+  max-width: 90%;
   background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-  box-shadow: 0 18px 60px rgba(10,10,30,0.45);
-  transform: translateY(12px) scale(.98);
-  opacity: 0;
-  transition: transform .44s cubic-bezier(.2,.9,.25,1), opacity .36s ease;
+  border-radius: 14px;
+  padding: 28px 28px 22px;
   text-align: center;
+  color: #eaf0ff;
+  transform: translateY(14px) scale(.98);
+  opacity: 0;
+  transition: transform .42s cubic-bezier(.2,.9,.3,1), opacity .28s ease;
+  box-shadow: 0 18px 50px rgba(6,10,30,0.5);
 }
 
-/* when card visible */
-.thank-card.visible {
+/* card visible state (pop) */
+.thank-card.visible{
   transform: translateY(0) scale(1);
   opacity: 1;
 }
 
-/* checkmark svg pop */
-.thank-svg { width: 84px; height: 84px; margin: 6px auto 16px; display:block; }
-.check-circle { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 6; }
-.check {
+/* SVG checkmark container */
+.thank-svg{
+  width: 92px;
+  height: 92px;
+  margin: -8px auto 6px;
+  display:block;
+  overflow: visible;
+}
+
+/* circle background ring */
+.check-circle{
+  fill: rgba(37,117,252,0.06);
+  stroke: rgba(255,255,255,0.06);
+  stroke-width: 2;
+  transform-origin: 50% 50%;
+  transition: transform .45s cubic-bezier(.2,.9,.3,1), opacity .32s;
+}
+
+/* check path initial state (hidden) */
+.check{
   fill: none;
-  stroke: #3ee7a1;
-  stroke-width: 6;
+  stroke: #7cf6b2;          /* mint-green check */
+  stroke-width: 5;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-dasharray: 80;
-  stroke-dashoffset: 80;
-  transition: stroke-dashoffset .55s cubic-bezier(.2,.9,.25,1) .15s;
+  stroke-dasharray: 140;
+  stroke-dashoffset: 140;   /* drawn from 140 -> 0 */
+  transition: stroke-dashoffset .56s cubic-bezier(.2,.9,.3,1) .12s, opacity .2s;
+  opacity: 0.98;
 }
 
-/* when card visible, animate the check stroke */
-.thank-card.visible .check { stroke-dashoffset: 0; }
+/* when card visible, reveal check & slightly scale ring */
+.thank-card.visible .check{
+  stroke-dashoffset: 0;
+}
+
+.thank-card.visible .check-circle{
+  transform: scale(1.02);
+}
 
 /* text */
-.thank-title { font-weight:700; font-size:1.15rem; margin-top:6px; color:#eafff0; }
-.thank-msg  { color: rgba(220,255,230,0.90); margin-top:8px; font-size:0.98rem; }
-
-/* small close button */
-.thank-close {
-  margin-top:18px;
-  background:transparent;
-  border:1px solid rgba(255,255,255,0.06);
-  color: #dfe7ff;
-  padding:8px 12px;
-  border-radius:8px;
-  cursor:pointer;
+.thank-title{
+  font-weight:700;
+  font-size:20px;
+  margin-top:6px;
+  color:#ecf6ff;
+}
+.thank-msg{
+  color: #d9f0e6;
+  margin:10px 0 14px;
+  font-size:15px;
+  opacity: 0.95;
 }
 
-/* responsive */
+/* close button */
+.thank-close{
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #e6f9ea;
+  cursor: pointer;
+  transition: transform .15s, background .12s;
+}
+.thank-close:hover{ transform: translateY(-2px); background: rgba(255,255,255,0.02); }
+
+/* small media */
 @media (max-width:520px){
-  .thank-card { padding:18px; }
-  .thank-svg { width:68px;height:68px; }
+  .thank-card{ padding:20px; }
+  .thank-svg{ width:78px; height:78px; margin-top:0; }
 }
-  </style>
 </head>
 <body>
 
@@ -968,186 +1004,66 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
     if (yEl) yEl.textContent = y;
   });
 
-  </script>
-<!-- Thank you overlay (hidden by default) -->
-<div id="thankyou-overlay" aria-hidden="true">
-  <div class="thank-card" role="dialog" aria-modal="true" aria-labelledby="thank-title" tabindex="-1">
-    <svg class="thank-svg" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
-      <circle class="check-circle" cx="60" cy="60" r="44"></circle>
-      <path class="check" d="M40 62 L54 76 L80 46" stroke-linecap="round" stroke-linejoin="round"></path>
-    </svg>
-
-    <div id="thank-title" class="thank-title">Thank you — message received</div>
-    <div class="thank-msg">I appreciate your note. I’ll read it and get back to you soon.</div>
-    <button type="button" class="thank-close" id="thank-close">Close</button>
-  </div>
-</div>
-<script>
-/* Animated checkmark thank-you behavior
-   - Ensure your form has id="contact-form"
-   - Formspree endpoint used: https://formspree.io/f/mnnodbnj
-*/
-(function(){
-  const endpoint = 'https://formspree.io/f/mnnodbnj'; // my formspree endpoint
-  const form = document.getElementById('contact-form'); // make sure your form uses this id
-  const overlay = document.getElementById('thankyou-overlay');
-  const card = overlay ? overlay.querySelector('.thank-card') : null;
-  const closeBtn = document.getElementById('thank-close');
-
-  function showThankYou() {
-    if(!overlay || !card) return;
-    overlay.classList.add('visible');
-    // slight delay for SVG pop
-    setTimeout(()=> card.classList.add('visible'), 40);
-    // auto close after 3.7s (optional)
-    setTimeout(hideThankYou, 3700);
-    // announce for screen readers
-    overlay.setAttribute('aria-hidden','false');
-  }
-
-  function hideThankYou() {
-    if(!overlay || !card) return;
-    card.classList.remove('visible');
-    overlay.classList.remove('visible');
-    overlay.setAttribute('aria-hidden','true');
-  }
-
-  if (closeBtn) {
-    closeBtn.addEventListener('click', hideThankYou);
-  }
-
-  // intercept form submit and POST to Formspree via fetch
-  if(form){
-    form.addEventListener('submit', async function(e){
-      e.preventDefault();
-      // optional: you can disable submit button here to prevent double-submits
-      const submitBtn = form.querySelector('[type="submit"]');
-      if(submitBtn) submitBtn.disabled = true;
-
-      try {
-        const data = new FormData(form);
-        // send
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json'
-          },
-          body: data
-        });
-
-        if (res.ok) {
-          // clear form inputs (optional)
-          form.reset();
-          window.showThankYou();
-        } else {
-          // if formspree returns error, try to read message
-          const payload = await res.json().catch(()=>({}));
-          const msg = payload.error || 'Something went wrong — please try again.';
-          alert('Error sending message: ' + msg);
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Network error while sending message. Please try again later.');
-      } finally {
-        if(submitBtn) submitBtn.disabled = false;
-      }
-    });
-  } else {
-    // If your form id is different, log hint
-    console.warn('Contact form not found. Please add id="contact-form" to your <form> element.');
-  }
-
-  // allow closing overlay by pressing Escape
-  document.addEventListener('keydown', function(ev){
-    if(ev.key === 'Escape') hideThankYou();
-  });
-
-})();
-</script>
-<script>
-/* show / hide thank-you overlay + optional chime */
-(function(){
-  const overlay = document.getElementById('thankyou-overlay');
-  const thankClose = document.querySelector('.thank-close');
-
-  function showThankYou() {
-    if(!overlay) return;
-    // make it visible and trigger CSS transitions
-    overlay.style.display = 'flex';
-    // small delay to allow CSS to pick up display -> then add class
-    requestAnimationFrame(()=>{
-      overlay.classList.add('show');
-    });
-
-    // optional subtle sound (uncomment if you add file to assets)
-    // const audio = new Audio('assets/snd/chime.mp3');
-    // audio.volume = 0.15;
-    // audio.play().catch(()=>{ /* ignore autoplay blocked */ });
-  }
-
-  function hideThankYou() {
-    if(!overlay) return;
-    overlay.classList.remove('show');
-    // wait for transition then hide fully
-    setTimeout(()=> overlay.style.display = 'none', 450);
-  }
-
-  // close button
-  if(thankClose) thankClose.addEventListener('click', hideThankYou);
-
-  // close on Escape
-  document.addEventListener('keydown', function(ev){
-    if(ev.key === 'Escape') hideThankYou();
-  });
-
-  // Expose globally so your form code can call it:
-  window.showThankYou = showThankYou;
-  window.hideThankYou = hideThankYou;
-
-})();
-</script>
-<script>
-/* Animated thank-you show/hide helper.
-   Paste this near the end of the file, before </body>.
-   It exposes window.showThankYou() and window.hideThankYou()
-   so your existing form success handler (window.showThankYou()) will work.
+  <script>
+/* Consolidated thank-you overlay + global helpers
+   - Assumes HTML: <div id="thankyou-overlay"> ... <div class="thank-card">...</div> </div>
+   - Your existing form submit / fetch code should call window.showThankYou() on success.
 */
 (function(){
   const overlay = document.getElementById('thankyou-overlay');
-  const card   = overlay ? overlay.querySelector('.thank-card') : null;
+  const card    = overlay ? overlay.querySelector('.thank-card') : null;
   const closeBtn = overlay ? overlay.querySelector('.thank-close') : null;
 
-  // ensure we have functions available globally
+  if(!overlay || !card){
+    // nothing to do
+    window.showThankYou = function(){ console.warn('thank-you overlay not present'); };
+    window.hideThankYou = function(){};
+    return;
+  }
+
+  // expose functions globally
   window.showThankYou = function(){
-    if(!overlay || !card) return;
-    // make overlay visible
+    // clear any pending auto-close timers
+    if(window._thankTimeout) clearTimeout(window._thankTimeout);
+
     overlay.classList.add('visible');
-    // tiny timeout then pop the card (so transitions sequence nicely)
-    window.setTimeout(()=> card.classList.add('visible'), 40);
-    // auto close after 3.5s
-    window.clearTimeout(window._thankTimeout);
-    window._thankTimeout = window.setTimeout(()=> window.hideThankYou(), 3500);
+    // small tick to ensure transition fires
+    requestAnimationFrame(()=> {
+      card.classList.add('visible');
+    });
+
+    // auto-close after 3.5s
+    window._thankTimeout = setTimeout(()=> {
+      try { window.hideThankYou(); } catch(e) {}
+    }, 3500);
   };
 
   window.hideThankYou = function(){
-    if(!overlay || !card) return;
+    if(window._thankTimeout) { clearTimeout(window._thankTimeout); window._thankTimeout = null; }
+    // remove card visible first (card transition)
     card.classList.remove('visible');
-    // wait for card transition to finish then hide overlay
-    window.setTimeout(()=> overlay.classList.remove('visible'), 260);
-    window.clearTimeout(window._thankTimeout);
+    // after card transition, remove overlay
+    setTimeout(()=> overlay.classList.remove('visible'), 260);
   };
 
+  // close button
   if(closeBtn){
-    closeBtn.addEventListener('click', function(ev){
-      ev.preventDefault();
+    closeBtn.addEventListener('click', function(e){
+      e.preventDefault();
       window.hideThankYou();
     });
   }
 
-  // allow escape key to close
+  // ESC to close
   document.addEventListener('keydown', function(ev){
     if(ev.key === 'Escape') window.hideThankYou();
   });
+
+  // Optional: detect clicks outside card to close
+  overlay.addEventListener('click', function(ev){
+    if(ev.target === overlay) window.hideThankYou();
+  });
+
 })();
 </script>
 </body>
