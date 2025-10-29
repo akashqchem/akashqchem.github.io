@@ -132,7 +132,7 @@
     
     /* ---------- Kohn-Sham small card styling ---------- */
 .ks-equation {
-  max-width: 420px;      /* keeps the box compact */
+  max-width: 420px;
   padding: 14px 18px;
   text-align: center;
   background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
@@ -140,9 +140,37 @@
   box-shadow: 0 12px 40px rgba(5,6,15,0.55);
   backdrop-filter: blur(4px) saturate(110%);
   color: #dfeff6;
-  pointer-events: none;  /* non-interactive (like your other floating particles) */
+  pointer-events: none;
 }
 
+/* title */
+.ks-title {
+  font-weight:700;
+  color: #ffffff;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  opacity: 0.98;
+}
+
+/* single-line equation */
+.ks-eqn-single {
+  font-style: normal;
+  font-family: "Georgia", "Times New Roman", serif;
+  color: #cfeff0;
+  line-height: 1.25;
+  font-size: clamp(0.9rem, 1.05vw, 1.05rem);
+  white-space: nowrap;   /* keep everything on one line */
+}
+
+/* optional subtle neon-like glow — uncomment if you want it */
+.ks-eqn-single {
+  text-shadow: 0 2px 8px rgba(46,255,200,0.06);
+}
+
+/* responsive: hide floating particle on narrow screens */
+@media (max-width: 740px) {
+  .ks-equation { display:none; }
+}
 /* title */
 .ks-title { 
   font-weight:700;
@@ -552,15 +580,6 @@ body::before {
   padding: 0 6px;
   text-shadow: 0 6px 18px rgba(5,10,30,0.35); /* subtle lift */
 }
-/* Fix Quantum Descriptors brightness and boldness completely */
-.p2 {
-  opacity: 1 !important;
-}
-.p2 strong {
-  font-weight: 700 !important;
-  color: #ffffff !important;
-  text-shadow: 0 0 2px rgba(255,255,255,0.2); /* subtle glow for clarity */
-}
 /* radial glow (behind the text) */
 .hero-title::after {
   content: "";
@@ -650,25 +669,15 @@ body::before {
         <div>α = (K + λI)<sup>-1</sup> y</div>
         <div>ŷ(x) = k(x)<sup>T</sup> α</div>
       </div>
-
- <!-- Kohn-Sham equation -->
-<div class="particle p2 small dim ks-equation" style="right:10%; top:22%;">
+<!-- Kohn–Sham equation (single-line version) -->
+<div class="particle p2 small dim ks-equation" style="left:14%; top:22%;">
   <div class="ks-title"><strong>Kohn–Sham equation:</strong></div>
 
-  <div class="ks-eqn" role="img" aria-label="Kohn-Sham equation">
-    <div class="ks-line">
-      (− &#8463;<sup>2</sup>/2m) ∇<sup>2</sup> ψ<sub>i</sub>(r)
-    </div>
-    <div class="ks-line">
-      + V<sub>ion</sub>(r) + V<sub>H</sub>(r) + V<sub>xc</sub>[ρ(r)] ψ<sub>i</sub>(r)
-    </div>
-    <div class="ks-line equals">
-      = E<sub>i</sub> ψ<sub>i</sub>(r)
-    </div>
+  <div class="ks-eqn-single">
+    (&minus; &#8463;<sup>2</sup>/2m) &nabla;<sup>2</sup> ψ<sub>i</sub>(r) + V<sub>ion</sub>(r) + V<sub>H</sub>(r) + V<sub>xc</sub>[ρ(r)] ψ<sub>i</sub>(r) = E<sub>i</sub> ψ<sub>i</sub>(r)
   </div>
 </div>
-
-      <div class="particle p3 small" style="left:22%; top:52%;">
+<div class="particle p3 small" style="left:22%; top:52%;">
         <div><strong>Loss Function:</strong></div>
         <div>L(w)= (1/2n)‖y−Xw‖<sub>2</sub><sup>2</sup> + (λ/2)‖w‖<sub>2</sub><sup>2</sup></div>
       </div>
