@@ -487,7 +487,15 @@ body::before {
 /* small accessible close button styling */
 .thank-close { margin-top:18px; border:0; background:transparent; color: rgba(255,255,255,0.7); cursor:pointer; }
   
-  </style>
+  /* Center tagline under name */
+.tagline {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #ffffffd0;
+  margin-top: 6px;
+  line-height: 1.6;
+}
+</style>
 </head>
 <body>
 
@@ -536,10 +544,9 @@ body::before {
       <img src="assets/img/profile_akash.jpg" alt="Akash Shil" class="profile-img mb-3" data-aos="zoom-in">
       <h1 class="hero-title" data-aos="fade-up">Akash Shil</h1>
 
-      <p class="subtitle" data-aos="fade-up" data-aos-delay="120">
-        <span id="subtitle-static">Computational &amp; Theoretical Chemistry — </span>
-        <span id="subtitle-typed" class="typing" aria-live="polite"></span>
-      </p>
+      <p class="tagline" data-aos="fade-up" data-aos-delay="120">
+  Computational &amp; Theoretical Chemistry - <b>ML for Covalent Drug Discovery</b>
+</p>
 
       <div class="d-flex justify-content-center gap-2" data-aos="fade-up" data-aos-delay="180">
         <a class="btn btn-primary btn-sm" href="#projects">View Projects</a>
