@@ -636,9 +636,82 @@ body::before {
     opacity: 0;
   }
 }
+  /* HIGHLIGHTS: thumbnails + modal */
+.highlight-thumb {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  cursor: zoom-in;
+}
+
+/* Slightly reduce card padding on small screens */
+@media (max-width: 768px) {
+  .highlight-thumb { height: 160px; }
+}
+
+/* Lightbox modal */
+.hl-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(3,6,12,0.88);
+  z-index: 99999;
+  align-items: center;
+  justify-content: center;
+}
+.hl-modal[aria-hidden="false"] { display: flex; }
+
+.hl-inner {
+  max-width: 1100px;
+  width: 92%;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 20px;
+  align-items: center;
+}
+.hl-inner img { width: 100%; height: auto; border-radius: 10px; box-shadow: 0 14px 50px rgba(0,0,0,0.6); }
+
+.hl-caption {
+  color: #e6f2ff;
+  font-style: italic;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  max-height: 70vh;
+  overflow: auto;
+}
+
+/* close & nav buttons */
+.hl-close, .hl-prev, .hl-next {
+  position: absolute;
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 20px;
+}
+.hl-close { top: 18px; right: 20px; }
+.hl-prev { left: 18px; top: 50%; transform: translateY(-50%); }
+.hl-next { right: 18px; top: 50%; transform: translateY(-50%); }
+
+.hl-close:hover, .hl-prev:hover, .hl-next:hover { background: rgba(255,255,255,0.12); }
+
+/* For small screens: stack modal */
+@media (max-width: 900px) {
+  .hl-inner { grid-template-columns: 1fr; padding: 18px; }
+  .hl-caption { max-height: none; margin-top: 10px; }
+}
+  #education {
+  font-weight: 700;
+  font-size: 22px;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
   </style>
-<meta http-equiv="Content-Security-Policy"
-  content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:;">
 </head>
 <body>
 
@@ -657,6 +730,7 @@ body::before {
           <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
           <li class="nav-item"><a class="nav-link" href="#publications">Publications</a></li>
           <li class="nav-item"><a class="nav-link" href="#education">Education</a></li>
+          <li class="nav-item"><a class="nav-link" href="#achievements">Highlights & Achievements</a></li>
           <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
         </ul>
       </div>
@@ -713,7 +787,7 @@ body::before {
       <h2 class="section-title">About</h2>
       <p>Hi, I'm <strong>Akash Shil</strong> - a chemist specializing in computational and theoretical chemistry. My work blends DFT/TDDFT and machine learning to design molecules and predictive models for covalent drug discovery.</p>
 
-      <h5 id="education">Education & Highlights</h5>
+      <h5 id="education"><strong>Education</strong></h5>
 <ul>
   <li>
     <strong>Gold Medal (Rank 1)</strong> - B.Sc. Chemistry, The ICFAI University, Tripura (2020-2023).
@@ -799,25 +873,45 @@ body::before {
   </div>
 </div>
       <!-- Project 2: Upcoming work (UCalgary) -->
-      <div class="col-md-6">
-        <div class="card project-card h-100">
-          <img src="assets/img/project_future1.jpg" class="w-100" style="height:180px;object-fit:cover" alt="Future ML Project Image">
-          <div class="card-body">
-            <h5 class="card-title">Machine Learning for Covalent Drug Discovery (Coming Soon)</h5>
-            <p class="muted-small">
-              Upcoming research at the University of Calgary integrating quantum-chemical databases with 
-              advanced machine learning architectures to predict covalent binding sites and molecular 
-              reactivity - paving the way for data-driven drug discovery.
-            </p>
-          </div>
-        </div>
+<div class="col-md-6">
+  <div class="card project-card h-100 text-center">
+    <!-- Rectangular container for ML project image -->
+    <div class="d-flex justify-content-center mt-3">
+      <div style="
+          width: 100%;
+          max-width: 320px;
+          height: auto;
+          background: rgba(255,255,255,0.03);
+          box-shadow: 0 0 25px rgba(255,255,255,0.08);
+          border-radius: 12px;
+          overflow: hidden;
+          padding: 6px;
+          margin-bottom: 12px;">
+        <img src="assets/img/ML.jpg"
+             alt="Machine Learning for Covalent Drug Discovery"
+             style="width: 100%; height: auto; object-fit: contain;">
       </div>
+    </div>
 
+    <div class="card-body">
+      <h5 class="card-title mt-3">
+        Machine Learning for Covalent Drug Discovery
+        <span class="badge badge-comingsoon ms-2">Coming Soon</span>
+      </h5>
+      <p class="muted-small">
+        <em>
+          Upcoming research at the <strong>University of Calgary</strong> integrating quantum-chemical databases 
+          with advanced machine learning architectures to predict covalent binding sites 
+          and molecular reactivity - paving the way for data-driven drug discovery.
+        </em>
+      </p>
     </div>
   </div>
+</div>
+</div>
+</div>
 </section>
-
-  <!-- PUBLICATIONS -->
+ <!-- PUBLICATIONS -->
 <section id="publications">
   <div class="container text-center" data-aos="fade-up">
     <h2 class="section-title">Publications</h2>
@@ -833,6 +927,97 @@ body::before {
     </div>
   </div>
 </section>
+ <!-- ===== HIGHLIGHTS & ACHIEVEMENTS ===== -->
+<section id="achievements">
+  <div class="container" data-aos="fade-up">
+    <h2 class="section-title">Highlights & Achievements</h2>
+    <p class="muted-small mb-4">
+      A curated timeline of awards, offers, and research events - certificates, poster presentations, and milestones.
+    </p>
+
+    <div class="row g-4">
+      <!-- Card 7: Offer from UCalgary, 2026 -->
+<div class="col-md-6 col-lg-4">
+  <article class="card project-card h-100 text-center p-3 highlight-card achievement-card">
+    <img src="assets/img/offer.jpg" alt="Offer of admission - University of Calgary" class="highlight-thumb mb-3 ach-image" data-full="assets/img/offer.jpg">
+    <h5 class="fw-bold mt-3">Offer of Admission - University of Calgary</h5>
+    <p class="achievement-date">16<sup>th</sup> June, 2025</p>
+    <p class="muted-small"><em>Received an offer of admission to the University of Calgary for the M.Sc. Chemistry (Thesis-based) program, Winter 2026 - thrilled to join the <strong>Prasad Research Group (PRG)</strong> under <strong>Dr. Viki Kumar Prasad</strong>.</em></p>
+  </article>
+</div>
+
+<!-- Card 2: Degree -->
+<div class="col-md-6 col-lg-4">
+  <article class="card project-card h-100 text-center p-3 highlight-card achievement-card">
+    <img src="assets/img/degree.jpg" alt="MSc Degree - IIT Tirupati" class="highlight-thumb mb-3 ach-image" data-full="assets/img/degree.jpg">
+    <h5 class="fw-bold mt-3">MSc Chemistry Degree - IIT Tirupati</h5>
+    <p class="achievement-date">9<sup>th</sup> July, 2025</p>
+    <p class="muted-small"><em>Official Master of Science (MSc) degree in Chemistry awarded in July 2025 by the Indian Institute of Technology Tirupati. Certificate verifies successful completion of the postgraduate program, as attested by institute authorities.</em></p>
+  </article>
+</div>
+
+<!-- Card 5: Defense -->
+<div class="col-md-6 col-lg-4">
+  <article class="card project-card h-100 text-center p-3 highlight-card achievement-card">
+    <img src="assets/img/defense.jpg" alt="Final MSc defense" class="highlight-thumb mb-3 ach-image" data-full="assets/img/defense.jpg">
+    <h5 class="fw-bold mt-3">Final MSc Defense Presentation</h5>
+    <p class="achievement-date">14<sup>th</sup> May, 2025</p>
+    <p class="muted-small"><em>Grateful to my supervisor, <strong>Dr. Arun K. Manna</strong>, and my research group for their constant guidance and encouragement during my defense and throughout this academic journey.</em></p>
+  </article>
+</div>
+
+<!-- Card 3: Group Photo -->
+<div class="col-md-6 col-lg-4">
+  <article class="card project-card h-100 text-center p-3 highlight-card achievement-card">
+    <img src="assets/img/group.jpg" alt="Research group photo" class="highlight-thumb mb-3 ach-image" data-full="assets/img/group.jpg">
+    <h5 class="fw-bold mt-3">More Than Just a Research Group</h5>
+    <p class="achievement-date">12<sup>th</sup> May, 2025</p>
+    <p class="muted-small"><em>Grateful to be part of the Materials Modelling and Simulation Group at IIT Tirupati, led by Dr. Arun K. Manna. A snapshot of our team - colleagues who became family in the lab. This photo captures a special moment with our team (from left to right): Lekshmi di, Annette di, Arun sir, me (Akash), and Devanand bhaiya.</em></p>
+  </article>
+</div>
+
+<!-- Card 4: Farewell -->
+<div class="col-md-6 col-lg-4">
+  <article class="card project-card h-100 text-center p-3 highlight-card achievement-card">
+    <img src="assets/img/farewell.jpg" alt="Farewell moment" class="highlight-thumb mb-3 ach-image" data-full="assets/img/farewell.jpg">
+    <h5 class="fw-bold mt-3">Farewell Moments</h5>
+    <p class="achievement-date">10<sup>th</sup> May, 2025</p>
+    <p class="muted-small"><em>Farewell moments with my supervisor and labmates - deeply grateful for their mentorship, camaraderie, and the invaluable memories we created together during this remarkable journey.</em></p>
+  </article>
+</div>
+
+<!-- Card 6: Poster Presentation -->
+<div class="col-md-6 col-lg-4">
+  <article class="card project-card h-100 text-center p-3 highlight-card achievement-card">
+    <img src="assets/img/poster.jpg" alt="Poster presentation" class="highlight-thumb mb-3 ach-image" data-full="assets/img/poster.jpg">
+    <h5 class="fw-bold mt-3">Department Poster Presentation</h5>
+    <p class="achievement-date">15<sup>th</sup> April, 2025</p>
+    <p class="muted-small"><em>Presented my research on the computational modelling of BODIPY dyes - sharing insights and receiving valuable feedback from faculty and peers during the departmental poster presentation.</em></p>
+  </article>
+</div>
+
+<!-- Card 1: Gold Medal, IUT'23 -->
+<div class="col-md-6 col-lg-4">
+  <article class="card project-card h-100 text-center p-3 highlight-card achievement-card">
+    <img src="assets/img/medal.jpg" alt="Gold medal - ICFAI University" class="highlight-thumb mb-3 ach-image" data-full="assets/img/medal.jpg">
+    <h5 class="fw-bold mt-3">Honoured with the Gold Medal - BSc Class of 2023</h5>
+    <p class="achievement-date">29<sup>th</sup> September, 2023</p>
+    <p class="muted-small"><em>Grateful to have received the Gold Medal for highest academic excellence from The ICFAI University, Tripura. This achievement is not mine alone - I’m deeply thankful to my professors, batchmates, and family for their unwavering support.</em></p>
+  </article>
+</div>
+    </div>
+  </div>
+</section>
+<!-- Lightbox modal (single modal used for all thumbnails) -->
+<div id="hl-modal" class="hl-modal" aria-hidden="true" role="dialog" aria-labelledby="hl-modal-title">
+  <button class="hl-close" aria-label="Close">&times;</button>
+  <div class="hl-inner">
+    <img id="hl-fullimg" src="" alt="">
+    <div id="hl-caption" class="hl-caption"></div>
+  </div>
+  <button class="hl-prev" aria-label="Previous">&#10094;</button>
+  <button class="hl-next" aria-label="Next">&#10095;</button>
+</div>
   <!-- CONTACT -->
   <section id="contact">
     <div class="container" data-aos="fade-up">
@@ -952,8 +1137,25 @@ form input:focus, form textarea:focus {
 @media (max-width:768px) {
   .contact-form-wrapper { padding: 1.5rem; }
 }
+/* Elegant date styling under title */
+.achievement-date {
+  color: #f3e8ff;
+  font-family: "French Script MT", "Brush Script MT", cursive;
+  font-size: 20px;
+  font-style: italic;
+  letter-spacing: 0.5px;
+  margin-top: 6px;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+  .badge-comingsoon {
+  background: linear-gradient(135deg, #00bcd4, #3f51b5);
+  color: #fff;
+  font-weight: 500;
+  border: none;
+  box-shadow: 0 0 10px rgba(63, 81, 181, 0.5);
+}
 </style>
-
 <!-- JavaScript for thank-you message -->
 <script>
 document.getElementById('contactForm').addEventListener('submit', function(e) {
@@ -1370,5 +1572,68 @@ document.addEventListener('DOMContentLoaded', function () {
 })();
 </script>
 <!-- ===== end quotes slideshow ===== -->
+<script>
+(function(){
+  // gather items in DOM order
+  const thumbs = Array.from(document.querySelectorAll('.highlight-thumb'));
+  const modal = document.getElementById('hl-modal');
+  const fullImg = document.getElementById('hl-fullimg');
+  const caption = document.getElementById('hl-caption');
+  const closeBtn = modal.querySelector('.hl-close');
+  const prevBtn = modal.querySelector('.hl-prev');
+  const nextBtn = modal.querySelector('.hl-next');
+
+  if (!thumbs.length || !modal) return;
+
+  // each thumb has data-full (image) and we grab the parent card's <p class="muted-small"> as caption
+  const items = thumbs.map(t => {
+    const card = t.closest('.highlight-card') || t.closest('.card');
+    const textNode = card ? card.querySelector('.muted-small') : null;
+    return {
+      img: t.getAttribute('data-full') || t.src,
+      alt: t.alt || '',
+      caption: textNode ? textNode.innerHTML : ''
+    };
+  });
+
+  let idx = 0;
+
+  function openAt(i) {
+    i = (i + items.length) % items.length;
+    idx = i;
+    fullImg.src = items[i].img;
+    fullImg.alt = items[i].alt;
+    caption.innerHTML = items[i].caption;
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    fullImg.src = '';
+  }
+
+  thumbs.forEach((t, i) => {
+    t.addEventListener('click', () => openAt(i));
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', (ev) => {
+    if (ev.target === modal) closeModal();
+  });
+
+  prevBtn.addEventListener('click', () => openAt(idx - 1));
+  nextBtn.addEventListener('click', () => openAt(idx + 1));
+
+  // keyboard support
+  document.addEventListener('keydown', (ev) => {
+    if (modal.getAttribute('aria-hidden') === 'false') {
+      if (ev.key === 'Escape') closeModal();
+      if (ev.key === 'ArrowLeft') openAt(idx - 1);
+      if (ev.key === 'ArrowRight') openAt(idx + 1);
+    }
+  });
+})();
+</script>
 </body>
 </html>
