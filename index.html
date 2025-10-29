@@ -143,6 +143,22 @@
   .project-card{ border-radius:14px; overflow:hidden; transition:transform .28s, box-shadow .28s; }
   .project-card:hover{ transform:translateY(-10px); box-shadow:0 20px 60px rgba(40,40,120,0.14); }
   .muted-small{ color: #cbd6ff; opacity:0.8; font-size:1rem; }
+    /* Ensure justified text on all devices */
+p, li, .section-text {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+}
+
+/* Adjust readability for small screens */
+@media (max-width: 768px) {
+  p, li, .section-text {
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    word-spacing: 1px;
+    line-height: 1.6;
+  }
+}
 
   footer{ padding:2rem 0; color: #b5c2ff; text-align:center; border-top:1px solid rgba(255,255,255,0.03); }
 
