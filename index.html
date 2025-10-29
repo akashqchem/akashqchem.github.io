@@ -1110,5 +1110,187 @@ document.addEventListener('DOMContentLoaded', function () {
 
 })();
 </script>
+<!-- ===== Quote slideshow (paste before </body>) ===== -->
+<section id="quote-section" aria-label="Inspirational quotes" style="padding:48px 12px 96px;">
+  <div class="quote-wrap" tabindex="0" aria-live="polite">
+    <div class="quote-slider">
+      <!-- QUOTE 1 -->
+      <blockquote class="quote">
+        <p class="quote-text">“A goal without a plan is just a wish.”</p>
+        <footer class="quote-author">— Antoine de Saint-Exupéry</footer>
+      </blockquote>
+
+      <!-- QUOTE 2 -->
+      <blockquote class="quote">
+        <p class="quote-text">“When the why is clear, the how is easy.”</p>
+        <footer class="quote-author">— Jim Rohn</footer>
+      </blockquote>
+
+      <!-- Add additional quotes below by copying one of the <blockquote class="quote"> blocks -->
+    </div>
+
+    <!-- dots will be generated automatically by JS -->
+    <div class="quote-controls" aria-hidden="true"></div>
+  </div>
+</section>
+
+<style>
+  /* ===== Quote slideshow styles (dark-theme-friendly) ===== */
+  #quote-section { background: transparent; display:flex; justify-content:center; align-items:center; }
+  .quote-wrap { max-width:960px; width:100%; text-align:center; margin:0 auto; outline: none; }
+  .quote-slider { position:relative; min-height:110px; }
+
+  .quote {
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding: 18px 28px;
+    box-sizing:border-box;
+    opacity:0;
+    transform: translateY(10px);
+    transition: opacity .56s cubic-bezier(.2,.9,.3,1), transform .56s cubic-bezier(.2,.9,.3,1);
+    pointer-events:none;
+  }
+
+  .quote.active {
+    opacity:1;
+    transform: translateY(0);
+    pointer-events:auto;
+  }
+
+  .quote-text {
+    font-style: italic;
+    font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+    color: #e9f6f3;
+    margin: 0 0 10px;
+    line-height:1.4;
+    max-width:880px;
+  }
+
+  /* Decorative opening quote mark */
+  .quote-text::before {
+    content: '“';
+    display:inline-block;
+    margin-right:6px;
+    opacity:0.9;
+    transform: translateY(-4px);
+    font-size:1.1em;
+  }
+
+  .quote-author {
+    font-weight:700;
+    color:#bfead6;
+    font-size:0.95rem;
+    margin-top:6px;
+  }
+
+  /* Dots container (auto-generated) */
+  .quote-controls { margin-top:18px; display:flex; gap:8px; justify-content:center; }
+  .q-dot {
+    width:10px; height:10px; border-radius:50%;
+    border:none; background: rgba(255,255,255,0.12);
+    cursor:pointer; transition: transform .18s, background .18s;
+  }
+  .q-dot:hover{ transform: scale(1.15); }
+  .q-dot.active { background: #7cf6b2; box-shadow: 0 4px 14px rgba(124,246,178,0.12); }
+
+  /* small screens */
+  @media (max-width:520px){
+    .quote-wrap { padding: 10px; }
+    .quote-text { font-size: 1rem; }
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .quote { transition: none; transform: none; }
+    .quote.active { opacity:1; }
+  }
+</style>
+
+<script>
+/*
+  Quote slideshow:
+  - Auto-generates pager dots from number of .quote elements
+  - Auto-advances, pauses on hover/focus
+  - Accessible: container is focusable and aria-live="polite"
+*/
+(function(){
+  const slider = document.querySelector('.quote-slider');
+  if(!slider) return;
+
+  const quotes = Array.from(slider.querySelectorAll('.quote'));
+  if(quotes.length === 0) return;
+
+  const controls = document.querySelector('.quote-controls');
+  // build dots automatically
+  controls.innerHTML = '';
+  const dots = quotes.map((_, i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'q-dot' + (i === 0 ? ' active' : '');
+    btn.setAttribute('data-idx', String(i));
+    btn.setAttribute('aria-label', 'Show quote ' + (i+1));
+    controls.appendChild(btn);
+    return btn;
+  });
+
+  let idx = 0;
+  const delay = 5000; // milliseconds per quote
+  let timer = null;
+  let paused = false;
+
+  function show(i){
+    i = ((i % quotes.length) + quotes.length) % quotes.length;
+    quotes.forEach((q, j) => q.classList.toggle('active', j === i));
+    dots.forEach((d, j) => d.classList.toggle('active', j === i));
+    idx = i;
+  }
+
+  function next(){
+    show(idx + 1);
+  }
+
+  function start(){
+    stop();
+    timer = setInterval(() => { if(!paused) next(); }, delay);
+  }
+  function stop(){ if(timer){ clearInterval(timer); timer = null; } }
+
+  // dot click handlers
+  dots.forEach(btn => {
+    btn.addEventListener('click', (ev) => {
+      const i = Number(btn.getAttribute('data-idx'));
+      show(i);
+      start(); // reset interval so user sees chosen quote for full delay
+    });
+  });
+
+  // Pause when user hovers/focuses (friendly)
+  slider.addEventListener('mouseenter', ()=> paused = true);
+  slider.addEventListener('mouseleave', ()=> paused = false);
+  slider.addEventListener('focusin', ()=> paused = true);
+  slider.addEventListener('focusout', ()=> paused = false);
+
+  // Keyboard support: left/right arrows when quote-wrap is focused
+  const wrap = document.querySelector('.quote-wrap');
+  if(wrap){
+    wrap.addEventListener('keydown', (ev)=>{
+      if(ev.key === 'ArrowRight') { next(); start(); ev.preventDefault(); }
+      if(ev.key === 'ArrowLeft') { show(idx - 1); start(); ev.preventDefault(); }
+    });
+  }
+
+  // initialize & start
+  show(0);
+  start();
+
+  // Expose small API for debugging or manual control if desired
+  window._quoteSlider = { show, next, start, stop };
+})();
+</script>
+<!-- ===== end quotes slideshow ===== -->
 </body>
 </html>
