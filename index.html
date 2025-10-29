@@ -873,25 +873,45 @@ body::before {
   </div>
 </div>
       <!-- Project 2: Upcoming work (UCalgary) -->
-      <div class="col-md-6">
-        <div class="card project-card h-100">
-          <img src="assets/img/ML.jpg" class="w-100" style="height:180px;object-fit:cover" alt="Future ML Project Image">
-          <div class="card-body">
-            <h5 class="card-title">Machine Learning for Covalent Drug Discovery (Coming Soon)</h5>
-            <p class="muted-small">
-              Upcoming research at the University of Calgary integrating quantum-chemical databases with 
-              advanced machine learning architectures to predict covalent binding sites and molecular 
-              reactivity - paving the way for data-driven drug discovery.
-            </p>
-          </div>
-        </div>
+<div class="col-md-6">
+  <div class="card project-card h-100 text-center">
+    <!-- Rectangular container for ML project image -->
+    <div class="d-flex justify-content-center mt-3">
+      <div style="
+          width: 100%;
+          max-width: 320px;
+          height: auto;
+          background: rgba(255,255,255,0.03);
+          box-shadow: 0 0 25px rgba(255,255,255,0.08);
+          border-radius: 12px;
+          overflow: hidden;
+          padding: 6px;
+          margin-bottom: 12px;">
+        <img src="assets/img/ML.jpg"
+             alt="Machine Learning for Covalent Drug Discovery"
+             style="width: 100%; height: auto; object-fit: contain;">
       </div>
+    </div>
 
+    <div class="card-body">
+      <h5 class="card-title mt-3">
+        Machine Learning for Covalent Drug Discovery
+        <span class="badge bg-secondary text-light ms-2">Coming Soon</span>
+      </h5>
+      <p class="muted-small">
+        <em>
+          Upcoming research at the <strong>University of Calgary</strong> integrating quantum-chemical databases 
+          with advanced machine learning architectures to predict covalent binding sites 
+          and molecular reactivity - paving the way for data-driven drug discovery.
+        </em>
+      </p>
     </div>
   </div>
+</div>
+</div>
+</div>
 </section>
-
-  <!-- PUBLICATIONS -->
+ <!-- PUBLICATIONS -->
 <section id="publications">
   <div class="container text-center" data-aos="fade-up">
     <h2 class="section-title">Publications</h2>
