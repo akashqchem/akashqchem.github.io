@@ -129,6 +129,55 @@
   }
   .particle.small{ font-size:14px; opacity:0.9; }
   .particle.dim{ opacity:0.6; background:transparent; box-shadow:none; color: rgba(220,230,255,0.85); }
+    
+    /* ---------- Kohn-Sham small card styling ---------- */
+.ks-equation {
+  max-width: 420px;      /* keeps the box compact */
+  padding: 14px 18px;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(5,6,15,0.55);
+  backdrop-filter: blur(4px) saturate(110%);
+  color: #dfeff6;
+  pointer-events: none;  /* non-interactive (like your other floating particles) */
+}
+
+/* title */
+.ks-title { 
+  font-weight:700;
+  color: #ffffff;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  opacity: 0.98;
+}
+
+/* equation */
+.ks-eqn {
+  font-style: normal; /* keep upright for math */
+  font-family: "Georgia", "Times New Roman", serif;
+  color: #cfeff0;
+  margin: 6px 0;
+  line-height: 1.12;
+  font-size: clamp(0.9rem, 1.05vw, 1.05rem);
+}
+
+/* break equation into lines and emphasize RHS */
+.ks-line { display:block; white-space:nowrap; }
+.ks-line.equals { margin-top: 6px; font-weight:700; color:#ffffff; }
+
+/* small caption under equation */
+.ks-caption {
+  margin-top: 8px;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.72);
+  font-style: italic;
+}
+
+/* responsive: keep things neat on smaller screens */
+@media (max-width: 740px) {
+  .ks-equation { display:none; } /* hide floating particle on narrow screens to avoid overlap */
+}   
   @keyframes float1 { 0%{transform:translateY(0)}50%{transform:translateY(-18px)}100%{transform:translateY(0)}}
   @keyframes float2 { 0%{transform:translateY(0)}50%{transform:translateY(-28px)}100%{transform:translateY(0)}}
   @keyframes float3 { 0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
@@ -602,10 +651,22 @@ body::before {
         <div>ŷ(x) = k(x)<sup>T</sup> α</div>
       </div>
 
-      <div class="particle p2 small dim" style="right:10%; top:22%;">
-        <div><strong>Quantum Descriptors:</strong></div>
-        <div>HOMO-LUMO gap, μ, dipole, reactivity indices</div>
-      </div>
+ <!-- Kohn-Sham equation -->
+<div class="particle p2 small dim ks-equation" style="right:10%; top:22%;">
+  <div class="ks-title"><strong>Kohn–Sham equation:</strong></div>
+
+  <div class="ks-eqn" role="img" aria-label="Kohn-Sham equation">
+    <div class="ks-line">
+      (− &#8463;<sup>2</sup>/2m) ∇<sup>2</sup> ψ<sub>i</sub>(r)
+    </div>
+    <div class="ks-line">
+      + V<sub>ion</sub>(r) + V<sub>H</sub>(r) + V<sub>xc</sub>[ρ(r)] ψ<sub>i</sub>(r)
+    </div>
+    <div class="ks-line equals">
+      = E<sub>i</sub> ψ<sub>i</sub>(r)
+    </div>
+  </div>
+</div>
 
       <div class="particle p3 small" style="left:22%; top:52%;">
         <div><strong>Loss Function:</strong></div>
