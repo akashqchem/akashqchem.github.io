@@ -317,6 +317,112 @@ body::before {
     width: 85% !important;
   }
 }
+  /* ---------------- Animated checkmark thank-you overlay ---------------- */
+#thankyou-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(3,6,12,0.6);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .35s ease;
+}
+
+#thankyou-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.thank-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border-radius: 14px;
+  padding: 26px 32px;
+  width: min(560px, 90vw);
+  text-align: center;
+  box-shadow: 0 14px 50px rgba(0,0,0,0.45);
+  color: #eef2ff;
+  font-family: "Times New Roman", Times, serif;
+}
+
+/* svg container */
+.thank-svg {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 14px;
+  display:block;
+}
+
+/* circle pulse */
+.check-circle {
+  fill: none;
+  stroke: rgba(94,46,255,0.18);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 6px 18px rgba(37,117,252,0.12));
+  transform-origin: 50% 50%;
+  transform: scale(.92);
+  opacity: 0;
+  transition: all .45s cubic-bezier(.2,.9,.2,1);
+}
+
+/* check path: ready to animate */
+.check {
+  fill: none;
+  stroke: #6cf0d8;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transition: stroke-dashoffset .6s cubic-bezier(.2,.9,.2,1) .15s;
+}
+
+/* small pop */
+.thank-card.visible .check-circle {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.thank-card.visible .check {
+  stroke-dashoffset: 0;
+}
+
+/* heading + message */
+.thank-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 8px 0 6px;
+  color: #ffffff;
+}
+.thank-msg {
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 12px;
+  font-size: 0.98rem;
+}
+
+/* close button */
+.thank-close {
+  display:inline-block;
+  margin-top: 10px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: #fff;
+  cursor:pointer;
+  transition: background .18s ease, transform .12s ease;
+}
+.thank-close:hover { background: rgba(255,255,255,0.06); transform: translateY(-2px); }
+
+/* small responsive tweak */
+@media (max-width:560px){
+  .thank-card { padding: 18px 18px; }
+  .thank-svg { width: 84px; height:84px; }
+  .thank-title { font-size:1.1rem; }
+}
   </style>
 </head>
 <body>
@@ -725,5 +831,100 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
   });
 
   </script>
+<!-- Thank you overlay (hidden by default) -->
+<div id="thankyou-overlay" aria-hidden="true">
+  <div class="thank-card" role="dialog" aria-modal="true" aria-labelledby="thank-title" tabindex="-1">
+    <svg class="thank-svg" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+      <circle class="check-circle" cx="60" cy="60" r="44"></circle>
+      <path class="check" d="M40 62 L54 76 L80 46" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+
+    <div id="thank-title" class="thank-title">Thank you — message received</div>
+    <div class="thank-msg">I appreciate your note. I’ll read it and get back to you soon.</div>
+    <button type="button" class="thank-close" id="thank-close">Close</button>
+  </div>
+</div>
+<script>
+/* Animated checkmark thank-you behavior
+   - Ensure your form has id="contact-form"
+   - Formspree endpoint used: https://formspree.io/f/mnnodbnj
+*/
+(function(){
+  const endpoint = 'https://formspree.io/f/mnnodbnj'; // your endpoint
+  const form = document.getElementById('contact-form'); // make sure your form uses this id
+  const overlay = document.getElementById('thankyou-overlay');
+  const card = overlay ? overlay.querySelector('.thank-card') : null;
+  const closeBtn = document.getElementById('thank-close');
+
+  function showThankYou() {
+    if(!overlay || !card) return;
+    overlay.classList.add('visible');
+    // slight delay for SVG pop
+    setTimeout(()=> card.classList.add('visible'), 40);
+    // auto close after 3.7s (optional)
+    setTimeout(hideThankYou, 3700);
+    // announce for screen readers
+    overlay.setAttribute('aria-hidden','false');
+  }
+
+  function hideThankYou() {
+    if(!overlay || !card) return;
+    card.classList.remove('visible');
+    overlay.classList.remove('visible');
+    overlay.setAttribute('aria-hidden','true');
+  }
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', hideThankYou);
+  }
+
+  // intercept form submit and POST to Formspree via fetch
+  if(form){
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+      // optional: you can disable submit button here to prevent double-submits
+      const submitBtn = form.querySelector('[type="submit"]');
+      if(submitBtn) submitBtn.disabled = true;
+
+      try {
+        const data = new FormData(form);
+        // send
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json'
+          },
+          body: data
+        });
+
+        if (res.ok) {
+          // clear form inputs (optional)
+          form.reset();
+          showThankYou();
+        } else {
+          // if formspree returns error, try to read message
+          const payload = await res.json().catch(()=>({}));
+          const msg = payload.error || 'Something went wrong — please try again.';
+          alert('Error sending message: ' + msg);
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Network error while sending message. Please try again later.');
+      } finally {
+        if(submitBtn) submitBtn.disabled = false;
+      }
+    });
+  } else {
+    // If your form id is different, log hint
+    console.warn('Contact form not found. Please add id="contact-form" to your <form> element.');
+  }
+
+  // allow closing overlay by pressing Escape
+  document.addEventListener('keydown', function(ev){
+    if(ev.key === 'Escape') hideThankYou();
+  });
+
+})();
+</script>
 </body>
 </html>
