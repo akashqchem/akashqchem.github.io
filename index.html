@@ -636,6 +636,75 @@ body::before {
     opacity: 0;
   }
 }
+  /* HIGHLIGHTS: thumbnails + modal */
+.highlight-thumb {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  cursor: zoom-in;
+}
+
+/* Slightly reduce card padding on small screens */
+@media (max-width: 768px) {
+  .highlight-thumb { height: 160px; }
+}
+
+/* Lightbox modal */
+.hl-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(3,6,12,0.88);
+  z-index: 99999;
+  align-items: center;
+  justify-content: center;
+}
+.hl-modal[aria-hidden="false"] { display: flex; }
+
+.hl-inner {
+  max-width: 1100px;
+  width: 92%;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 20px;
+  align-items: center;
+}
+.hl-inner img { width: 100%; height: auto; border-radius: 10px; box-shadow: 0 14px 50px rgba(0,0,0,0.6); }
+
+.hl-caption {
+  color: #e6f2ff;
+  font-style: italic;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  max-height: 70vh;
+  overflow: auto;
+}
+
+/* close & nav buttons */
+.hl-close, .hl-prev, .hl-next {
+  position: absolute;
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 20px;
+}
+.hl-close { top: 18px; right: 20px; }
+.hl-prev { left: 18px; top: 50%; transform: translateY(-50%); }
+.hl-next { right: 18px; top: 50%; transform: translateY(-50%); }
+
+.hl-close:hover, .hl-prev:hover, .hl-next:hover { background: rgba(255,255,255,0.12); }
+
+/* For small screens: stack modal */
+@media (max-width: 900px) {
+  .hl-inner { grid-template-columns: 1fr; padding: 18px; }
+  .hl-caption { max-height: none; margin-top: 10px; }
+}
   </style>
 </head>
 <body>
@@ -832,6 +901,90 @@ body::before {
     </div>
   </div>
 </section>
+ <!-- ===== HIGHLIGHTS & ACHIEVEMENTS ===== -->
+<section id="achievements">
+  <div class="container" data-aos="fade-up">
+    <h2 class="section-title">Highlights & Achievements</h2>
+    <p class="muted-small mb-4">
+      A curated timeline of awards, offers, and research events - certificates, poster presentations, and milestones.
+    </p>
+
+    <div class="row g-4">
+      <!-- Card 1: Gold Medal -->
+      <div class="col-md-6 col-lg-4">
+        <article class="card project-card h-100 text-center p-3 highlight-card">
+          <img src="assets/img/medal.jpeg" alt="Gold medal - ICFAI University" class="highlight-thumb mb-3" data-full="assets/img/medal.jpg">
+          <h5 class="fw-bold">Honoured with the Gold Medal — BSc Class of 2023</h5>
+          <p class="muted-small"><em>Grateful to have received the Gold Medal for highest academic excellence from The ICFAI University Tripura. This achievement is not mine alone — I’m deeply thankful to my professors, batchmates, and family for their support.</em></p>
+        </article>
+      </div>
+
+      <!-- Card 2: Degree -->
+      <div class="col-md-6 col-lg-4">
+        <article class="card project-card h-100 text-center p-3 highlight-card">
+          <img src="assets/img/degree.jpeg" alt="MSc Degree - IIT Tirupati" class="highlight-thumb mb-3" data-full="assets/img/degree.jpg">
+          <h5 class="fw-bold">MSc Chemistry Degree — IIT Tirupati</h5>
+          <p class="muted-small"><em>Official Master of Science (MSc) degree in Chemistry awarded in July 2025 by the Indian Institute of Technology, Tirupati. Certificate verifies completion of the postgraduate program.</em></p>
+        </article>
+      </div>
+
+      <!-- Card 3: Group photo -->
+      <div class="col-md-6 col-lg-4">
+        <article class="card project-card h-100 text-center p-3 highlight-card">
+          <img src="assets/img/group.jpeg" alt="Research group photo" class="highlight-thumb mb-3" data-full="assets/img/group.jpg">
+          <h5 class="fw-bold">More Than Just a Research Group</h5>
+          <p class="muted-small"><em>Grateful to be part of the Materials Modelling and Simulation Group at IIT Tirupati, led by Dr. Arun K. Manna. A snapshot of our team — colleagues who became family in the lab.</em></p>
+        </article>
+      </div>
+
+      <!-- Card 4: Farewell -->
+      <div class="col-md-6 col-lg-4">
+        <article class="card project-card h-100 text-center p-3 highlight-card">
+          <img src="assets/img/farewell.jpeg" alt="Farewell moment" class="highlight-thumb mb-3" data-full="assets/img/farewell.jpg">
+          <h5 class="fw-bold">Farewell Moments</h5>
+          <p class="muted-small"><em>Farewell moments and lifelong memories shared with my labmates — grateful for every lesson and laugh.</em></p>
+        </article>
+      </div>
+
+      <!-- Card 5: Defense -->
+      <div class="col-md-6 col-lg-4">
+        <article class="card project-card h-100 text-center p-3 highlight-card">
+          <img src="assets/img/defense.jpeg" alt="Final MSc defense" class="highlight-thumb mb-3" data-full="assets/img/defense.jpg">
+          <h5 class="fw-bold">Final MSc Defense Presentation</h5>
+          <p class="muted-small"><em>Grateful to my supervisor Dr. Arun K. Manna and my research group for their support during my defence and throughout this journey.</em></p>
+        </article>
+      </div>
+
+      <!-- Card 6: Poster -->
+      <div class="col-md-6 col-lg-4">
+        <article class="card project-card h-100 text-center p-3 highlight-card">
+          <img src="assets/img/poster.jpeg" alt="Poster presentation" class="highlight-thumb mb-3" data-full="assets/img/poster.jpg">
+          <h5 class="fw-bold">Department Poster Presentation</h5>
+          <p class="muted-small"><em>Presented research on computational modelling of BODIPY dyes — sharing results and getting valuable feedback from peers and faculty.</em></p>
+        </article>
+      </div>
+
+      <!-- Card 7: Offer -->
+      <div class="col-md-6 col-lg-4">
+        <article class="card project-card h-100 text-center p-3 highlight-card">
+          <img src="assets/img/offer.jpeg" alt="Offer of admission - University of Calgary" class="highlight-thumb mb-3" data-full="assets/img/offer.jpg">
+          <h5 class="fw-bold">Offer of Admission — University of Calgary</h5>
+          <p class="muted-small"><em>Offer of admission to the University of Calgary for M.Sc. Chemistry (Thesis-based). Excited to continue my research in ML for covalent drug discovery.</em></p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Lightbox modal (single modal used for all thumbnails) -->
+<div id="hl-modal" class="hl-modal" aria-hidden="true" role="dialog" aria-labelledby="hl-modal-title">
+  <button class="hl-close" aria-label="Close">&times;</button>
+  <div class="hl-inner">
+    <img id="hl-fullimg" src="" alt="">
+    <div id="hl-caption" class="hl-caption"></div>
+  </div>
+  <button class="hl-prev" aria-label="Previous">&#10094;</button>
+  <button class="hl-next" aria-label="Next">&#10095;</button>
+</div>
   <!-- CONTACT -->
   <section id="contact">
     <div class="container" data-aos="fade-up">
@@ -1369,5 +1522,68 @@ document.addEventListener('DOMContentLoaded', function () {
 })();
 </script>
 <!-- ===== end quotes slideshow ===== -->
+<script>
+(function(){
+  // gather items in DOM order
+  const thumbs = Array.from(document.querySelectorAll('.highlight-thumb'));
+  const modal = document.getElementById('hl-modal');
+  const fullImg = document.getElementById('hl-fullimg');
+  const caption = document.getElementById('hl-caption');
+  const closeBtn = modal.querySelector('.hl-close');
+  const prevBtn = modal.querySelector('.hl-prev');
+  const nextBtn = modal.querySelector('.hl-next');
+
+  if (!thumbs.length || !modal) return;
+
+  // each thumb has data-full (image) and we grab the parent card's <p class="muted-small"> as caption
+  const items = thumbs.map(t => {
+    const card = t.closest('.highlight-card') || t.closest('.card');
+    const textNode = card ? card.querySelector('.muted-small') : null;
+    return {
+      img: t.getAttribute('data-full') || t.src,
+      alt: t.alt || '',
+      caption: textNode ? textNode.innerHTML : ''
+    };
+  });
+
+  let idx = 0;
+
+  function openAt(i) {
+    i = (i + items.length) % items.length;
+    idx = i;
+    fullImg.src = items[i].img;
+    fullImg.alt = items[i].alt;
+    caption.innerHTML = items[i].caption;
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    fullImg.src = '';
+  }
+
+  thumbs.forEach((t, i) => {
+    t.addEventListener('click', () => openAt(i));
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', (ev) => {
+    if (ev.target === modal) closeModal();
+  });
+
+  prevBtn.addEventListener('click', () => openAt(idx - 1));
+  nextBtn.addEventListener('click', () => openAt(idx + 1));
+
+  // keyboard support
+  document.addEventListener('keydown', (ev) => {
+    if (modal.getAttribute('aria-hidden') === 'false') {
+      if (ev.key === 'Escape') closeModal();
+      if (ev.key === 'ArrowLeft') openAt(idx - 1);
+      if (ev.key === 'ArrowRight') openAt(idx + 1);
+    }
+  });
+})();
+</script>
 </body>
 </html>
