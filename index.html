@@ -503,11 +503,14 @@ body::before {
   padding: 0 6px;
   text-shadow: 0 6px 18px rgba(5,10,30,0.35); /* subtle lift */
 }
-/* Fix Quantum Descriptors brightness and boldness */
+/* Fix Quantum Descriptors brightness and boldness completely */
+.p2 {
+  opacity: 1 !important;
+}
 .p2 strong {
   font-weight: 700 !important;
-  opacity: 1 !important;
   color: #ffffff !important;
+  text-shadow: 0 0 2px rgba(255,255,255,0.2); /* subtle glow for clarity */
 }
 /* radial glow (behind the text) */
 .hero-title::after {
