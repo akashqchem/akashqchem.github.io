@@ -34,19 +34,57 @@
   }
 
   /* ---------- ANIMATED BACKGROUND ---------- */
-  .animated-bg{
-    position:fixed; inset:0; z-index:-3;
-    background: linear-gradient(120deg,var(--accent-start),var(--accent-end) 60%, #081029);
-    background-size:400% 400%;
-    opacity:0.20;
-    animation:gradientShift 20s ease infinite;
-    filter: blur(28px) saturate(120%);
-  }
-  @keyframes gradientShift{
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
-  }
+  :root {
+  --bg-a: #071226;
+  --bg-b: #0e1630;
+  --bg-c: #082033;
+}
+
+/* primary animated background layer */
+.animated-bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(800px 600px at 10% 10%, rgba(60,40,120,0.18), transparent 12%),
+              radial-gradient(600px 500px at 90% 80%, rgba(10,140,180,0.12), transparent 10%),
+              linear-gradient(180deg, var(--bg-a), var(--bg-b) 50%, var(--bg-c));
+  background-blend-mode: screen;
+  animation: bgShift 16s infinite alternate ease-in-out;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+/* quantum glow / wave enhancement */
+.animated-bg-wave {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background: radial-gradient(circle at 15% 30%, rgba(110,200,240,0.04) 0 8%, rgba(0,0,0,0) 12%),
+              radial-gradient(circle at 80% 60%, rgba(160,120,240,0.03) 0 10%, rgba(0,0,0,0) 16%);
+  filter: blur(28px);
+  animation: waveDrift 20s infinite linear;
+  will-change: transform, opacity;
+}
+
+/* animations */
+@keyframes bgShift {
+  0%   { transform: translate3d(0,0,0) scale(1); opacity: 1; }
+  50%  { transform: translate3d(-3%,2%,0) scale(1.03); opacity: .95; }
+  100% { transform: translate3d(2%,-2%,0) scale(1.02); opacity: 1; }
+}
+
+@keyframes waveDrift {
+  0%   { transform: translate3d(0,0,0) scale(1); opacity: 1; }
+  50%  { transform: translate3d(-2%,1.5%,0) scale(1.02); opacity: .95; }
+  100% { transform: translate3d(2%,-1.5%,0) scale(1); opacity: 1; }
+}
+
+/* motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .animated-bg-layer,
+  .animated-bg-wave { animation: none; filter: none; }
+}
 
   /* ---------- MOLECULE SVG BACKGROUND ---------- */
   body::before{
@@ -745,6 +783,7 @@ body::before {
 </head>
 <body>
 <div class="animated-bg-layer" aria-hidden="true"></div>
+<div class="animated-bg-wave" aria-hidden="true"></div>
   
   <!-- NAV -->
   <nav class="navbar navbar-expand-lg navbar-light">
@@ -1160,6 +1199,9 @@ form input:focus, form textarea:focus {
   font-weight: 500;
   border: none;
   box-shadow: 0 0 10px rgba(63, 81, 181, 0.5);
+}
+body {
+  text-shadow: 0 0 4px rgba(0,0,0,0.2);
 }
 </style>
 <!-- JavaScript for thank-you message -->
