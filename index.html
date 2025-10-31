@@ -949,7 +949,14 @@ body::before {
 <!-- Card 2: Degree -->
 <div class="col-md-6 col-lg-4">
   <article class="card project-card h-100 text-center p-3 highlight-card achievement-card">
-    <img src="assets/img/degree.jpg" alt="MSc Degree - IIT Tirupati" class="highlight-thumb mb-3 ach-image" data-full="assets/img/degree.jpg">
+    <img 
+      src="assets/img/degree.jpg" 
+      alt="MSc Degree - IIT Tirupati" 
+      class="highlight-thumb mb-3 ach-image" 
+      data-full="assets/img/degree.jpg"
+      style="cursor:pointer;"
+      onclick="openGallery(['assets/img/degree.jpg','assets/img/self_degree.jpg'])">
+    
     <h5 class="fw-bold mt-3">MSc Chemistry Degree - IIT Tirupati</h5>
     <p class="achievement-date">9<sup>th</sup> July, 2025</p>
     <p class="muted-small"><em>Official Master of Science (MSc) degree in Chemistry awarded in July 2025 by the Indian Institute of Technology Tirupati. Certificate verifies successful completion of the postgraduate program, as attested by institute authorities.</em></p>
@@ -1634,6 +1641,46 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 })();
+</script>
+<script>
+function openGallery(images) {
+  let index = 0;
+  const overlay = document.createElement('div');
+  overlay.style.position = 'fixed';
+  overlay.style.top = 0;
+  overlay.style.left = 0;
+  overlay.style.width = '100vw';
+  overlay.style.height = '100vh';
+  overlay.style.background = 'rgba(0, 0, 0, 0.9)';
+  overlay.style.display = 'flex';
+  overlay.style.justifyContent = 'center';
+  overlay.style.alignItems = 'center';
+  overlay.style.zIndex = '9999';
+
+  const img = document.createElement('img');
+  img.src = images[index];
+  img.style.maxWidth = '85%';
+  img.style.maxHeight = '80%';
+  img.style.borderRadius = '10px';
+  img.style.boxShadow = '0 0 30px rgba(255,255,255,0.2)';
+  overlay.appendChild(img);
+
+  // Click to go to next image
+  overlay.onclick = () => {
+    index = (index + 1) % images.length;
+    img.src = images[index];
+  };
+
+  // ESC to close
+  window.addEventListener('keydown', function closeGallery(e) {
+    if (e.key === 'Escape') {
+      overlay.remove();
+      window.removeEventListener('keydown', closeGallery);
+    }
+  });
+
+  document.body.appendChild(overlay);
+}
 </script>
 </body>
 </html>
