@@ -711,12 +711,41 @@ body::before {
   color: #ffffff;
   letter-spacing: 0.5px;
 }
+:root{
+  --bg-a: #071226;
+  --bg-b: #0e1630;
+  --bg-c: #082033;
+}
+
+/* container that covers the page background */
+.animated-bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;                 /* behind content */
+  background: radial-gradient(800px 600px at 10% 10%, rgba(60,40,120,0.18), transparent 12%),
+              radial-gradient(600px 500px at 90% 80%, rgba(10,140,180,0.12), transparent 10%),
+              linear-gradient(180deg, var(--bg-a), var(--bg-b) 50%, var(--bg-c));
+  background-blend-mode: screen;
+  animation: bgShift 16s infinite alternate ease-in-out;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+/* reduced motion respect */
+@media (prefers-reduced-motion: reduce) {
+  .animated-bg-layer { animation: none; }
+}
+
+@keyframes bgShift {
+  0%   { transform: translate3d(0,0,0) scale(1);   opacity: 1;  }
+  50%  { transform: translate3d(-3%,2%,0) scale(1.03); opacity: .95; }
+  100% { transform: translate3d(2%,-2%,0) scale(1.02); opacity: 1; }
+}
   </style>
 </head>
 <body>
-
-  <div class="animated-bg" aria-hidden="true"></div>
-
+<div class="animated-bg-layer" aria-hidden="true"></div>
+  
   <!-- NAV -->
   <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
