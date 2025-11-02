@@ -830,11 +830,34 @@ body::before {
 #projects .project-card:hover img {
   transform: translateY(-6px) scale(1.02);
 }
+/* ===== Touch-friendly blur support for Achievements & Projects ===== */
 
-/* Respect devices that do not support hover (touch screens) */
-@media (hover: none), (max-width: 900px) {
-  #projects:hover .project-card { filter: none; transform: none; opacity: 1; }
-  #projects .project-card:hover { transform: none; box-shadow: none; }
+/* Blur state triggered by container class (used for touch) */
+#achievements.touch-active .highlight-card,
+#projects.touch-active .project-card {
+  filter: blur(4px) brightness(.86);
+  transform: scale(0.985);
+  opacity: 0.78;
+}
+
+/* Keep the hovered or focused card sharp (desktop :hover + touch .focused) */
+#achievements .highlight-card:hover,
+#achievements .highlight-card.focused,
+#projects .project-card:hover,
+#projects .project-card.focused {
+  filter: none !important;
+  transform: scale(1.02) !important;
+  opacity: 1 !important;
+  z-index: 5;
+  box-shadow: 0 20px 60px rgba(40,40,120,0.16);
+}
+
+/* Make the blur lighter on small devices for performance */
+@media (max-width: 900px) {
+  #achievements.touch-active .highlight-card,
+  #projects.touch-active .project-card {
+    filter: blur(2px) brightness(.9);
+  }
 }
   </style>
 </head>
@@ -1739,6 +1762,80 @@ document.addEventListener('DOMContentLoaded', function () {
       if (ev.key === 'ArrowRight') openAt(idx + 1);
     }
   });
+})();
+</script>
+<script>
+(function() {
+  // Helper to set up touch-focus behavior for a container
+  function setupTouchFocus(containerSelector, cardSelector) {
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
+
+    const cards = Array.from(container.querySelectorAll(cardSelector));
+    if (!cards.length) return;
+
+    // On touch/click on a card: enable touch-active on container and focused on clicked card
+    function cardActivate(card, ev) {
+      // avoid activating when clicking controls inside card that should behave normally
+      // (e.g., links). If the target is a link or button, allow normal behavior.
+      const tag = ev.target && ev.target.tagName && ev.target.tagName.toLowerCase();
+      if (tag === 'a' || tag === 'button' || ev.target.closest('a') || ev.target.closest('button')) {
+        return;
+      }
+
+      // mark container active
+      container.classList.add('touch-active');
+
+      // remove focused from all cards, then set on the clicked one
+      cards.forEach(c => c.classList.remove('focused'));
+      card.classList.add('focused');
+
+      // prevent immediate double-click focus issues on some devices
+      // but allow normal click handlers (like your lightbox) to proceed
+    }
+
+    // Deactivate when tapping outside container or pressing Escape
+    function deactivateAll() {
+      container.classList.remove('touch-active');
+      cards.forEach(c => c.classList.remove('focused'));
+    }
+
+    // Add listeners
+    cards.forEach(card => {
+      // Use pointerdown for broad support (touch & mouse)
+      card.addEventListener('pointerdown', function(ev) {
+        // only activate on touch or primary mouse button
+        if (ev.pointerType === 'touch' || ev.pointerType === 'pen' || ev.pointerType === 'mouse') {
+          // If mouse with hover, let the CSS :hover handle desktop. But pointerdown still ok.
+          cardActivate(card, ev);
+        }
+      }, {passive: true});
+
+      // Also support click as fallback
+      card.addEventListener('click', function(ev) {
+        // If already focused and the click target opens lightbox, allow it.
+        // But we still want the focus behavior for touch.
+        cardActivate(card, ev);
+      });
+    });
+
+    // Click/tap outside to clear (listen on document)
+    document.addEventListener('pointerdown', function(ev) {
+      // If click is inside container, do nothing (handled by card listeners)
+      if (container.contains(ev.target)) return;
+      deactivateAll();
+    }, {passive: true});
+
+    // Escape key to clear
+    document.addEventListener('keydown', function(ev) {
+      if (ev.key === 'Escape') deactivateAll();
+    });
+  }
+
+  // Initialize for achievements and projects
+  setupTouchFocus('#achievements', '.highlight-card');
+  setupTouchFocus('#projects', '.project-card');
+
 })();
 </script>
 </body>
