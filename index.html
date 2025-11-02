@@ -874,20 +874,42 @@ body::before {
   border-radius: 50%;
   cursor: pointer;
   font-size: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 0 15px rgba(120, 200, 255, 0.4),
+              0 0 30px rgba(100, 160, 255, 0.25);
   transition: all 0.3s ease;
   opacity: 0;
   visibility: hidden;
+  animation: glowPulse 4s infinite ease-in-out;
 }
 
+/* Hover Effect */
 #backToTop:hover {
   background-color: rgba(100, 170, 255, 1);
-  transform: scale(1.1);
+  transform: scale(1.15);
+  box-shadow: 0 0 25px rgba(140, 210, 255, 0.8),
+              0 0 50px rgba(100, 170, 255, 0.5);
 }
 
+/* Visible State */
 #backToTop.show {
   opacity: 1;
   visibility: visible;
+}
+
+/* Subtle glowing animation */
+@keyframes glowPulse {
+  0% {
+    box-shadow: 0 0 10px rgba(120, 200, 255, 0.3),
+                0 0 25px rgba(100, 160, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(150, 220, 255, 0.5),
+                0 0 45px rgba(100, 180, 255, 0.35);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(120, 200, 255, 0.3),
+                0 0 25px rgba(100, 160, 255, 0.2);
+  }
 }
   </style>
 </head>
