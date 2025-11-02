@@ -859,6 +859,36 @@ body::before {
     filter: blur(2px) brightness(.9);
   }
 }
+  /* Back to Top Button */
+#backToTop {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  z-index: 99;
+  background-color: rgba(80, 150, 255, 0.85);
+  color: white;
+  border: none;
+  outline: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+}
+
+#backToTop:hover {
+  background-color: rgba(100, 170, 255, 1);
+  transform: scale(1.1);
+}
+
+#backToTop.show {
+  opacity: 1;
+  visibility: visible;
+}
   </style>
 </head>
 <body>
@@ -1837,6 +1867,28 @@ document.addEventListener('DOMContentLoaded', function () {
   setupTouchFocus('#projects', '.project-card');
 
 })();
+</script>
+<!-- Back to Top Button -->
+<button id="backToTop" title="Go to top">↑</button>
+<script>
+// Show or hide the "Back to Top" button
+const backToTopBtn = document.getElementById("backToTop");
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 400) {
+    backToTopBtn.classList.add("show");
+  } else {
+    backToTopBtn.classList.remove("show");
+  }
+});
+
+// Scroll to top smoothly when clicked
+backToTopBtn.addEventListener("click", () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+});
 </script>
 </body>
 </html>
