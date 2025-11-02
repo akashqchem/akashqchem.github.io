@@ -798,6 +798,44 @@ body::before {
   opacity: 1;
   z-index: 2;
 }
+  
+/* ===== Focus/blur effect for Projects (same idea as Achievements) ===== */
+#projects .project-card {
+  transition: filter 280ms cubic-bezier(.2,.9,.3,1),
+              transform 280ms cubic-bezier(.2,.9,.3,1),
+              opacity 220ms ease;
+  will-change: filter, transform, opacity;
+}
+
+/* When hovering anywhere over the projects container, blur all cards */
+#projects:hover .project-card {
+  filter: blur(4px) brightness(.86);
+  transform: scale(0.985);
+  opacity: 0.78;
+  pointer-events: auto; /* keep interactions on hovered one possible */
+}
+
+/* Keep the hovered card sharp and slightly lifted (focus) */
+#projects .project-card:hover {
+  filter: none !important;
+  transform: scale(1.02) !important;
+  opacity: 1 !important;
+  z-index: 5; /* bring it above other (blurred) cards */
+  box-shadow: 0 20px 60px rgba(40,40,120,0.16);
+  transition-duration: 200ms;
+}
+
+/* Optional: more pronounced pop for the image inside hovered card */
+#projects .project-card:hover .highlight-thumb,
+#projects .project-card:hover img {
+  transform: translateY(-6px) scale(1.02);
+}
+
+/* Respect devices that do not support hover (touch screens) */
+@media (hover: none), (max-width: 900px) {
+  #projects:hover .project-card { filter: none; transform: none; opacity: 1; }
+  #projects .project-card:hover { transform: none; box-shadow: none; }
+}
   </style>
 </head>
 <body>
