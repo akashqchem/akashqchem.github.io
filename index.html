@@ -779,6 +779,25 @@ body::before {
   50%  { transform: translate3d(-3%,2%,0) scale(1.03); opacity: .95; }
   100% { transform: translate3d(2%,-2%,0) scale(1.02); opacity: 1; }
 }
+  /* ===== Blur effect for Highlight cards ===== */
+#achievements .highlight-card {
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+/* When hovering over the whole container */
+#achievements:hover .highlight-card {
+  filter: blur(4px);
+  transform: scale(0.98);
+  opacity: 0.6;
+}
+
+/* When hovering over a single card - keep it sharp and slightly lifted */
+#achievements .highlight-card:hover {
+  filter: blur(0);
+  transform: scale(1.02);
+  opacity: 1;
+  z-index: 2;
+}
   </style>
 </head>
 <body>
