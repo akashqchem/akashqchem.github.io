@@ -994,17 +994,19 @@ body::before {
   <a class="text-white linkedin" href="https://www.linkedin.com/in/akash-shil-9b5039268" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
     <i class="fab fa-linkedin fa-lg"></i>
   </a>
-
-  <!-- ORCID inline SVG (recommended — always works) -->
-<a class="text-white orcid-link" href="https://orcid.org/0009-0002-3160-5961" target="_blank" rel="noopener noreferrer" aria-label="ORCID iD">
+    <!-- ORCID LINK -->
+  <a class="text-white orcid-link" href="https://orcid.org/0009-0002-3160-5961" target="_blank" rel="noopener noreferrer" aria-label="ORCID iD">
   <svg class="orcid-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="36" height="36" role="img" aria-hidden="true" focusable="false">
     <circle cx="64" cy="64" r="64" fill="#A6CE39"/>
-    <!-- simple 'iD' glyph: 'i' dot + vertical, and 'D' like rounded path -->
-    <!-- i -->
-    <circle cx="46" cy="42" r="6" fill="#fff"/>
-    <rect x="44" y="54" width="4" height="28" fill="#fff" rx="1"/>
-    <!-- D shape (approx) -->
-    <path d="M78 54 C90 54, 100 66, 100 80 C100 94, 90 106, 78 106 L70 106 L70 54 Z" fill="#fff"/>
+    <!-- move the white glyph up 2px -->
+    <g transform="translate(0,-2)" fill="#fff">
+      <!-- 'i' dot -->
+      <circle cx="46" cy="42" r="6"/>
+      <!-- 'i' vertical -->
+      <rect x="44" y="54" width="4" height="28" rx="1"/>
+      <!-- 'D' shape -->
+      <path d="M78 54 C90 54, 100 66, 100 80 C100 94, 90 106, 78 106 L70 106 L70 54 Z"/>
+    </g>
   </svg>
 </a>
 
@@ -1506,12 +1508,6 @@ body {
 @media (max-width: 520px) {
   .social-icons a.orcid-link { width:40px; height:40px; }
   .orcid-svg { width:26px; height:26px; transform: translateY(0px); }
-}
-/* FORCE nudge for quick test (temporary) */
-.orcid-svg {
-  display: block !important;
-  transform: translateY(-3px) !important;   /* increase until visually aligned (-4..0) */
-  will-change: transform;
 }
 </style>
 <!-- JavaScript for thank-you message -->
