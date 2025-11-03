@@ -1282,31 +1282,43 @@ body::before {
 </div>
 
 <!-- BLOG -->
-<section id="blog">
-  <div class="container" data-aos="fade-up">
+<section id="blog" class="section section-blog" data-aos="fade-up" data-aos-duration="900">
+  <div class="container">
     <h2 class="section-title">Blog</h2>
 
-    <p>
-      I’m starting a blog series titled  
-      <strong>“Understanding Electronic Structure Theory from Scratch”</strong>,  
-      where I’ll explain core quantum chemistry concepts in simple, intuitive terms.
-    </p>
+    <div class="blog-card">
+      <div class="blog-card-left">
+        <div class="badge-coming">Coming soon</div>
+        <h3 class="blog-card-title">Understanding Electronic Structure Theory from Scratch</h3>
+        <p class="lead">
+          I’m starting a blog series where I’ll explain core quantum-chemistry concepts in simple, intuitive terms.
+          Each post will explore topics like orbitals, basis sets, the self-consistent field (SCF) method, and
+          exchange–correlation functionals.
+        </p>
 
-    <ul>
-      <li>Each post will explore topics like orbitals, basis sets, the self-consistent field (SCF) method, and exchange-correlation functionals.</li>
-      <li>The goal is to bridge the gap between theoretical chemistry and real computational practice - explained accessibly.</li>
-    </ul>
+        <ul class="blog-list">
+          <li>One concept per post — clear intuition + light math</li>
+          <li>Practical examples and pointers to computational tools (Python, Psi4, Quantum ESPRESSO)</li>
+        </ul>
 
-    <p>
-      <em>Coming soon:</em> My learning series on <strong>Electronic Structure Theory</strong> - DFT explained simply, from the ground up.
-    </p>
+        <div class="blog-actions">
+          <a class="btn btn-primary" href="https://akashexplains.medium.com" target="_blank" rel="noopener">
+            Visit my Medium (preview & follow)
+          </a>
+          <a class="btn btn-outline" href="#contact">Contact me</a>
+        </div>
+      </div>
 
-    <p>
-      Stay tuned or follow my posts on 
-      <a href="https://akashexplains.medium.com" target="_blank" style="color:#a6dcef; text-decoration:none;">
-        Medium
-      </a>.
-    </p>
+      <div class="blog-card-right" aria-hidden="true">
+        <!-- decorative block to match site style -->
+        <div class="card-accent">
+          <div class="accent-title">DFT • SCF • Basis</div>
+          <div class="accent-math">Kohn–Sham: &nbsp; (−½∇² + V<sub>ion</sub> + V<sub>H</sub> + V<sub>xc</sub>) ψ<sub>i</sub> = ε<sub>i</sub> ψ<sub>i</sub></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="muted small">Short updates and drafts will appear on Medium first. Full series posts will be linked here as they publish.</p>
   </div>
 </section>
   
@@ -1527,6 +1539,146 @@ body {
 .orcid-svg {
   display: block;
   transform: translateY(2px);
+}
+/* BLOG section styles (matches dark theme) */
+.section-blog {
+  padding: 72px 0;
+  background: linear-gradient(180deg, rgba(6,18,41,0.14) 0%, rgba(6,18,41,0.06) 100%);
+  border-top: 1px solid rgba(255,255,255,0.03);
+}
+
+.section-blog .section-title {
+  margin-bottom: 30px;
+  color: #e9f0f7;
+}
+
+/* Card layout */
+.blog-card {
+  display: flex;
+  gap: 28px;
+  align-items: stretch;
+  background: linear-gradient(180deg, rgba(13,26,50,0.35), rgba(7,16,36,0.2));
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: 0 8px 30px rgba(3,10,30,0.45);
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+/* left column */
+.blog-card-left {
+  flex: 1 1 62%;
+  color: #dbeaf7;
+  min-width: 280px;
+}
+
+.badge-coming {
+  display: inline-block;
+  padding: 6px 10px;
+  background: rgba(166,220,239,0.09);
+  color: #a6dcef;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  letter-spacing: 0.2px;
+}
+
+.blog-card-title {
+  margin: 6px 0 12px;
+  font-size: 1.35rem;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.lead {
+  color: #cfe9fb;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+/* list style */
+.blog-list {
+  margin: 12px 0 18px 1rem;
+  color: #d4e9fb;
+  list-style: disc;
+}
+
+/* Actions */
+.blog-actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 600;
+}
+
+/* primary button */
+.btn-primary {
+  background: linear-gradient(90deg, #6b63ff 0%, #7a8bff 100%);
+  color: #fff;
+  border: none;
+  box-shadow: 0 6px 18px rgba(91,79,255,0.14);
+}
+
+/* outline button */
+.btn-outline {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.06);
+  color: #dbeaf7;
+}
+
+/* right column decorative */
+.blog-card-right {
+  flex: 0 0 32%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 220px;
+}
+
+.card-accent {
+  width: 100%;
+  padding: 20px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.02);
+  text-align: center;
+  color: #bfe6ff;
+  box-shadow: inset 0 -20px 40px rgba(8,20,40,0.18);
+}
+
+.accent-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #e6f7ff;
+  font-size: 14px;
+}
+
+.accent-math {
+  font-size: 13px;
+  opacity: 0.95;
+  line-height: 1.45;
+}
+
+/* small helper text */
+.section-blog .muted.small {
+  margin-top: 18px;
+  color: rgba(209,230,247,0.6);
+  font-size: 0.95rem;
+}
+
+/* responsive */
+@media (max-width: 900px) {
+  .blog-card { flex-direction: column; padding: 20px; }
+  .blog-card-right { order: -1; width: 100%; }
+  .blog-card-left { width: 100%; }
 }
 </style>
 <!-- JavaScript for thank-you message -->
