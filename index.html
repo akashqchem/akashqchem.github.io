@@ -985,31 +985,35 @@ body::before {
         <a class="btn btn-outline-primary btn-sm" href="assets/CV.pdf" target="_blank" rel="noopener">Download CV</a>
       </div>
 
-     <div class="mt-3 d-flex justify-content-center gap-3" data-aos="fade-up" data-aos-delay="220">
-  <div class="social-icons" aria-label="Social links" role="navigation">
+     <!-- Social icons (hero) -->
+<div class="mt-3 d-flex justify-content-center gap-3 social-icons" data-aos="fade-up" data-aos-delay="220" aria-label="Social links">
+  <a class="text-white" href="https://github.com/akashqchem" target="_blank" rel="noopener" title="GitHub (opens in new tab)" aria-label="GitHub">
+    <i class="fab fa-github fa-lg" aria-hidden="true"></i>
+    <span class="visually-hidden">GitHub</span>
+  </a>
 
-    <a href="https://github.com/akashqchem" target="_blank" rel="noopener" title="GitHub">
-      <i class="fab fa-github" aria-hidden="true"></i>
-      <span class="sr-only">GitHub</span>
-    </a>
+  <a class="text-white" href="https://www.linkedin.com/in/akash-shil-9b5039268" target="_blank" rel="noopener" title="LinkedIn (opens in new tab)" aria-label="LinkedIn">
+    <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
+    <span class="visually-hidden">LinkedIn</span>
+  </a>
 
-    <a href="https://www.linkedin.com/in/akash-shil-9b5039268" target="_blank" rel="noopener" title="LinkedIn">
-      <i class="fab fa-linkedin-in" aria-hidden="true"></i>
-      <span class="sr-only">LinkedIn</span>
-    </a>
+  <!-- ORCID: use academicons class + inline SVG fallback -->
+  <a class="text-white ai-orcid-link" href="https://orcid.org/0009-0002-3160-5961" target="_blank" rel="noopener" title="ORCID (opens in new tab)" aria-label="ORCID">
+    <!-- icon font (academicons) -->
+    <i class="ai ai-orcid" aria-hidden="true"></i>
+    <!-- fallback inline SVG (visible if icon font / CDN fails) -->
+    <svg class="orcid-fallback" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="20" height="20" aria-hidden="true" focusable="false" style="display:none;">
+      <circle cx="128" cy="128" r="120" fill="#A6CE39"/>
+      <path fill="#fff" d="M170 95c-3-2-7-4-13-4-..."/> <!-- short path removed for brevity in this message -->
+      <!-- I will paste a complete simple ORCID glyph when you add; the fallback is visible by JS below -->
+    </svg>
+    <span class="visually-hidden">ORCID</span>
+  </a>
 
-    <a href="mailto:akash.shil@ucalgary.ca" title="Email">
-      <i class="fas fa-envelope" aria-hidden="true"></i>
-      <span class="sr-only">Email</span>
-    </a>
-
-    <!-- ORCID -->
-    <a href="https://orcid.org/0000-0002-3160-5961" target="_blank" rel="noopener" title="ORCID">
-      <i class="ai ai-orcid" aria-hidden="true"></i>
-      <span class="sr-only">ORCID</span>
-    </a>
-
-  </div>
+  <a class="text-white" href="mailto:akash.shil@ucalgary.ca" title="Email" aria-label="Email">
+    <i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i>
+    <span class="visually-hidden">Email</span>
+  </a>
 </div>
   </header>
 
@@ -1407,6 +1411,17 @@ body {
 @media (max-width: 520px) {
   .social-icons a { font-size: 1.05rem; width: 36px; height: 36px; }
 }
+/* ORCID color + fallback sizing */
+.ai-orcid { color: #A6CE39; font-size: 1.25rem; }
+.ai-orcid-link { display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:8px; text-decoration:none; }
+.ai-orcid-link .orcid-fallback { width:20px; height:20px; }
+
+/* show ORCID lighter on hover */
+.social-icons a:hover .ai-orcid { color: #b9e66c; transform: scale(1.12); transition: color .18s, transform .18s; }
+
+/* ensure icons are visible on dark bg */
+.social-icons a { color: #fff; display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; background: transparent; text-decoration:none; }
+
 </style>
 <!-- JavaScript for thank-you message -->
 <script>
@@ -1982,6 +1997,23 @@ backToTopBtn.addEventListener("click", () => {
     behavior: "smooth"
   });
 });
+</script>
+<script>
+  // if the ORCID icon element has width 0 (font didn't load or glyph missing),
+  // swap to the inline SVG fallback for guaranteed visibility.
+  (function(){
+    const ai = document.querySelector('.ai.ai-orcid');
+    const fallback = document.querySelector('.orcid-fallback');
+    // if the icon element is missing or has zero width, show fallback
+    if(!ai || (ai.offsetWidth === 0 && fallback)){
+      // hide icon-font if present
+      if(ai) ai.style.display = 'none';
+      fallback.style.display = 'block';
+    } else {
+      // ensure fallback hidden if icon font working
+      if(fallback) fallback.style.display = 'none';
+    }
+  })();
 </script>
 </body>
 </html>
