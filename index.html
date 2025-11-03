@@ -167,7 +167,16 @@
   }
   .particle.small{ font-size:14px; opacity:0.9; }
   .particle.dim{ opacity:0.6; background:transparent; box-shadow:none; color: rgba(220,230,255,0.85); }
-    
+
+/* Space and formatting for math/label blocks inside floating particles */
+.particle.small div + div {
+  margin-top: 4px; /* space between “Loss Function:” and its equation */
+}
+
+.particle.p3.small {
+  padding: 8px 10px;  /* adds gentle breathing room inside */
+  line-height: 1.5;   /* improves readability */
+}
     /* ---------- Kohn-Sham small card styling ---------- */
 .ks-equation {
   max-width: 480px;      /* keeps the box compact */
@@ -968,8 +977,8 @@ body::before {
   </div>
 </div>
 <div class="particle p3 small" style="left:22%; top:52%;">
-  <div style="margin-bottom:4px;"><strong>Loss Function:</strong></div>
-  <div style="margin-top:2px;">L(w) = (1/2n)‖y−Xw‖<sub>2</sub><sup>2</sup> + (λ/2)‖w‖<sub>2</sub><sup>2</sup></div>
+  <div><strong>Loss Function:</strong></div>
+  <div>L(w) = (1/2n)‖y−Xw‖<sub>2</sub><sup>2</sup> + (λ/2)‖w‖<sub>2</sub><sup>2</sup></div>
 </div>
 
       <img src="assets/img/profile_akash.jpg" alt="Akash Shil" class="profile-img mb-3" data-aos="zoom-in">
