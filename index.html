@@ -2329,116 +2329,180 @@ backToTopBtn.addEventListener("click", () => {
 </div>
 
 <script>
-/* === Chat UI helpers: wire open/close/send/addMessage/speak ===
-   Paste this AFTER your robust navigator script (i.e. after the big IIFE ending with `})();`).
+/* Chat UI wiring: replace your old botToggle/send/close handlers with this block.
+   Paste this AFTER the robust navigator / indexing script (the one that defines chatbotNavigate).
 */
-(function(){
-  // small helpers
-  const el = id => document.getElementById(id);
-  const esc = s => (s||'').toString().replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+(function () {
+  // DOM references (adjust IDs if you renamed them)
+  const botToggle = document.getElementById('botToggle');
+  const chatBox = document.getElementById('chatBox');
+  const closeChat = document.getElementById('closeChat');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatInput = document.getElementById('chatInput');
+  const chatSend = document.getElementById('chatSend');
 
-  // find DOM nodes (expect these IDs to exist in your HTML)
-  const botToggle = el('botToggle') || document.querySelector('#aiChatbot #botToggle');
-  const chatBox   = el('chatBox')   || document.querySelector('#aiChatbot #chatBox');
-  const closeChat = el('closeChat') || document.querySelector('#aiChatbot #closeChat');
-  const chatSend  = el('chatSend')  || document.querySelector('#aiChatbot #chatSend');
-  const chatInput = el('chatInput') || document.querySelector('#aiChatbot #chatInput');
-  const chatMsgs  = el('chatMessages') || document.querySelector('#aiChatbot #chatMessages') || document.querySelector('.chat-messages');
-
-  // safe speak: define if not present
-  if (typeof window.speak !== 'function') {
-    window.speak = function(text){
-      try {
-        if (!('speechSynthesis' in window)) return;
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'en-US'; u.rate = 1;
-        speechSynthesis.cancel(); // stop previous
-        speechSynthesis.speak(u);
-      } catch(e){}
-    };
+  if (!botToggle || !chatBox) {
+    console.warn('chat UI elements missing; ensure IDs botToggle / chatBox exist.');
+    return;
   }
 
-  // addMessage used by index script — keep markup consistent with your CSS classes
-  window.addMessage = function(htmlOrText, cls) {
-    if (!chatMsgs) return;
-    const div = document.createElement('div');
-    div.className = 'message ' + (cls || 'bot-msg');
-    // If it's plain text and user message, escape it
-    if (cls && cls.indexOf('user') !== -1) div.innerHTML = '<div class="user-msg">' + esc(htmlOrText) + '</div>';
-    else if (cls && cls.indexOf('bot') !== -1) div.innerHTML = '<div class="bot-msg">' + htmlOrText + '</div>';
-    else div.innerHTML = htmlOrText;
-    chatMsgs.appendChild(div);
-    chatMsgs.scrollTop = chatMsgs.scrollHeight;
-  };
+  // --- Helpers to render messages in chat UI ---
+  function addMessageHTML(html, cls = 'bot-msg') {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'message ' + (cls === 'user-msg' ? 'user-msg' : 'bot-msg');
+    wrapper.innerHTML = html;
+    chatMessages.appendChild(wrapper);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
 
-  // open chat: show box, hide toggle, focus input, welcome once
+  // Use this to add a user message bubble
+  function addUserMessage(text) {
+    addMessageHTML(escapeHtml(text), 'user-msg');
+  }
+
+  // Use this when bot replies (text can contain safe small HTML links)
+  function addBotReply(html) {
+    addMessageHTML(html, 'bot-msg');
+  }
+
+  function escapeHtml(s) {
+    return (s || '').toString().replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('\n','<br>');
+  }
+
+  // Small typing indicator
+  function showTyping() {
+    const el = document.createElement('div');
+    el.className = 'message bot-msg typing-msg';
+    el.innerHTML = 'Typing <span class="typing"></span><span class="typing"></span><span class="typing"></span>';
+    el.setAttribute('data-typing', '1');
+    chatMessages.appendChild(el);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+  function hideTyping() {
+    const t = chatMessages.querySelector('.typing-msg');
+    if (t) t.remove();
+  }
+
+  // Speech: only speak when allowed and available
+  function speakOnce(text) {
+    try {
+      if (!('speechSynthesis' in window)) return;
+      // only speak if user hasn't interacted yet? For now speak on open
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      u.rate = 1.0;
+      // optional: don't autoplay if user has muted - browsers may block anyway
+      speechSynthesis.cancel(); // stop any previous
+      speechSynthesis.speak(u);
+    } catch (e) { console.warn('speech error', e); }
+  }
+
+  // --- Welcome message: show only once per browser session (localStorage) ---
+  const WELCOME_KEY = 'akash_assistant_shown_v1';
+
+  function maybeShowWelcome() {
+    // if message already shown in this browser, don't add again
+    if (localStorage.getItem(WELCOME_KEY)) return;
+    // Add a friendly one-liner (beautiful and short)
+    const welcomeHtml = `<strong>Hi - I’m Akash’s AI Assistant 🤖</strong><br>
+      Here to help you explore the website. I can take you to any section — try: <em>projects</em>, <em>CV</em>, <em>publications</em>, or <em>take me to posters</em>.`;
+    addBotReply(welcomeHtml);
+    // optionally speak it
+    try { speakOnce('Hi - I am Akash’s assistant. I can help you find sections like projects, CV, publications or posters.'); } catch(_) {}
+    localStorage.setItem(WELCOME_KEY, '1');
+  }
+
+  // --- Toggle open/close ---
   function openChat() {
-    if (!chatBox) return;
     chatBox.style.display = 'flex';
-    if (botToggle) botToggle.style.display = 'none';
-    if (chatInput) chatInput.focus();
-    // ensure welcome injected once (calls earlier window.__injectChatWelcomeOnce if present)
-    if (typeof window.__injectChatWelcomeOnce === 'function') window.__injectChatWelcomeOnce();
-  }
-
-  function closeChatFn() {
-    if (!chatBox) return;
-    chatBox.style.display = 'none';
-    if (botToggle) botToggle.style.display = 'flex';
-  }
-
-  // Send handler: add user bubble + call navigator
-  function sendHandler() {
-    if (!chatInput) return;
-    const v = chatInput.value.trim();
-    if (!v) return;
-    // show user message
-    window.addMessage(v, 'user-msg');
-    chatInput.value = '';
-    // call navigator (robust script)
-    if (typeof window.chatbotNavigate === 'function') {
-      try { window.chatbotNavigate(v); } catch(e){ console.warn('chatbotNavigate error', e); }
-    } else {
-      // fallback reply
-      window.addMessage("Sorry — navigation not available.", 'bot-msg');
+    botToggle.style.display = 'none'; // hide the small robot bubble when open
+    // show welcome only the first time
+    maybeShowWelcome();
+    // if you have reindex function from previous script, call it once to be safe
+    if (typeof chatbotReindex === 'function') {
+      try { chatbotReindex(); } catch(e) { console.warn('reindex failed', e); }
     }
+    // focus input
+    setTimeout(() => { chatInput && chatInput.focus(); }, 120);
+  }
+  function closeChatBox() {
+    chatBox.style.display = 'none';
+    botToggle.style.display = 'flex';
+    // ensure typing voices stopped
+    try { if (speechSynthesis) speechSynthesis.cancel(); } catch(_) {}
   }
 
-  // Attach events safely (only if elements exist)
+  botToggle.addEventListener('click', (e) => {
+    // open chat
+    openChat();
+  });
+
+  // close chat (X button)
+  if (closeChat) closeChat.addEventListener('click', closeChatBox);
+
+  // clicking outside chatBox should not close (avoids accidental close)
+  // but you can add if you want.
+
+  // --- send handler: calls chatbotNavigate (your robust search) and renders replies ---
+  function sendHandler() {
+    const text = (chatInput.value || '').trim();
+    if (!text) return;
+    addUserMessage(text);
+    chatInput.value = '';
+    // show typing
+    showTyping();
+    // call navigator after short delay
+    setTimeout(() => {
+      hideTyping();
+      // call your robust navigator (should exist in the page)
+      if (typeof chatbotNavigate === 'function') {
+        try {
+          // bot will show an interim reply; chatbotNavigate will itself call botReply -> which appends
+          // but our botReply function earlier depended on addMessage; ensure it ends up in UI.
+          // We'll call chatbotNavigate and also show a small "Searching..." message
+          addBotReply('Searching for matching section…');
+          // Move caret to bottom
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+          // call navigator
+          chatbotNavigate(text);
+        } catch (e) {
+          hideTyping();
+          addBotReply('Sorry — navigation not available.');
+          console.warn(e);
+        }
+      } else {
+        hideTyping();
+        addBotReply('Sorry — navigation not available.');
+      }
+    }, 700);
+  }
+
+  if (chatSend) chatSend.addEventListener('click', sendHandler);
+  if (chatInput) chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendHandler(); });
+
+  // Optional keyboard: ESC closes chat
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && chatBox.style.display === 'flex') closeChatBox();
+  });
+
+  // ensure initial state: minimized (only robot visible)
+  chatBox.style.display = 'none';
+  botToggle.style.display = 'flex';
+
+  // small tweak: keep toggle minimal (only the emoji). Remove any inner text if present.
   try {
-    if (botToggle) botToggle.addEventListener('click', () => {
-      openChat();
-      // say welcome on open (only if not spoken yet)
-      if (!window.__akash_chat_welcome_shown) {
-        window.speak && window.speak("Hi — I'm Akash's AI Assistant. Here to help you explore the website.");
-      }
-    });
-    if (closeChat) closeChat.addEventListener('click', closeChatFn);
+    botToggle.textContent = '🤖';
+    botToggle.setAttribute('aria-label', 'Open chat');
+    botToggle.title = 'Chat with Akash’s assistant';
+  } catch (_) {}
 
-    if (chatSend) chatSend.addEventListener('click', sendHandler);
-    if (chatInput) chatInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        sendHandler();
-      }
-    });
+  // Remove any stray input that might be positioned near the robot in minimized state
+  // (if your CSS placed an input outside chatBox, hide it)
+  const stray = document.querySelectorAll('.chat-input:not(#chatInput)');
+  stray.forEach(el => el.style.display = 'none');
 
-    // allow clicking outside to close (optional, non-obtrusive)
-    document.addEventListener('click', (ev) => {
-      const inside = ev.target.closest && (ev.target.closest('#aiChatbot') || ev.target.closest('#chatBox') || ev.target.closest('#botToggle'));
-      const toggleBtn = botToggle ? botToggle.contains(ev.target) : false;
-      // if chatBox open and click outside widget, don't close automatically — keep simple: close only by 'x'
-    });
-
-    // ensure chatBox initial state: hide chat and show toggle
-    if (chatBox) chatBox.style.display = chatBox.style.display || 'none';
-    if (botToggle) botToggle.style.display = botToggle.style.display || 'flex';
-  } catch(e) {
-    console.warn('chat UI wiring failed', e);
-  }
-
-  // small debug log
-  console.log('[chat-ui] wired (open/close/send).');
+  // done
+  console.log('[chat-ui] ready');
 })();
 </script>
 <!-- ==== End of Chatbot ==== -->
