@@ -986,33 +986,22 @@ body::before {
       </div>
 
      <!-- Social icons (hero) -->
-<div class="mt-3 d-flex justify-content-center gap-3 social-icons" data-aos="fade-up" data-aos-delay="220" aria-label="Social links">
-  <a class="text-white" href="https://github.com/akashqchem" target="_blank" rel="noopener" title="GitHub (opens in new tab)" aria-label="GitHub">
-    <i class="fab fa-github fa-lg" aria-hidden="true"></i>
-    <span class="visually-hidden">GitHub</span>
+<div class="mt-3 d-flex justify-content-center gap-3 social-icons" data-aos="fade-up" data-aos-delay="220">
+  <a class="text-white" href="https://github.com/akashqchem" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+    <i class="fab fa-github fa-lg"></i>
   </a>
 
-  <a class="text-white" href="https://www.linkedin.com/in/akash-shil-9b5039268" target="_blank" rel="noopener" title="LinkedIn (opens in new tab)" aria-label="LinkedIn">
-    <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
-    <span class="visually-hidden">LinkedIn</span>
+  <a class="text-white linkedin" href="https://www.linkedin.com/in/akash-shil-9b5039268" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+    <i class="fab fa-linkedin fa-lg"></i>
   </a>
 
-  <!-- ORCID: use academicons class + inline SVG fallback -->
-  <a class="text-white ai-orcid-link" href="https://orcid.org/0009-0002-3160-5961" target="_blank" rel="noopener" title="ORCID (opens in new tab)" aria-label="ORCID">
-    <!-- icon font (academicons) -->
-    <i class="ai ai-orcid" aria-hidden="true"></i>
-    <!-- fallback inline SVG (visible if icon font / CDN fails) -->
-    <svg class="orcid-fallback" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="20" height="20" aria-hidden="true" focusable="false" style="display:none;">
-      <circle cx="128" cy="128" r="120" fill="#A6CE39"/>
-      <path fill="#fff" d="M170 95c-3-2-7-4-13-4-..."/> <!-- short path removed for brevity in this message -->
-      <!-- I will paste a complete simple ORCID glyph when you add; the fallback is visible by JS below -->
-    </svg>
-    <span class="visually-hidden">ORCID</span>
+  <!-- ORCID -->
+  <a class="text-white orcid-link" href="https://orcid.org/0009-0002-3160-5961" target="_blank" rel="noopener noreferrer" aria-label="ORCID iD">
+    <i class="ai ai-orcid"></i>
   </a>
 
-  <a class="text-white" href="mailto:akash.shil@ucalgary.ca" title="Email" aria-label="Email">
-    <i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i>
-    <span class="visually-hidden">Email</span>
+  <a class="text-white" href="mailto:akash.shil@ucalgary.ca" aria-label="Email">
+    <i class="fa-solid fa-envelope fa-lg"></i>
   </a>
 </div>
   </header>
@@ -1372,56 +1361,64 @@ form input:focus, form textarea:focus {
 body {
   text-shadow: 0 0 4px rgba(0,0,0,0.2);
 }
-/* social icons */
+/* ---------- Social Icons + ORCID Styling ---------- */
 .social-icons {
   display: inline-flex;
+  gap: 18px;
   align-items: center;
-  gap: 10px;                 /* spacing between icons */
   justify-content: center;
+  margin-top: 14px;
 }
 
 .social-icons a {
-  color: #ffffff;            /* base icon color */
-  font-size: 1.25rem;        /* icon size */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  transition: transform 0.22s ease, color 0.22s ease, background 0.22s ease;
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
   text-decoration: none;
+  color: rgba(255,255,255,0.95);
+  background: transparent;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+  transition: all 0.25s ease;
 }
 
-/* slightly lift on hover */
 .social-icons a:hover {
-  transform: translateY(-4px) scale(1.08);
+  transform: translateY(-4px) scale(1.06);
+}
+
+/* LinkedIn hover glow */
+.social-icons a.linkedin:hover {
+  background: radial-gradient(circle at 50% 40%, rgba(17, 97, 255, 0.2) 0 40%, transparent 100%);
+  box-shadow: 0 8px 20px rgba(10, 85, 200, 0.2);
+  color: #FFFFFF;
+}
+
+/* ORCID brand style */
+.social-icons a.orcid-link .ai-orcid {
+  color: #A6CE39; /* brand green */
+  font-size: 1.05rem;
+  transition: all 0.25s ease;
+}
+
+/* ORCID hover: green circle + white icon */
+.social-icons a.orcid-link:hover {
+  background: #A6CE39;
+  box-shadow: 0 8px 20px rgba(166, 206, 57, 0.35);
+  transform: translateY(-4px) scale(1.06);
+}
+
+.social-icons a.orcid-link:hover .ai-orcid {
   color: #ffffff;
-  background: rgba(255,255,255,0.03);
 }
 
-/* ORCID green color and hover */
-.ai-orcid { color: #A6CE39; }       /* ORCID brand green */
-.social-icons a .ai-orcid { font-size: 1.25rem; }
-
-/* if you want ORCID only to glow on hover (others stay white) */
-.social-icons a:hover .ai-orcid { color: #b9e66c; }
-
-/* smaller screens: reduce size */
-@media (max-width: 520px) {
-  .social-icons a { font-size: 1.05rem; width: 36px; height: 36px; }
+/* smaller screens */
+@media (max-width:520px) {
+  .social-icons a {
+    width: 40px;
+    height: 40px;
+  }
 }
-/* ORCID color + fallback sizing */
-.ai-orcid { color: #A6CE39; font-size: 1.25rem; }
-.ai-orcid-link { display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:8px; text-decoration:none; }
-.ai-orcid-link .orcid-fallback { width:20px; height:20px; }
-
-/* show ORCID lighter on hover */
-.social-icons a:hover .ai-orcid { color: #b9e66c; transform: scale(1.12); transition: color .18s, transform .18s; }
-
-/* ensure icons are visible on dark bg */
-.social-icons a { color: #fff; display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; background: transparent; text-decoration:none; }
-
 </style>
 <!-- JavaScript for thank-you message -->
 <script>
