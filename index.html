@@ -995,15 +995,17 @@ body::before {
     <i class="fab fa-linkedin fa-lg"></i>
   </a>
 
-  <!-- ORCID official image (quick) -->
+  <!-- ORCID inline SVG (recommended — always works) -->
 <a class="text-white orcid-link" href="https://orcid.org/0009-0002-3160-5961" target="_blank" rel="noopener noreferrer" aria-label="ORCID iD">
-  <img
-    src="https://info.orcid.org/wp-content/uploads/2020/12/orcid_16x16.png"
-    alt="ORCID iD"
-    width="36"
-    height="36"
-    style="border-radius:50%; background:#A6CE39; padding:3px; display:block;"
-  />
+  <svg class="orcid-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="36" height="36" role="img" aria-hidden="true" focusable="false">
+    <circle cx="64" cy="64" r="64" fill="#A6CE39"/>
+    <!-- simple 'iD' glyph: 'i' dot + vertical, and 'D' like rounded path -->
+    <!-- i -->
+    <circle cx="46" cy="42" r="6" fill="#fff"/>
+    <rect x="44" y="54" width="4" height="28" fill="#fff" rx="1"/>
+    <!-- D shape (approx) -->
+    <path d="M78 54 C90 54, 100 66, 100 80 C100 94, 90 106, 78 106 L70 106 L70 54 Z" fill="#fff"/>
+  </svg>
 </a>
 
   <a class="text-white" href="mailto:akash.shil@ucalgary.ca" aria-label="Email">
