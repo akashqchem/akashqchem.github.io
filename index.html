@@ -2102,5 +2102,111 @@ backToTopBtn.addEventListener("click", () => {
     }
   })();
 </script>
+<!-- ===== Lightweight FAQ Chat (drop before </body>) ===== -->
+<!-- CSS: paste inside your <style> block OR keep it here inside a <style> tag -->
+<style>
+/* chat widget styles (lightweight) */
+#faqChat {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  width: 320px;
+  max-width: calc(100% - 48px);
+  font-family: inherit;
+  z-index: 9999;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+  border-radius: 12px;
+  overflow: hidden;
+  transform-origin: right bottom;
+}
+#faqChat .chat-toggle {
+  display:flex;
+  gap:.6rem;
+  align-items:center;
+  padding:12px;
+  background:linear-gradient(180deg, rgba(40,50,80,0.95), rgba(20,28,45,0.95));
+  color:#fff;
+  cursor:pointer;
+}
+#faqChat .chat-toggle .dot { width:10px;height:10px;border-radius:50%;background:#7bd64a;box-shadow:0 4px 10px rgba(120,200,80,0.2); }
+#faqChat .chat-body { background: rgba(8,18,35,0.95); color:#e9f0ff; max-height:400px; display:none; flex-direction:column; }
+#faqChat .messages { padding:12px; overflow:auto; max-height:260px; }
+.msg { margin-bottom:12px; display:flex;}
+.msg.user { justify-content:flex-end;}
+.msg .bubble { max-width:76%; padding:10px 12px; border-radius:10px; background:rgba(255,255,255,0.06); color:#fff; }
+.msg.user .bubble { background:linear-gradient(90deg,#7b6cff,#4db2ff); color:#021; }
+.chat-input { display:flex; gap:8px; padding:10px; background:rgba(255,255,255,0.02);}
+.chat-input input { flex:1; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.05); background:transparent; color:#fff; }
+.chat-input button { padding:8px 12px; border-radius:8px; background:#6b5cff; color:#fff; border:none; cursor:pointer; }
+</style>
+
+<div id="faqChat" aria-hidden="false">
+  <div class="chat-toggle" id="faqToggle" role="button" aria-expanded="false">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12a10 10 0 1 0 20 0A10 10 0 0 0 2 12z" fill="#2b7a2b"/></svg>
+    <strong>Chat</strong>
+    <div style="flex:1"></div>
+    <div class="dot" aria-hidden="true"></div>
+  </div>
+
+  <div class="chat-body" id="faqBody" aria-hidden="true">
+    <div class="messages" id="faqMessages" role="log" aria-live="polite">
+      <div class="msg"><div class="bubble">Hi! I’m Akash’s assistant. Ask about his projects, CV, ORCID, or blog — or type “help”.</div></div>
+    </div>
+
+    <div class="chat-input" role="search">
+      <input id="faqInput" placeholder="Type a question, e.g. 'projects' or 'CV'">
+      <button id="faqSend">Send</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const toggle = document.getElementById('faqToggle');
+  const body = document.getElementById('faqBody');
+  const messages = document.getElementById('faqMessages');
+  const input  = document.getElementById('faqInput');
+  const send   = document.getElementById('faqSend');
+
+  toggle.addEventListener('click', () => {
+    const open = body.style.display === 'flex';
+    body.style.display = open ? 'none' : 'flex';
+    toggle.setAttribute('aria-expanded', !open);
+    if(!open) input.focus();
+  });
+
+  function addUser(text){
+    const el = document.createElement('div'); el.className = 'msg user';
+    el.innerHTML = '<div class="bubble">'+escapeHtml(text)+'</div>';
+    messages.appendChild(el); messages.scrollTop = messages.scrollHeight;
+  }
+  function addBot(text){
+    const el = document.createElement('div'); el.className = 'msg';
+    el.innerHTML = '<div class="bubble">'+escapeHtml(text)+'</div>';
+    messages.appendChild(el); messages.scrollTop = messages.scrollHeight;
+  }
+
+  function escapeHtml(s){ return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+  function handleQuery(q){
+    q = q.trim().toLowerCase();
+    if(!q) { addBot('Please type a question. Try "projects", "CV", "ORCID", or "blog".'); return; }
+    if(q.includes('project')) addBot('You can view my projects here: <a href="#projects" style="color:#8fd1ff">Projects section</a>. I work on ML + quantum chemistry.');
+    else if(q.includes('cv') || q.includes('resume')) addBot('Download my CV here: <a href="assets/CV.pdf" target="_blank" style="color:#8fd1ff">CV (PDF)</a>.');
+    else if(q.includes('orcid')) addBot('My ORCID iD is https://orcid.org/0009-0002-3160-5961 — I link to it in the header icons.');
+    else if(q.includes('blog')) addBot('I publish blog posts — you can find them under "Publications" or link to my external blog from the Blogs section.');
+    else if(q.includes('hello')||q.includes('hi')) addBot('Hello! How can I help? Try "projects", "CV", "ORCID" or "contact".');
+    else if(q.includes('contact')) addBot('Best way: email me at akash.shil@ucalgary.ca or use the contact section below.');
+    else addBot("Sorry — I don't know that yet. Try 'projects', 'CV', 'ORCID', 'blog', or 'contact'.");
+  }
+
+  send.addEventListener('click', () => {
+    const v = input.value||'';
+    input.value = '';
+    addUser(v); handleQuery(v);
+  });
+  input.addEventListener('keydown', (e) => { if(e.key === 'Enter'){ send.click(); } });
+})();
+</script>
 </body>
 </html>
