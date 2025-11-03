@@ -401,7 +401,7 @@ body::before {
   white-space: nowrap;
   min-width: 200px; /* keeps balance during typing */
   color: #a8c7ff;   /* optional highlight color */
-  vertical-align: baseline;
+  vertical-align: middle; /* ✅ FIX: removes the white cap above text */
   text-align: center;
 }
 
@@ -413,7 +413,6 @@ body::before {
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
 }
-
 /* small visual improvements for hero buttons and social icons */
 .btn {
   z-index: 6;
