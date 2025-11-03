@@ -2328,161 +2328,153 @@ backToTopBtn.addEventListener("click", () => {
 </div>
 
 <script>
-(function(){
-  const toggle = document.getElementById('faqToggle');
-  const body = document.getElementById('faqBody');
-  const messages = document.getElementById('faqMessages');
-  const input  = document.getElementById('faqInput');
-  const send   = document.getElementById('faqSend');
+/* Robust chatbot script - paste to replace your existing chatbot <script> block.
+   This waits for DOMContentLoaded and logs useful errors if something is missing. */
 
-  let welcomeSpoken = false; // ensure welcome voice plays only once per page load
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    const botToggle = document.getElementById('botToggle');
+    const chatBox   = document.getElementById('chatBox');
+    const closeChat = document.getElementById('closeChat');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend  = document.getElementById('chatSend');
 
-  toggle.addEventListener('click', () => {
-    const open = body.style.display === 'flex';
-    body.style.display = open ? 'none' : 'flex';
-    toggle.setAttribute('aria-expanded', !open);
-    if(!open) {
-      input.focus();
-      if(!welcomeSpoken){ speakText("Hi - I’m Akash's AI Assistant. Here to help you explore the website."); welcomeSpoken = true; }
-    }
-  });
+    // Quick sanity checks - helpful console messages if elements are missing
+    if (!botToggle) return console.error('Chatbot: missing element with id="botToggle"');
+    if (!chatBox)   return console.error('Chatbot: missing element with id="chatBox"');
+    if (!chatMessages) return console.error('Chatbot: missing element with id="chatMessages"');
+    if (!chatInput) return console.error('Chatbot: missing element with id="chatInput"');
+    if (!chatSend)  return console.error('Chatbot: missing element with id="chatSend"');
 
-  function escapeHtml(s){ return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+    // Ensure toggle visible (in case some CSS accidentally hid it)
+    botToggle.style.display = botToggle.style.display || 'flex';
 
-  function addUser(text){
-    const el = document.createElement('div'); el.className = 'msg user';
-    el.innerHTML = '<div class="bubble">'+escapeHtml(text)+'</div>';
-    messages.appendChild(el); messages.scrollTop = messages.scrollHeight;
-  }
+    // Prevent voice from repeating: speak only once per page load
+    let spoken = false;
 
-  // show typing line then call callback to produce final message
-  function showTypingThenReply(cb, typingMs=700){
-    const typingEl = document.createElement('div'); typingEl.className='msg';
-    typingEl.innerHTML = '<div class="bubble typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>';
-    messages.appendChild(typingEl);
-    messages.scrollTop = messages.scrollHeight;
-    setTimeout(()=> {
-      messages.removeChild(typingEl);
-      cb();
-      messages.scrollTop = messages.scrollHeight;
-    }, typingMs);
-  }
-
-  function addBotHtml(html){
-    const el = document.createElement('div'); el.className = 'msg';
-    el.innerHTML = '<div class="bubble">'+html+'</div>';
-    messages.appendChild(el); messages.scrollTop = messages.scrollHeight;
-  }
-
-  // speak text (if user/browser allows). safe short speech and only when flagged.
-  function speakText(text){
-    try {
-      if(!("speechSynthesis" in window)) return;
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'en-US';
-      u.rate = 1;
-      window.speechSynthesis.cancel(); // cancel ongoing to avoid overlap
-      window.speechSynthesis.speak(u);
-    } catch(e){ /* ignore */ }
-  }
-
-  // helper: navigate to an on-page anchor (#poster etc.)
-  function goToAnchor(id){
-    // try both id and named anchor
-    const sel = document.querySelector(id) || document.getElementById((id||'').replace('#',''));
-    if(sel){
-      // close widget on small screens so user sees page
-      if(window.innerWidth <= 600) body.style.display = 'none';
-      sel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      // small highlight flash
-      sel.style.transition = 'background 0.6s';
-      const orig = sel.style.background;
-      sel.style.background = 'rgba(255,255,0,0.06)';
-      setTimeout(()=> sel.style.background = orig, 800);
-      return true;
-    }
-    return false;
-  }
-
-  // central handler mapping queries -> replies and optional nav
-  function handleQueryRaw(q){
-    q = (q||'').trim().toLowerCase();
-    if(!q) { return {text: 'Please type a question. Try "projects", "poster", "CV", or "ORCID".'}; }
-
-    // navigation triggers (anywhere in the phrase)
-    if(q.includes('poster')) {
-      // reply then scroll
-      return { textHtml: 'Heading to the <a href="#poster" style="color:#8fd1ff">Poster section</a> 🧭', scrollTo:'#poster', speak: false };
-    }
-    if(q.includes('project')) {
-      return { textHtml: 'Heading to the <a href="#projects" style="color:#8fd1ff">Projects section</a> 🚀', scrollTo:'#projects', speak: false };
-    }
-    if(q.includes('cv') || q.includes('resume')) {
-      return { textHtml: 'Download my CV here: <a href="assets/CV.pdf" target="_blank" style="color:#8fd1ff">CV (PDF)</a>.', speak: false };
-    }
-    if(q.includes('orcid')) {
-      return { textHtml: 'My ORCID iD: <a href="https://orcid.org/0009-0002-3160-5961" target="_blank" style="color:#8fd1ff">0009-0002-3160-5961</a>.', speak: false };
-    }
-    if(q.includes('blog') || q.includes('publication')) {
-      return { textHtml: 'Find blog posts under "Publications" or link to my external blog from the Blogs section.', speak: false, scrollTo:'#publications' };
-    }
-    if(q.includes('hello') || q.includes('hi')) {
-      return { text: 'Hello! How can I help? Try "projects", "poster", "CV" or "contact".', speak: false };
-    }
-    if(q.includes('contact') || q.includes('email')) {
-      return { textHtml: 'Email me at <a href="mailto:akash.shil@ucalgary.ca" style="color:#8fd1ff">akash.shil@ucalgary.ca</a>.', speak: false };
-    }
-
-    // fallback
-    return { text: "Sorry - I don't know that yet. Try 'projects', 'poster', 'CV', 'ORCID', or 'contact'." };
-  }
-
-  // handle send click / enter
-  function doSend(raw){
-    const v = raw.trim();
-    if(!v) return;
-    addUser(v);
-    input.value = '';
-    // show typing animation then reply
-    showTypingThenReply(()=> {
-      const res = handleQueryRaw(v);
-      if(res.textHtml) addBotHtml(res.textHtml);
-      else addBotHtml( escapeHtml(res.text) );
-
-      // speak once if requested
-      if(res.speak) speakText(res.speak);
-
-      // if response asked to scroll, do it a tick after rendering
-      if(res.scrollTo){
-        setTimeout(()=> {
-          const ok = goToAnchor(res.scrollTo);
-          if(!ok) {
-            // if anchor not found, suggest link
-            addBotHtml('I tried to go there but that section is not found on this page.');
-          }
-        }, 220);
+    function speakOnce(text){
+      if (spoken) return;
+      spoken = true;
+      if ('speechSynthesis' in window) {
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US';
+        u.rate = 1.0;
+        window.speechSynthesis.speak(u);
       }
-    }, 600); // typing time (ms)
-  }
-
-  // efficient: click handler for quick suggestion chips (if you add them)
-  messages.addEventListener('click', (e)=>{
-    const a = e.target.closest('a[data-suggest]');
-    if(a){
-      const cmd = a.getAttribute('data-suggest');
-      input.value = cmd;
-      send.click();
     }
-  });
 
-  send.addEventListener('click', () => doSend(input.value || ''));
-  input.addEventListener('keydown', (e) => { if(e.key === 'Enter'){ send.click(); } });
+    function openChat(){
+      chatBox.style.display = 'flex';
+      botToggle.style.display = 'none';
+      // small welcome voice line (only once)
+      speakOnce("Hi, I'm Akash's AI Assistant. Here to help you explore the website.");
+      // focus input after slight delay so mobile shows keyboard
+      setTimeout(()=> chatInput.focus(), 250);
+    }
+    function closeChatBox(){
+      chatBox.style.display = 'none';
+      botToggle.style.display = 'flex';
+    }
 
-  // initial short welcome message (rendered in bubble)
-  addBotHtml('Hi - I’m Akash’s AI Assistant 🤖<br><em>Here to help you explore the website.</em>');
-  // speak welcome once when widget first opens (not loud on load)
-  // welcomeSpoken toggled when user opens the widget (see toggle click)
-})();
+    // Attach events (safely)
+    botToggle.addEventListener('click', openChat);
+    if (closeChat) closeChat.addEventListener('click', closeChatBox);
+
+    // Send message handlers
+    function addMessage(html, cls){
+      const div = document.createElement('div');
+      div.className = 'message ' + cls;
+      div.innerHTML = html;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function addTypingIndicator(){
+      const div = document.createElement('div');
+      div.className = 'message bot-msg typing-msg';
+      div.innerHTML = 'Typing<span class="typing"></span><span class="typing"></span><span class="typing"></span>';
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    function removeTypingIndicator(){
+      const el = chatMessages.querySelector('.typing-msg');
+      if (el) el.remove();
+    }
+
+    function handleResponse(query){
+      query = (query || '').toLowerCase().trim();
+      if(!query) {
+        addMessage("Please type a question. Try 'projects', 'poster', 'publications', or 'CV'.", 'bot-msg');
+        return;
+      }
+
+      // navigation responses (scroll to anchors)
+      if (query.includes('project')) return navReply("Jumping to Projects section 🔬", "#projects");
+      if (query.includes('poster'))  return navReply("Heading to the Poster section 🧪", "#poster");
+      if (query.includes('publication') || query.includes('publications')) return navReply("Opening Publications 📚", "#publications");
+      if (query.includes('cv') || query.includes('resume')) {
+        addMessage("You can view my CV here: <a href='assets/CV.pdf' target='_blank' style='color:#8fd1ff'>CV (PDF)</a> 📄", 'bot-msg');
+        return;
+      }
+      if (query.includes('contact')) return navReply("Scrolling to Contact 💌", "#contact");
+      if (query.includes('home') || query.includes('go home')) return navReply("Going to top of the page ⬆️", null, () => window.scrollTo({top:0, behavior:'smooth'}));
+      if (query.includes('scroll down')) return navReply("Scrolling down a bit...", null, () => window.scrollBy({top:400, behavior:'smooth'}));
+
+      addMessage("I’m still learning - try 'projects', 'poster', 'publications', 'CV' or 'contact'.", 'bot-msg');
+    }
+
+    function navReply(text, anchor, extraFn){
+      addMessage(text, 'bot-msg');
+      setTimeout(()=> {
+        try {
+          if (anchor) {
+            const el = document.querySelector(anchor);
+            if (el) el.scrollIntoView({behavior:'smooth'});
+            else console.warn('Chatbot: anchor not found', anchor);
+          }
+          if (typeof extraFn === 'function') extraFn();
+        } catch(e) { console.error(e); }
+      }, 800);
+    }
+
+    function sendCurrent(){
+      const v = chatInput.value.trim();
+      if (!v) return;
+      addMessage(v, 'user-msg');
+      chatInput.value = '';
+      addTypingIndicator();
+      // simulate "thinking"
+      setTimeout(()=> {
+        removeTypingIndicator();
+        handleResponse(v);
+      }, 700);
+    }
+
+    chatSend.addEventListener('click', sendCurrent);
+    chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendCurrent(); });
+
+    // Optional: clicking outside chat closes it on mobile/touch
+    document.addEventListener('click', (ev) => {
+      const target = ev.target;
+      if (!chatBox.contains(target) && !botToggle.contains(target)) {
+        // keep botToggle visible - do not auto-close when chat is closed
+        if (chatBox.style.display === 'flex') closeChatBox();
+      }
+    }, { passive: true });
+
+    // If you want the widget collapsed initially and clickable, ensure that now:
+    if (chatBox.style.display !== 'flex') {
+      chatBox.style.display = 'none';
+      botToggle.style.display = 'flex';
+    }
+
+    // good to go - debug info
+    console.info('Chatbot initialized ✅');
+  } catch (err){
+    console.error('Chatbot initialization error:', err);
+  }
+});
 </script>
 <!-- ==== End of Chatbot ==== -->
 </body>
