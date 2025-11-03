@@ -2160,378 +2160,317 @@ backToTopBtn.addEventListener("click", () => {
     }
   })();
 </script>
-<!-- ===== Akash: Combined Chatbot (paste BEFORE </body>) ===== -->
+
+<!-- ===== Akash’s AI Assistant Chatbot 🤖 (Final Version) ===== -->
 <style>
-/* Chat widget - responsive, compact */
-#akashChat {
+/* Chatbot container */
+#aiChatbot {
   position: fixed;
-  right: 20px;
-  bottom: 18px;
-  z-index: 99999;
-  font-family: "Times New Roman", Times, serif; /* matches site */
+  right: 24px;
+  bottom: 90px; /* clear of back-to-top */
+  font-family: 'Inter', sans-serif;
+  z-index: 10040 !important;
 }
 
-/* floating robot button (small) */
-#akashToggle {
+/* Robot toggle button */
+#botToggle {
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  background: linear-gradient(145deg,#6366f1,#4338ca);
-  display:flex; align-items:center; justify-content:center;
-  color:#fff; font-size:26px; box-shadow:0 8px 28px rgba(0,0,0,0.45);
-  cursor:pointer;
-  transition:transform .18s ease;
+  background: linear-gradient(145deg, #6366f1, #4338ca);
+  color: white;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 28px rgba(99,102,241,0.55);
+  transition: all 0.25s ease;
+  animation: pulseGlow 2.4s infinite ease-in-out;
 }
-#akashToggle:hover{ transform:scale(1.06); }
+#botToggle:hover { transform: scale(1.08); }
 
-/* chat panel (hidden on mobile by default in expanded form) */
-#akashPanel {
-  width: 360px;
-  max-width: calc(100vw - 40px);
-  max-height: 70vh;
-  background: rgba(7,12,28,0.98);
-  color:#eaf0ff;
-  border-radius:14px;
-  box-shadow:0 14px 50px rgba(0,0,0,0.55);
-  overflow: hidden;
-  display: none;
-  flex-direction: column;
+@keyframes pulseGlow {
+  0%,100% { box-shadow: 0 0 10px rgba(99,102,241,0.6); }
+  50% { box-shadow: 0 0 24px rgba(99,102,241,0.9); }
+}
+
+/* Chatbox */
+#chatBox {
   position: absolute;
   right: 0;
   bottom: 70px;
+  width: 330px;
+  max-height: 420px;
+  background: rgba(12, 16, 30, 0.95);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+  overflow: hidden;
+  display: none;
+  flex-direction: column;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* header */
-#akashPanel .header {
+/* Chat header */
+.chat-header {
   background: linear-gradient(90deg,#4f46e5,#3b82f6);
-  padding:10px 14px;
-  display:flex; align-items:center; justify-content:space-between;
-  color:#fff; font-weight:600;
+  color: white;
+  font-weight: 600;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-#akashPanel .header button { background:transparent; border:none; color:#fff; font-size:18px; cursor:pointer; }
-
-/* messages */
-#akashMessages {
-  padding:12px;
-  overflow:auto;
-  flex:1;
+.chat-header span { font-size: 15px; }
+.chat-header button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
 }
-.akash-msg { margin-bottom:12px; opacity:0; transform:translateY(8px); animation:fadeup .36s forwards; }
-@keyframes fadeup{ to{opacity:1; transform:none} }
-.akash-bot { background: rgba(255,255,255,0.06); color:#eef4ff; padding:10px 12px; border-radius:10px; display:inline-block; max-width:86%; }
-.akash-user { background: linear-gradient(90deg,#6366f1,#4db2ff); color:#fff; padding:10px 12px; border-radius:10px; display:inline-block; max-width:86%; margin-left:auto; }
 
-/* quick buttons area */
-.akash-quick { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+/* Messages */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+.message {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: msgFade 0.4s ease forwards;
+  margin-bottom: 10px;
+}
+@keyframes msgFade {
+  to { opacity: 1; transform: translateY(0); }
+}
+.bot-msg, .user-msg {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  line-height: 1.4;
+}
+.bot-msg {
+  background: rgba(255,255,255,0.1);
+  color: #e3e8ff;
+}
+.user-msg {
+  background: linear-gradient(90deg,#6366f1,#3b82f6);
+  color: #fff;
+  margin-left: auto;
+}
 
-/* input row */
-#akashInputRow { display:flex; gap:8px; padding:10px; border-top:1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.02); }
-#akashInput { flex:1; padding:9px 10px; border-radius:8px; border:none; outline:none; background:rgba(255,255,255,0.04); color:#fff; font-family:inherit; }
-#akashSend { background:#6366f1; color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; }
+/* Typing animation centered */
+.typing-msg .bot-msg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+}
+.typing {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #aaa;
+  animation: typingDots 1s infinite ease-in-out alternate;
+  margin: 0 3px;
+}
+@keyframes typingDots {
+  0% { opacity: 0.2; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-2px); }
+  100% { opacity: 0.2; transform: translateY(0); }
+}
 
-/* typing animation 3 dots */
-.akash-typing { display:inline-block; margin-left:6px; }
-.akash-dot { width:6px;height:6px;border-radius:50%;background:#bfcffb;display:inline-block;margin-right:4px;opacity:.25;animation:dot .9s infinite; }
-.akash-dot:nth-child(2){ animation-delay:.15s }
-.akash-dot:nth-child(3){ animation-delay:.3s }
-@keyframes dot { 50%{ opacity:1; transform:translateY(-3px) } }
+/* Input box */
+.chat-input {
+  display: flex;
+  padding: 8px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+}
+.chat-input input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
+.chat-input button {
+  margin-left: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: #6366f1;
+  color: white;
+  cursor: pointer;
+}
 
-/* small screens: keep widget smaller and anchored to right-bottom */
-@media (max-width:600px){
-  #akashPanel { width: 320px; right: 10px; bottom: 78px; max-height: 72vh; }
-  #akashToggle { width:48px; height:48px; font-size:22px; }
+/* Keep Back-to-Top above chatbot */
+.back-to-top, #backToTop, #toTop, .scroll-top {
+  z-index: 10050 !important;
+  position: fixed;
 }
 </style>
 
-<div id="akashChat" aria-hidden="false">
-  <div id="akashToggle" title="Chat with assistant" role="button" aria-label="Open chat">🤖</div>
+<div id="aiChatbot">
+  <div id="botToggle" title="Chat with Akash’s assistant">🤖</div>
 
-  <div id="akashPanel" role="dialog" aria-label="Akash's assistant" aria-hidden="true">
-    <div class="header">
-      <div>Assistant</div>
-      <button id="akashClose" aria-label="Close chat">&times;</button>
+  <div id="chatBox" role="dialog" aria-label="Akash’s AI Assistant">
+    <div class="chat-header">
+      <span>Assistant</span>
+      <button id="closeChat">&times;</button>
     </div>
 
-    <div id="akashMessages" aria-live="polite" role="log">
-      <!-- bot messages will be appended here -->
-    </div>
+    <div class="chat-messages" id="chatMessages"></div>
 
-    <div style="padding:0 12px 0 12px;">
-      <div class="akash-quick" id="akashQuick">
-        <!-- optional quick action buttons rendered by JS -->
-      </div>
-    </div>
-
-    <div id="akashInputRow">
-      <input id="akashInput" placeholder="Type e.g. 'take me to poster'">
-      <button id="akashSend">Send</button>
+    <div class="chat-input">
+      <input id="chatInput" placeholder="Type e.g. 'take me to poster'">
+      <button id="chatSend">Send</button>
     </div>
   </div>
 </div>
 
+<!-- ===== Robust Chatbot Script ===== -->
 <script>
-/* ===== Combined: indexer + navigator + UI wiring =====
-   Paste this block and remove any other chatbot scripts you added earlier.
-*/
-
 (function(){
-  /* ---------- Utilities ---------- */
-  const qs = s => document.querySelector(s);
-  const qsa = s => Array.from(document.querySelectorAll(s));
   const norm = s => (s||'').toString().toLowerCase().normalize('NFKD').replace(/[^\w\s-]/g,' ').replace(/\s+/g,' ').trim();
   const tokenize = s => norm(s).split(' ').filter(Boolean);
-  const stem = t => (t && t.length>3 && t.endsWith('s')) ? t.slice(0,-1) : t;
-
-  /* ---------- Build searchable index from page (sections, cards, data-keywords) ---------- */
+  const stem = t => (t.length>3 && t.endsWith('s')) ? t.slice(0,-1) : t;
   function buildIndex(){
     const items = [];
-
-    function register(el, labelFallback){
+    function register(el,label){
       if(!el) return;
-      const id = el.id || null;
-      const heading = (el.querySelector && (el.querySelector('.section-title, h2, h3, h4, h5')?.innerText))
-                      || labelFallback || id || el.getAttribute('aria-label') || '';
-
-      // gather keyword sources
-      let kws = [];
-      const dk = el.getAttribute && el.getAttribute('data-keywords');
-      if(dk) kws = kws.concat(dk.split(',').map(p=>p.trim()).filter(Boolean));
+      let kws=[], id=el.id||'', dk=el.getAttribute('data-keywords');
+      if(dk) kws.push(...dk.split(',').map(x=>x.trim()));
       if(id) kws.push(id.replace(/[-_]/g,' '));
-      const aria = el.getAttribute && el.getAttribute('aria-label'); if(aria) kws.push(aria);
-      const title = el.getAttribute && el.getAttribute('title'); if(title) kws.push(title);
-
-      // headings & small text
-      qsa('h1,h2,h3,h4,h5', el).forEach(h => { if(h.innerText) kws.push(h.innerText); });
-      qsa('p,li,.muted-small,.achievement-date,.card-title', el).forEach(t => { if(t.innerText) kws.push(t.innerText.slice(0,300)); });
-
-      // images alt
-      qsa('img[alt]', el).forEach(i => { if(i.alt) kws.push(i.alt); });
-
-      const combined = kws.join(' · ');
-      const tokens = Array.from(new Set(tokenize(combined).map(stem)));
-      items.push({ el, id, label: heading, tokens, canonical: norm(heading + ' ' + combined).slice(0,2000) });
+      el.querySelectorAll('h1,h2,h3,h4,h5,p,li').forEach(n=>kws.push(n.innerText||''));
+      items.push({el,id,label:(label||el.id||''),tokens:Array.from(new Set(tokenize(kws.join(' ')).map(stem))),canonical:norm(kws.join(' '))});
     }
-
-    // register main known section IDs (use what you provided)
-    const known = ['about','projects','publications','achievements','contact','poster','education'];
-    known.forEach(id => {
-      const el = document.getElementById(id);
-      if(el) register(el, id);
-    });
-
-    // register any section[id]
-    qsa('section[id]').forEach(sec => {
-      if(!items.some(it=>it.el===sec)) register(sec);
-    });
-
-    // register highlight / achievement / project cards
-    qsa('.highlight-card, .achievement-card, .project-card, .card.project-card').forEach(card => {
-      if(!items.some(it=>it.el===card)) register(card);
-    });
-
-    // register elements with explicit data-keywords
-    qsa('[data-keywords]').forEach(el => { if(!items.some(it=>it.el===el)) register(el); });
-
-    // debug
-    // console.log('[chat-index] built', items.map(i=>({id:i.id,label:i.label,kw:i.tokens.length})));
+    document.querySelectorAll('section[id],.project-card,.achievement-card,[data-keywords]').forEach(el=>register(el));
     return items;
   }
-
   let index = buildIndex();
 
-  /* ---------- robust matcher ---------- */
-  function findBestMatch(query){
-    const q = norm(query);
-    if(!q) return null;
-    const qtokens = tokenize(q).map(stem);
-    if(!qtokens.length) return null;
-
-    let best=null, bestScore=0;
-    index.forEach(item => {
-      let score=0;
-      // token hits
-      qtokens.forEach(t=>{
-        if(item.tokens.includes(t)) score += 2;
-      });
-      // substring in canonical
-      if(item.canonical && item.canonical.indexOf(q) !== -1) score += 1.2;
-      // id exact match
-      if(item.id && item.id.toLowerCase() === qtokens[0]) score += 1.1;
-      // favor full sections slightly
-      if(item.id && ['about','projects','publications','achievements','contact','poster','education'].includes(item.id)) score += 0.4;
-
-      if(score > bestScore) { bestScore=score; best=item; }
+  function findMatch(q){
+    const qt = tokenize(q).map(stem);
+    let best=null,score=0;
+    index.forEach(it=>{
+      let s=0;
+      qt.forEach(t=>{ if(it.tokens.includes(t)) s+=1.5; });
+      if(it.canonical.includes(q)) s+=1;
+      if(s>score){ score=s; best=it; }
     });
-
-    // fallback substring
-    if(!best || bestScore < 0.8){
-      for(const item of index){
-        if(item.canonical && item.canonical.indexOf(q) !== -1) return item;
-      }
-    }
-    return bestScore >= 0.6 ? best : null;
+    return score>0.8?best:null;
   }
 
-  /* ---------- UI helpers ---------- */
-  const panel = document.getElementById('akashPanel');
-  const toggle = document.getElementById('akashToggle');
-  const closeBtn = document.getElementById('akashClose');
-  const messages = document.getElementById('akashMessages');
-  const input = document.getElementById('akashInput');
-  const sendBtn = document.getElementById('akashSend');
-  const quick = document.getElementById('akashQuick');
-
-  function appendBot(html){
-    if(!messages) return;
-    const wrap = document.createElement('div');
-    wrap.className = 'akash-msg';
-    wrap.innerHTML = `<div class="akash-bot">${html}</div>`;
-    messages.appendChild(wrap);
-    messages.scrollTop = messages.scrollHeight;
-  }
-  function appendUser(text){
-    if(!messages) return;
-    const wrap = document.createElement('div');
-    wrap.className = 'akash-msg';
-    wrap.innerHTML = `<div class="akash-user">${escapeHtml(text)}</div>`;
-    messages.appendChild(wrap);
-    messages.scrollTop = messages.scrollHeight;
-  }
-  function appendTyping(){
-    const wrap = document.createElement('div');
-    wrap.className = 'akash-msg typing';
-    wrap.id = 'akashTyping';
-    wrap.innerHTML = `<div class="akash-bot">Thinking <span class="akash-typing"><span class="akash-dot"></span><span class="akash-dot"></span><span class="akash-dot"></span></span></div>`;
-    messages.appendChild(wrap);
-    messages.scrollTop = messages.scrollHeight;
-  }
-  function removeTyping(){
-    const t = document.getElementById('akashTyping');
-    if(t) t.remove();
-  }
-  function escapeHtml(s){ return (s||'').toString().replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-
-  /* ---------- speak helper (safe) ---------- */
-  function speak(text){
-    if(!('speechSynthesis' in window)) return;
+  function botReply(text,target){
+    const box=document.getElementById('chatMessages');
+    const div=document.createElement('div');
+    div.className='message bot-msg';
+    div.innerHTML=text;
+    box.appendChild(div);
+    box.scrollTop=box.scrollHeight;
     try{
-      // only speak after user interacted with page — some browsers block auto-speech
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'en-US'; u.rate = 1;
-      speechSynthesis.cancel();
-      speechSynthesis.speak(u);
+      if('speechSynthesis' in window){
+        const u=new SpeechSynthesisUtterance(div.textContent);
+        u.lang='en-US'; u.rate=1;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(u);
+      }
     }catch(e){}
-  }
-
-  /* ---------- welcome (once) ---------- */
-  function injectWelcomeOnce(){
-    const key = 'akash_assistant_shown_v1';
-    if(localStorage.getItem(key)) return;
-    localStorage.setItem(key,'1');
-    appendBot(`<strong>Hi - I’m Akash’s AI Assistant 🤖</strong><br>Here to help you explore the website. I can jump to sections — try: “projects”, “CV”, “publications”, or “take me to posters”.`);
-    // attempt speak only if user has interacted (some browsers require it) — safe to call
-    try{ speak("Hi - I'm Akash's AI Assistant. Here to help you explore the website."); }catch(e){}
-  }
-
-  /* ---------- navigation API exposed for UI ---------- */
-  window.chatbotNavigate = function(query){
-    if(!query || !query.trim()){
-      appendBot('Please tell me what you want - try "projects", "poster", "CV" or "contact".');
-      return;
+    if(target){
+      setTimeout(()=>{
+        target.scrollIntoView({behavior:'smooth',block:'center'});
+        target.animate([{boxShadow:'0 0 0 rgba(124,246,178,0)'},{boxShadow:'0 0 40px rgba(124,246,178,0.3)'},{boxShadow:'0 0 0 rgba(124,246,178,0)'}],{duration:1400});
+      },800);
     }
-    const q = query.trim();
-    appendTyping();
-    setTimeout(()=>{
-      removeTyping();
-      // synonyms quick map (fast path)
-      const map = {
-        'cv':'cv', 'resume':'cv', 'contact':'contact','email':'contact',
-        'poster':'poster','posters':'poster','achievement':'achievements','achievements':'achievements',
-        'highlight':'achievements','highlights':'achievements','publication':'publications','publications':'publications',
-        'project':'projects','projects':'projects','education':'education','about':'about','orcid':'orcid'
-      };
-      const qnorm = norm(q);
-      for(const k in map){
-        if(qnorm.includes(k)){
-          const id = map[k];
-          const el = document.getElementById(id);
-          if(el){
-            appendBot(`Heading to the <strong>${el.querySelector('.section-title')?.innerText || id}</strong> section 🚀`);
-            setTimeout(()=>{ el.scrollIntoView({behavior:'smooth', block:'center'}); }, 600);
-            return;
-          }
-        }
-      }
+  }
 
-      // robust match
-      const item = findBestMatch(q);
-      if(item){
-        appendBot(`Opening <strong>${escapeHtml(item.label || item.id || 'that section')}</strong> 🔎`);
-        setTimeout(()=>{ item.el.scrollIntoView({behavior:'smooth', block:'center'}); }, 650);
-      } else {
-        appendBot(`Sorry - I couldn't find a section matching "<em>${escapeHtml(q)}</em>" 🤔. Try simpler words like "projects", "poster", "CV", or "contact".`);
-      }
-    }, 650);
+  window.chatbotNavigate=function(q){
+    if(!q.trim()) return botReply('Try something like “projects”, “poster”, or “contact”.');
+    const map={'cv':'about','resume':'about','education':'about','project':'projects','projects':'projects','poster':'achievements','highlights':'achievements','achievements':'achievements','publication':'publications','publications':'publications','contact':'contact','email':'contact'};
+    const qn=norm(q);
+    for(const k in map){ if(qn.includes(k)){ const el=document.getElementById(map[k]); if(el) return botReply(`Heading to the ${map[k]} section 🚀`,el);} }
+    const m=findMatch(qn); if(m) botReply(`Opening <b>${m.label||m.id}</b> 🔎`,m.el);
+    else botReply(`Sorry — I couldn’t find “${q}” 🤔`);
   };
-
-  /* ---------- wire UI events ---------- */
-  // open
-  toggle.addEventListener('click', ()=>{
-    panel.style.display = 'flex';
-    panel.setAttribute('aria-hidden','false');
-    toggle.style.display = 'none';
-    // inject welcome once into the panel
-    injectWelcomeOnce();
-    // show quick action buttons (only once)
-    if(quick && quick.children.length===0){
-      ['projects','poster','publications','CV','contact'].forEach(k=>{
-        const btn = document.createElement('button');
-        btn.textContent = k==='CV'?'show CV':k;
-        btn.style.cssText = 'background:linear-gradient(90deg,#6b5cff,#4db2ff);color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;';
-        btn.addEventListener('click', ()=> {
-          if(k==='CV') chatbotNavigate('cv');
-          else chatbotNavigate(k);
-        });
-        quick.appendChild(btn);
-      });
-    }
-  });
-  // close
-  closeBtn.addEventListener('click', ()=>{
-    panel.style.display = 'none';
-    panel.setAttribute('aria-hidden','true');
-    toggle.style.display = 'flex';
-  });
-
-  // send handler
-  function sendHandler(){
-    const v = input.value || '';
-    if(!v.trim()) return;
-    appendUser(v);
-    input.value = '';
-    // call navigator
-    if(typeof window.chatbotNavigate === 'function') window.chatbotNavigate(v);
-    else appendBot("Sorry — navigation not available.");
-  }
-  sendBtn.addEventListener('click', sendHandler);
-  input.addEventListener('keydown', (e) => { if(e.key === 'Enter'){ e.preventDefault(); sendHandler(); } });
-
-  // allow panel to reindex when DOM updated
-  window.chatbotReindex = function(){ index = buildIndex(); console.log('[chat] reindexed'); };
-
-  // make initial compact welcome in messages area (do not duplicate)
-  // we don't auto-inject here — inject when first opened (injectWelcomeOnce)
-
-  // ensure accessible focus behavior
-  panel.addEventListener('keydown', (e) => {
-    if(e.key === 'Escape'){ panel.style.display='none'; toggle.style.display='flex'; }
-  });
-
-  // finally: ensure index is built again in case resources changed
-  setTimeout(()=>{ index = buildIndex(); }, 600);
-  console.log('[chat] assistant ready (chatbotNavigate available)');
 })();
 </script>
-<!-- ===== End Akash Chatbot ===== -->
+
+<!-- ===== Chat UI Wiring (open/close/send/speak) ===== -->
+<script>
+(function(){
+  const el=id=>document.getElementById(id);
+  const botToggle=el('botToggle'),chatBox=el('chatBox'),closeChat=el('closeChat'),chatSend=el('chatSend'),chatInput=el('chatInput'),chatMsgs=el('chatMessages');
+
+  window.speak=function(txt){
+    try{
+      if(!('speechSynthesis' in window))return;
+      const u=new SpeechSynthesisUtterance(txt);
+      u.lang='en-US';u.rate=1;
+      speechSynthesis.cancel();speechSynthesis.speak(u);
+    }catch(e){}
+  };
+
+  function addMessage(txt,cls){
+    const d=document.createElement('div');
+    d.className='message '+cls;
+    d.innerHTML=txt;
+    chatMsgs.appendChild(d);
+    chatMsgs.scrollTop=chatMsgs.scrollHeight;
+  }
+  window.addMessage=addMessage;
+
+  function addTyping(){
+    const d=document.createElement('div');
+    d.className='message bot-msg typing-msg';
+    d.innerHTML='<div class="bot-msg">Thinking<span class="typing"></span><span class="typing"></span><span class="typing"></span></div>';
+    chatMsgs.appendChild(d);
+  }
+  function removeTyping(){ const t=document.querySelector('.typing-msg'); if(t)t.remove(); }
+
+  function openChat(){
+    chatBox.style.display='flex';
+    botToggle.style.display='none';
+    chatInput.focus();
+    if(!window.chatOpened){
+      addMessage("<b>Hi — I'm Akash’s AI Assistant 🤖</b><br>Here to help you explore this site. Try 'projects', 'CV', 'poster', or 'contact'.",'bot-msg');
+      window.speak("Hi, I'm Akash's AI Assistant. Here to help you explore the website.");
+      window.chatOpened=true;
+    }
+  }
+
+  function closeChatFn(){
+    chatBox.style.display='none';
+    botToggle.style.display='flex';
+  }
+
+  function sendMsg(){
+    const text=chatInput.value.trim();
+    if(!text) return;
+    addMessage(text,'user-msg');
+    chatInput.value='';
+    addTyping();
+    setTimeout(()=>{
+      removeTyping();
+      chatbotNavigate(text);
+    },700);
+  }
+
+  botToggle.addEventListener('click',openChat);
+  closeChat.addEventListener('click',closeChatFn);
+  chatSend.addEventListener('click',sendMsg);
+  chatInput.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg();});
+})();
+</script>
+<!-- ===== End of Chatbot ===== -->
 </body>
 </html>
