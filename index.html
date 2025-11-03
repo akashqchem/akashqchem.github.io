@@ -2314,7 +2314,6 @@ backToTopBtn.addEventListener("click", () => {
     </div>
 
     <div class="chat-messages" id="chatMessages">
-      <div class="message bot-msg">
         <strong>Hi - I’m Akash’s AI Assistant 🤖</strong><br>
         Here to help you explore the website.<br>
         I can take you to any section - try:<br>
@@ -2330,168 +2329,317 @@ backToTopBtn.addEventListener("click", () => {
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const botToggle = document.getElementById('botToggle');
-  const chatBox = document.getElementById('chatBox');
-  const closeChat = document.getElementById('closeChat');
-  const chatMessages = document.getElementById('chatMessages');
-  const chatInput = document.getElementById('chatInput');
-  const chatSend = document.getElementById('chatSend');
+/* ===== Robust site-search + navigator for the chatbot =====
+   Replace your previous chatbot JS (sendMsg / handleResponse etc.) with this block.
+   It indexes page elements (sections, cards) and performs tolerant keyword matching.
+*/
 
-  if (!botToggle || !chatBox || !chatMessages || !chatInput || !chatSend) {
-    console.error("Chatbot missing essential elements");
-    return;
-  }
+(function () {
+  // ————— Utilities —————
+  const norm = s => (s || '').toString()
+    .toLowerCase()
+    .normalize('NFKD')                    // strip diacritics
+    .replace(/[^\w\s-]/g, ' ')            // remove punctuation (keep word chars)
+    .replace(/\s+/g, ' ')
+    .trim();
 
-  let spoken = false;
-  const sectionMap = {
-    projects: "#projects",
-    poster: "#poster",
-    posters: "#poster",
-    education: "#education",
-    research: "#education",
-    study: "#education",
-    about: "#about",
-    summary: "#education",
-    contact: "#contact",
-    mail: "#contact",
-    email: "#contact",
-    publication: "#publications",
-    publications: "#publications",
-    highlights: "#highlights",
-    achievement: "#highlights",
-    orcid: ".ai-orcid-link",
-    github: "a[href*='github.com']",
-    linkedin: "a[href*='linkedin.com']",
-    cv: "a[href*='CV.pdf']",
-    resume: "a[href*='CV.pdf']",
-    quote: "#quotes"
+  const tokenize = s => {
+    if (!s) return [];
+    return norm(s).split(' ').filter(Boolean);
   };
 
-  function speakOnce(text) {
-    if (spoken) return;
-    spoken = true;
-    if ('speechSynthesis' in window) {
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = 'en-US';
-      utter.rate = 1;
-      window.speechSynthesis.speak(utter);
-    }
-  }
+  const simpleStem = token => {
+    // tiny heuristic: remove trailing 's' for plurals (e.g., posters -> poster)
+    if (token.length > 3 && token.endsWith('s')) return token.slice(0, -1);
+    return token;
+  };
 
-  function openChat() {
-    chatBox.style.display = 'flex';
-    botToggle.style.display = 'none';
-    speakOnce("Hi, I'm Akash's AI Assistant. Here to help you explore the website.");
-  }
+  // ————— Build index of searchable items —————
+  function buildIndex() {
+    const items = [];
 
-  function closeChatBox() {
-    chatBox.style.display = 'none';
-    botToggle.style.display = 'flex';
-  }
+    // helper to register an element
+    function register(el, label) {
+      const data = {};
+      data.el = el;
+      data.id = el.id || null;
+      data.label = label || (el.getAttribute('aria-label') || el.querySelector('h2,h3,h4,h5')?.innerText || el.getAttribute('title') || el.id || '');
+      // collect keyword sources
+      let kws = [];
 
-  botToggle.addEventListener('click', openChat);
-  closeChat.addEventListener('click', closeChatBox);
-
-  function addMessage(html, cls) {
-    const div = document.createElement('div');
-    div.className = 'message ' + cls;
-    div.innerHTML = html;
-    chatMessages.appendChild(div);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
-
-  function addTyping() {
-    const div = document.createElement('div');
-    div.className = 'message bot-msg typing-msg';
-    div.innerHTML = 'Typing<span class="typing"></span><span class="typing"></span><span class="typing"></span>';
-    chatMessages.appendChild(div);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
-
-  function removeTyping() {
-    const typing = document.querySelector('.typing-msg');
-    if (typing) typing.remove();
-  }
-
-  chatSend.addEventListener('click', sendMsg);
-  chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMsg(); });
-
-  function sendMsg() {
-    const text = chatInput.value.trim();
-    if (!text) return;
-    addMessage(text, 'user-msg');
-    chatInput.value = '';
-    addTyping();
-    setTimeout(() => {
-      removeTyping();
-      handleSmartResponse(text.toLowerCase());
-    }, 700);
-  }
-
-  function handleSmartResponse(query) {
-    // STEP 1: direct known mapping first
-    for (const key in sectionMap) {
-      if (query.includes(key)) {
-        const target = sectionMap[key];
-        smartScroll(target, key);
-        return;
+      // explicit data-keywords attribute (comma or space separated)
+      const dk = el.getAttribute && el.getAttribute('data-keywords');
+      if (dk) {
+        // split on commas first, fallback spaces
+        const parts = dk.split(',').map(p => p.trim()).filter(Boolean);
+        kws = kws.concat(parts);
       }
+
+      // id
+      if (el.id) kws.push(el.id.replace(/[-_]/g, ' '));
+
+      // aria-label/title/alt
+      const aria = el.getAttribute && el.getAttribute('aria-label');
+      if (aria) kws.push(aria);
+      const title = el.getAttribute && el.getAttribute('title');
+      if (title) kws.push(title);
+
+      // alt attributes inside element
+      el.querySelectorAll && el.querySelectorAll('img[alt], [title]').forEach(img => {
+        if (img.alt) kws.push(img.alt);
+        if (img.title) kws.push(img.title);
+      });
+
+      // headings and visible text (trim to limit)
+      const headings = Array.from(el.querySelectorAll('h1,h2,h3,h4,h5')).map(h => h.innerText).filter(Boolean);
+      kws = kws.concat(headings);
+
+      // small description text (muted-small etc)
+      const texts = Array.from(el.querySelectorAll('p, li, .muted-small, .hl-caption')).map(n => n.innerText).filter(Boolean);
+      // include only first few words to keep index size reasonable
+      texts.forEach(t => kws.push(t.slice(0, 280)));
+
+      // flatten, normalize, dedupe
+      const joined = kws.join(' · ');
+      const tokens = tokenize(joined).map(simpleStem);
+      data.keywords = Array.from(new Set(tokens));
+      data.canonical = norm(data.label + ' ' + joined).slice(0, 2000);
+      items.push(data);
     }
 
-    // STEP 2: dynamic fuzzy search of page text
-    const allSections = document.querySelectorAll('section, div, article, header, main');
-    let found = null;
-    allSections.forEach((el) => {
-      const txt = (el.innerText || "").toLowerCase();
-      if (txt.includes(query) && !found && el.offsetHeight > 50) {
-        found = el;
+    // register main sections by ID (the user provided these IDs)
+    const sectionSelectors = ['#about', '#projects', '#publications', '#achievements', '#contact', '#poster'];
+    // also register any element with class 'highlight-card' (achievements), project-card, or any element that has data-keywords
+    sectionSelectors.forEach(sel => {
+      const el = document.querySelector(sel);
+      if (el) register(el, el.querySelector('.section-title')?.innerText || el.id);
+    });
+
+    // register highlight cards / achievement cards (thumbnails)
+    document.querySelectorAll('.highlight-card, .achievement-card, .project-card, .card.project-card').forEach(card => {
+      register(card, card.querySelector('h5, h4, h3, .card-title') ? (card.querySelector('h5,h4,h3,.card-title').innerText) : '');
+    });
+
+    // Register any element that explicitly set data-keywords (catch-alls)
+    document.querySelectorAll('[data-keywords]').forEach(el => {
+      // avoid duplicates: only register if not already present
+      if (!items.some(it => it.el === el)) register(el, el.querySelector('h5,h4,h3')?.innerText || el.id || el.getAttribute('data-keywords'));
+    });
+
+    // fallback: register top-level sections with headings
+    document.querySelectorAll('section[id]').forEach(sec => {
+      if (!items.some(it => it.el === sec)) register(sec, sec.querySelector('.section-title, h2, h1')?.innerText || sec.id);
+    });
+
+    // small console debug
+    console.log('[chat-index] built', items.map(i => ({id: i.id, label: i.label, keywordsCount: i.keywords.length})));
+    return items;
+  }
+
+  // construct once
+  let index = buildIndex();
+
+  // re-build index on navigation or DOM change? (optional)
+  // window.addEventListener('load', () => { index = buildIndex(); });
+
+  // ————— Matching logic —————
+  function findBestMatch(query) {
+    const qNorm = norm(query);
+    const qTokens = tokenize(qNorm).map(simpleStem).filter(Boolean);
+
+    if (!qTokens.length) return null;
+
+    // scoring: number of token intersections + substring bonus
+    let best = null;
+    let bestScore = 0;
+    const SUBSTRING_BONUS = 2;
+
+    index.forEach(item => {
+      let score = 0;
+
+      // token hits against item.keywords
+      qTokens.forEach(t => {
+        if (item.keywords.includes(t)) score += 1.8; // token match
+      });
+
+      // token hits against canonical text (phrase match)
+      const canon = item.canonical || '';
+      qTokens.forEach(t => {
+        if (canon.includes(' ' + t + ' ') || canon.startsWith(t + ' ') || canon.endsWith(' ' + t)) score += 0.9;
+      });
+
+      // substring match for multi-word query
+      if (qTokens.length > 1 && canon.includes(qTokens.join(' '))) {
+        score += SUBSTRING_BONUS;
+      }
+
+      // if query letters appear as substring anywhere, small bonus
+      if (canon.indexOf(qNorm) !== -1) score += 0.6;
+
+      // tiny boost if element id exactly equals first token
+      if (item.id && item.id.toLowerCase() === qTokens[0]) score += 1.2;
+
+      // prefer sections over small cards slightly (if ids match)
+      if (item.id && ['about','projects','publications','achievements','contact','poster'].includes(item.id)) score += 0.3;
+
+      if (score > bestScore) {
+        best = item;
+        bestScore = score;
       }
     });
 
-    if (found) {
-      addMessage(`Found something similar - taking you there 🔍`, 'bot-msg');
-      found.scrollIntoView({ behavior: 'smooth' });
-      found.style.transition = 'background 0.4s ease';
-      const orig = found.style.background;
-      found.style.background = 'rgba(255,255,0,0.08)';
-      setTimeout(() => { found.style.background = orig; }, 1000);
-    } else {
-      addMessage("Hmm... I couldn’t find anything related to that yet 🧐", 'bot-msg');
+    // if bestScore low, allow a final fuzzy substring pass
+    if (!best || bestScore < 0.8) {
+      // try substring search across canonical text
+      for (const item of index) {
+        if (item.canonical && item.canonical.indexOf(qNorm) !== -1) {
+          return item;
+        }
+      }
     }
+
+    // return item if score is sensible
+    return bestScore >= 0.6 ? best : null;
   }
 
-  function smartScroll(target, key) {
-    const element = document.querySelector(target);
-    if (element) {
-      addMessage(`Heading to the <b>${key}</b> section 🚀`, 'bot-msg');
+  // ————— Chat helper: send bot message & optionally scroll —————
+  // These assume your addMessage function exists; if your code differs, adapt the two lines below:
+  function botReply(text, targetElOrSelector) {
+    // add message in chat UI (existing addMessage wrapper if present)
+    try {
+      // if your chat uses addMessage(), call it; otherwise, append a simple node to .chat-messages
+      if (typeof addMessage === 'function') addMessage(text, 'bot-msg');
+      else {
+        const container = document.getElementById('chatMessages') || document.getElementById('faqMessages') || document.getElementById('faqMessages');
+        if (container) {
+          const div = document.createElement('div');
+          div.className = 'message bot-msg';
+          div.innerHTML = text;
+          container.appendChild(div);
+          container.scrollTop = container.scrollHeight;
+        }
+      }
+    } catch (e) { console.warn('botReply render failed', e); }
+
+    // if a target is provided, smooth scroll to it after a tiny delay so user can see reply
+    if (targetElOrSelector) {
       setTimeout(() => {
-        element.scrollIntoView({ behavior: 'smooth' });
-        element.style.transition = 'background 0.4s ease';
-        const orig = element.style.background;
-        element.style.background = 'rgba(255,255,0,0.08)';
-        setTimeout(() => { element.style.background = orig; }, 1000);
-      }, 500);
-    } else {
-      addMessage(`I know about ${key}, but can’t find that section on this page 🤔`, 'bot-msg');
+        let target = null;
+        if (typeof targetElOrSelector === 'string') target = document.querySelector(targetElOrSelector);
+        else target = targetElOrSelector;
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // give a highlight flash
+          target.animate([{ boxShadow: '0 8px 36px rgba(124,246,178,0.00)' }, { boxShadow: '0 18px 60px rgba(124,246,178,0.10)' }, { boxShadow: '0 8px 36px rgba(124,246,178,0.00)' }], { duration: 1400 });
+        }
+      }, 700);
     }
   }
 
-  // Click outside to close on mobile
-  document.addEventListener('click', (ev) => {
-    if (!chatBox.contains(ev.target) && !botToggle.contains(ev.target)) {
-      if (chatBox.style.display === 'flex') closeChatBox();
-    }
-  });
+  // ————— Exposed function used by your chatbot send handler —————
+  // Replace handleResponse / reply usage to call chatbotNavigate(query)
+// ====== Welcome message logic (appears once) ======
+window.__akash_chat_welcome_shown = false;
 
-  addMessage(
-    `<strong>Hi - I’m Akash’s AI Assistant 🤖</strong><br>
-     Here to help you explore the website.<br>
-     I can take you anywhere - try typing:<br>
-     <em>“education”, “projects”, “quotes”, “ORCID”, or “GitHub”</em>.`,
-    'bot-msg'
-  );
+function injectWelcome() {
+  if (window.__akash_chat_welcome_shown) return;
+  const welcome = `
+    <strong>Hi — I’m Akash’s AI Assistant 🤖</strong><br>
+    Here to help you explore the website.<br>
+    I can take you anywhere — try: <em>"projects"</em>, <em>"CV"</em>, <em>"publications"</em>, or <em>"take me to posters"</em>.
+  `;
+  const container = document.getElementById('chatMessages');
+  if (container) {
+    const div = document.createElement('div');
+    div.className = 'message bot-msg';
+    div.innerHTML = welcome;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  }
+  // Optional speech line:
+  if (typeof speak === 'function') {
+    speak("Hi — I'm Akash's AI Assistant. Here to help you explore the website.");
+  }
+  window.__akash_chat_welcome_shown = true;
+}
+
+// Modify your toggle click to call this function once
+botToggle.addEventListener('click', () => {
+  chatBox.style.display = 'flex';
+  botToggle.style.display = 'none';
+  injectWelcome(); // 👈 this ensures only one welcome message appears
+  chatInput && chatInput.focus && chatInput.focus();
 });
+  
+  window.chatbotNavigate = function(query) { window.__injectChatWelcomeOnce && window.__injectChatWelcomeOnce();
+    if (!query || !query.trim()) {
+      botReply('Please type something to search. Try "projects", "poster", "cv", or "contact".');
+      return;
+    }
+    const q = query.trim();
+
+    // quick synonyms map to help common phrasing
+    const synonyms = {
+      'cv': 'cv',
+      'resume': 'cv',
+      'contact': 'contact',
+      'email': 'contact',
+      'poster': 'poster',
+      'posters': 'poster',
+      'achievement': 'achievements',
+      'achievements': 'achievements',
+      'highlight': 'achievements',
+      'highlights': 'achievements',
+      'publication': 'publications',
+      'publications': 'publications',
+      'project': 'projects',
+      'projects': 'projects',
+      'education': 'about',
+      'about': 'about',
+      'home': 'about',
+      'research': 'projects',
+      'orcid': 'orcid'
+    };
+
+    // direct synonym fast-path
+    const qNorm = norm(q);
+    for (const key in synonyms) {
+      if (qNorm.includes(key)) {
+        const mapped = synonyms[key];
+        // try to find section or id matching mapped
+        const directEl = document.getElementById(mapped) || document.querySelector('#' + mapped);
+        if (directEl) {
+          botReply(`Heading to the ${mapped} section 🚀`, directEl);
+          return;
+        }
+      }
+    }
+
+    // run robust matcher
+    const candidate = findBestMatch(q);
+    if (candidate) {
+      const label = candidate.label || candidate.id || 'that section';
+      botReply(`Opening <strong>${label}</strong> 🔎`, candidate.el);
+    } else {
+      botReply(`Sorry — I couldn't find a matching section for "<em>${escapeHtml(q)}</em>" 🤔. Try simpler words like "projects", "poster", "CV" or "contact".`);
+    }
+  };
+
+  // small helper escape for reply text when injected as HTML
+  function escapeHtml(s) {
+    return (s || '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+  }
+
+  // Expose index rebuild for debugging or after you dynamically add content
+  window.chatbotReindex = function() {
+    index = buildIndex();
+    console.log('[chat-index] reindexed');
+  };
+
+  // debug: attach to window for quick testing
+  console.log('[chatbot] robust navigator ready — call chatbotNavigate("poster")');
+
+})();
 </script>
 <!-- ==== End of Chatbot ==== -->
 </body>
