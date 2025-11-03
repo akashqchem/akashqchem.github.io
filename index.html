@@ -2328,152 +2328,167 @@ backToTopBtn.addEventListener("click", () => {
 </div>
 
 <script>
-/* Robust chatbot script - paste to replace your existing chatbot <script> block.
-   This waits for DOMContentLoaded and logs useful errors if something is missing. */
-
 document.addEventListener('DOMContentLoaded', () => {
-  try {
-    const botToggle = document.getElementById('botToggle');
-    const chatBox   = document.getElementById('chatBox');
-    const closeChat = document.getElementById('closeChat');
-    const chatMessages = document.getElementById('chatMessages');
-    const chatInput = document.getElementById('chatInput');
-    const chatSend  = document.getElementById('chatSend');
+  const botToggle = document.getElementById('botToggle');
+  const chatBox = document.getElementById('chatBox');
+  const closeChat = document.getElementById('closeChat');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatInput = document.getElementById('chatInput');
+  const chatSend = document.getElementById('chatSend');
 
-    // Quick sanity checks - helpful console messages if elements are missing
-    if (!botToggle) return console.error('Chatbot: missing element with id="botToggle"');
-    if (!chatBox)   return console.error('Chatbot: missing element with id="chatBox"');
-    if (!chatMessages) return console.error('Chatbot: missing element with id="chatMessages"');
-    if (!chatInput) return console.error('Chatbot: missing element with id="chatInput"');
-    if (!chatSend)  return console.error('Chatbot: missing element with id="chatSend"');
-
-    // Ensure toggle visible (in case some CSS accidentally hid it)
-    botToggle.style.display = botToggle.style.display || 'flex';
-
-    // Prevent voice from repeating: speak only once per page load
-    let spoken = false;
-
-    function speakOnce(text){
-      if (spoken) return;
-      spoken = true;
-      if ('speechSynthesis' in window) {
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'en-US';
-        u.rate = 1.0;
-        window.speechSynthesis.speak(u);
-      }
-    }
-
-    function openChat(){
-      chatBox.style.display = 'flex';
-      botToggle.style.display = 'none';
-      // small welcome voice line (only once)
-      speakOnce("Hi, I'm Akash's AI Assistant. Here to help you explore the website.");
-      // focus input after slight delay so mobile shows keyboard
-      setTimeout(()=> chatInput.focus(), 250);
-    }
-    function closeChatBox(){
-      chatBox.style.display = 'none';
-      botToggle.style.display = 'flex';
-    }
-
-    // Attach events (safely)
-    botToggle.addEventListener('click', openChat);
-    if (closeChat) closeChat.addEventListener('click', closeChatBox);
-
-    // Send message handlers
-    function addMessage(html, cls){
-      const div = document.createElement('div');
-      div.className = 'message ' + cls;
-      div.innerHTML = html;
-      chatMessages.appendChild(div);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    function addTypingIndicator(){
-      const div = document.createElement('div');
-      div.className = 'message bot-msg typing-msg';
-      div.innerHTML = 'Typing<span class="typing"></span><span class="typing"></span><span class="typing"></span>';
-      chatMessages.appendChild(div);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-    function removeTypingIndicator(){
-      const el = chatMessages.querySelector('.typing-msg');
-      if (el) el.remove();
-    }
-
-    function handleResponse(query){
-      query = (query || '').toLowerCase().trim();
-      if(!query) {
-        addMessage("Please type a question. Try 'projects', 'poster', 'publications', or 'CV'.", 'bot-msg');
-        return;
-      }
-
-      // navigation responses (scroll to anchors)
-      if (query.includes('project')) return navReply("Jumping to Projects section 🔬", "#projects");
-      if (query.includes('poster'))  return navReply("Heading to the Poster section 🧪", "#poster");
-      if (query.includes('publication') || query.includes('publications')) return navReply("Opening Publications 📚", "#publications");
-      if (query.includes('cv') || query.includes('resume')) {
-        addMessage("You can view my CV here: <a href='assets/CV.pdf' target='_blank' style='color:#8fd1ff'>CV (PDF)</a> 📄", 'bot-msg');
-        return;
-      }
-      if (query.includes('contact')) return navReply("Scrolling to Contact 💌", "#contact");
-      if (query.includes('home') || query.includes('go home')) return navReply("Going to top of the page ⬆️", null, () => window.scrollTo({top:0, behavior:'smooth'}));
-      if (query.includes('scroll down')) return navReply("Scrolling down a bit...", null, () => window.scrollBy({top:400, behavior:'smooth'}));
-
-      addMessage("I’m still learning - try 'projects', 'poster', 'publications', 'CV' or 'contact'.", 'bot-msg');
-    }
-
-    function navReply(text, anchor, extraFn){
-      addMessage(text, 'bot-msg');
-      setTimeout(()=> {
-        try {
-          if (anchor) {
-            const el = document.querySelector(anchor);
-            if (el) el.scrollIntoView({behavior:'smooth'});
-            else console.warn('Chatbot: anchor not found', anchor);
-          }
-          if (typeof extraFn === 'function') extraFn();
-        } catch(e) { console.error(e); }
-      }, 800);
-    }
-
-    function sendCurrent(){
-      const v = chatInput.value.trim();
-      if (!v) return;
-      addMessage(v, 'user-msg');
-      chatInput.value = '';
-      addTypingIndicator();
-      // simulate "thinking"
-      setTimeout(()=> {
-        removeTypingIndicator();
-        handleResponse(v);
-      }, 700);
-    }
-
-    chatSend.addEventListener('click', sendCurrent);
-    chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendCurrent(); });
-
-    // Optional: clicking outside chat closes it on mobile/touch
-    document.addEventListener('click', (ev) => {
-      const target = ev.target;
-      if (!chatBox.contains(target) && !botToggle.contains(target)) {
-        // keep botToggle visible - do not auto-close when chat is closed
-        if (chatBox.style.display === 'flex') closeChatBox();
-      }
-    }, { passive: true });
-
-    // If you want the widget collapsed initially and clickable, ensure that now:
-    if (chatBox.style.display !== 'flex') {
-      chatBox.style.display = 'none';
-      botToggle.style.display = 'flex';
-    }
-
-    // good to go - debug info
-    console.info('Chatbot initialized ✅');
-  } catch (err){
-    console.error('Chatbot initialization error:', err);
+  if (!botToggle || !chatBox || !chatMessages || !chatInput || !chatSend) {
+    console.error("Chatbot missing essential elements");
+    return;
   }
+
+  let spoken = false;
+  const sectionMap = {
+    projects: "#projects",
+    poster: "#poster",
+    posters: "#poster",
+    education: "#education",
+    research: "#education",
+    study: "#education",
+    about: "#about",
+    summary: "#education",
+    contact: "#contact",
+    mail: "#contact",
+    email: "#contact",
+    publication: "#publications",
+    publications: "#publications",
+    highlights: "#highlights",
+    achievement: "#highlights",
+    orcid: ".ai-orcid-link",
+    github: "a[href*='github.com']",
+    linkedin: "a[href*='linkedin.com']",
+    cv: "a[href*='CV.pdf']",
+    resume: "a[href*='CV.pdf']",
+    quote: "#quotes"
+  };
+
+  function speakOnce(text) {
+    if (spoken) return;
+    spoken = true;
+    if ('speechSynthesis' in window) {
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'en-US';
+      utter.rate = 1;
+      window.speechSynthesis.speak(utter);
+    }
+  }
+
+  function openChat() {
+    chatBox.style.display = 'flex';
+    botToggle.style.display = 'none';
+    speakOnce("Hi, I'm Akash's AI Assistant. Here to help you explore the website.");
+  }
+
+  function closeChatBox() {
+    chatBox.style.display = 'none';
+    botToggle.style.display = 'flex';
+  }
+
+  botToggle.addEventListener('click', openChat);
+  closeChat.addEventListener('click', closeChatBox);
+
+  function addMessage(html, cls) {
+    const div = document.createElement('div');
+    div.className = 'message ' + cls;
+    div.innerHTML = html;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function addTyping() {
+    const div = document.createElement('div');
+    div.className = 'message bot-msg typing-msg';
+    div.innerHTML = 'Typing<span class="typing"></span><span class="typing"></span><span class="typing"></span>';
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function removeTyping() {
+    const typing = document.querySelector('.typing-msg');
+    if (typing) typing.remove();
+  }
+
+  chatSend.addEventListener('click', sendMsg);
+  chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMsg(); });
+
+  function sendMsg() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+    addMessage(text, 'user-msg');
+    chatInput.value = '';
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      handleSmartResponse(text.toLowerCase());
+    }, 700);
+  }
+
+  function handleSmartResponse(query) {
+    // STEP 1: direct known mapping first
+    for (const key in sectionMap) {
+      if (query.includes(key)) {
+        const target = sectionMap[key];
+        smartScroll(target, key);
+        return;
+      }
+    }
+
+    // STEP 2: dynamic fuzzy search of page text
+    const allSections = document.querySelectorAll('section, div, article, header, main');
+    let found = null;
+    allSections.forEach((el) => {
+      const txt = (el.innerText || "").toLowerCase();
+      if (txt.includes(query) && !found && el.offsetHeight > 50) {
+        found = el;
+      }
+    });
+
+    if (found) {
+      addMessage(`Found something similar - taking you there 🔍`, 'bot-msg');
+      found.scrollIntoView({ behavior: 'smooth' });
+      found.style.transition = 'background 0.4s ease';
+      const orig = found.style.background;
+      found.style.background = 'rgba(255,255,0,0.08)';
+      setTimeout(() => { found.style.background = orig; }, 1000);
+    } else {
+      addMessage("Hmm... I couldn’t find anything related to that yet 🧐", 'bot-msg');
+    }
+  }
+
+  function smartScroll(target, key) {
+    const element = document.querySelector(target);
+    if (element) {
+      addMessage(`Heading to the <b>${key}</b> section 🚀`, 'bot-msg');
+      setTimeout(() => {
+        element.scrollIntoView({ behavior: 'smooth' });
+        element.style.transition = 'background 0.4s ease';
+        const orig = element.style.background;
+        element.style.background = 'rgba(255,255,0,0.08)';
+        setTimeout(() => { element.style.background = orig; }, 1000);
+      }, 500);
+    } else {
+      addMessage(`I know about ${key}, but can’t find that section on this page 🤔`, 'bot-msg');
+    }
+  }
+
+  // Click outside to close on mobile
+  document.addEventListener('click', (ev) => {
+    if (!chatBox.contains(ev.target) && !botToggle.contains(ev.target)) {
+      if (chatBox.style.display === 'flex') closeChatBox();
+    }
+  });
+
+  addMessage(
+    `<strong>Hi - I’m Akash’s AI Assistant 🤖</strong><br>
+     Here to help you explore the website.<br>
+     I can take you anywhere - try typing:<br>
+     <em>“education”, “projects”, “quotes”, “ORCID”, or “GitHub”</em>.`,
+    'bot-msg'
+  );
 });
 </script>
 <!-- ==== End of Chatbot ==== -->
