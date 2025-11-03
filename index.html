@@ -1282,43 +1282,40 @@ body::before {
 </div>
 
 <!-- BLOG -->
-<section id="blog" class="section section-blog" data-aos="fade-up" data-aos-duration="900">
-  <div class="container">
-    <h2 class="section-title">Blog</h2>
+<section id="blog" class="py-16 bg-gradient-to-b from-[#0a0f24] to-[#0b1129] text-gray-200">
+  <div class="max-w-5xl mx-auto px-6">
+    <h2 class="text-2xl font-semibold mb-6 border-l-4 border-blue-500 pl-3">Blog</h2>
 
-    <div class="blog-card">
-      <div class="blog-card-left">
-        <div class="badge-coming">Coming soon</div>
-        <h3 class="blog-card-title">Understanding Electronic Structure Theory from Scratch</h3>
-        <p class="lead">
-          I’m starting a blog series where I’ll explain core quantum-chemistry concepts in simple, intuitive terms.
-          Each post will explore topics like orbitals, basis sets, the self-consistent field (SCF) method, and
-          exchange–correlation functionals.
-        </p>
+    <div class="bg-[#111936]/70 rounded-2xl p-8 shadow-lg backdrop-blur-md relative">
+      <!-- Glowing "Coming Soon" Tag -->
+      <span class="absolute top-5 right-5 bg-blue-500/10 text-blue-300 px-3 py-1 rounded-full text-sm font-semibold shadow-md animate-pulse border border-blue-400/50">
+        Coming soon
+      </span>
 
-        <ul class="blog-list">
-          <li>One concept per post — clear intuition + light math</li>
-          <li>Practical examples and pointers to computational tools (Python, Psi4, Quantum ESPRESSO)</li>
-        </ul>
+      <h3 class="text-xl font-bold mb-4 text-white">
+        Understanding Electronic Structure Theory from Scratch
+      </h3>
 
-        <div class="blog-actions">
-          <a class="btn btn-primary" href="https://akashexplains.medium.com" target="_blank" rel="noopener">
-            Visit my Medium (preview & follow)
-          </a>
-          <a class="btn btn-outline" href="#contact">Contact me</a>
-        </div>
-      </div>
+      <p class="text-gray-300 leading-relaxed mb-4">
+        I’m starting a blog series where I’ll explain core quantum-chemistry concepts in simple, intuitive terms.
+        Each post will explore topics like orbitals, basis sets, the self-consistent field (SCF) method, and
+        exchange-correlation functionals.
+      </p>
 
-      <div class="blog-card-right" aria-hidden="true">
-        <!-- decorative block to match site style -->
-        <div class="card-accent">
-          <div class="accent-title">DFT • SCF • Basis</div>
-          <div class="accent-math">Kohn–Sham: &nbsp; (−½∇² + V<sub>ion</sub> + V<sub>H</sub> + V<sub>xc</sub>) ψ<sub>i</sub> = ε<sub>i</sub> ψ<sub>i</sub></div>
-        </div>
-      </div>
+      <ul class="list-disc ml-6 mb-6 text-gray-400">
+        <li>One concept per post - clear intuition + light math</li>
+      </ul>
+
+      <!-- Buttons -->
+      <a href="https://medium.com/@your-medium-handle" target="_blank" 
+         class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-lg transition duration-200">
+         Visit my Medium (preview & follow)
+      </a>
     </div>
 
-    <p class="muted small">Short updates and drafts will appear on Medium first. Full series posts will be linked here as they publish.</p>
+    <p class="mt-6 text-gray-400 text-sm text-center">
+      Short updates and drafts will appear on Medium first. Full series posts will be linked here as they publish.
+    </p>
   </div>
 </section>
   
