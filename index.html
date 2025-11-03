@@ -2400,7 +2400,7 @@ backToTopBtn.addEventListener("click", () => {
     const qn=norm(q);
     for(const k in map){ if(qn.includes(k)){ const el=document.getElementById(map[k]); if(el) return botReply(`Heading to the ${map[k]} section 🚀`,el);} }
     const m=findMatch(qn); if(m) botReply(`Opening <b>${m.label||m.id}</b> 🔎`,m.el);
-    else botReply(`Sorry — I couldn’t find “${q}” 🤔`);
+    else botReply(`Sorry - I couldn’t find “${q}” 🤔`);
   };
 })();
 </script>
@@ -2442,7 +2442,7 @@ backToTopBtn.addEventListener("click", () => {
     botToggle.style.display='none';
     chatInput.focus();
     if(!window.chatOpened){
-      addMessage("<b>Hi — I'm Akash’s AI Assistant 🤖</b><br>Here to help you explore this site. Try 'projects', 'CV', 'poster', or 'contact'.",'bot-msg');
+      addMessage("<b>Hi - I'm Akash’s AI Assistant 🤖</b><br>Here to help you explore this site. Try 'projects', 'CV', 'poster', or 'contact'.",'bot-msg');
       window.speak("Hi, I'm Akash's AI Assistant. Here to help you explore the website.");
       window.chatOpened=true;
     }
