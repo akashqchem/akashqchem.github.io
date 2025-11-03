@@ -167,6 +167,24 @@
   }
   .particle.small{ font-size:14px; opacity:0.9; }
   .particle.dim{ opacity:0.6; background:transparent; box-shadow:none; color: rgba(220,230,255,0.85); }
+  
+ /* ---- Publication Card Glow (accent color match) ---- */
+.card.mx-auto {
+  position: relative;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 15px;
+  box-shadow:
+    0 0 20px rgba(174, 191, 255, 0.15),
+    0 0 40px rgba(174, 191, 255, 0.10);
+  transition: box-shadow 0.4s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.card.mx-auto:hover {
+  box-shadow:
+    0 0 30px rgba(174, 191, 255, 0.25),
+    0 0 60px rgba(174, 191, 255, 0.18);
+  transform: translateY(-4px);
+}
 
 /* Space and formatting for math/label blocks inside floating particles */
 .particle.small div + div {
