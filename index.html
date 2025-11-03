@@ -923,6 +923,41 @@ body::before {
   margin: 0 8px;
   font-size: 1.4rem;
 }
+  /* === Responsive fix for mobile view === */
+@media (max-width: 600px) {
+  #aiChatbot {
+    right: 12px;
+    bottom: 80px; /* stays above back-to-top */
+  }
+
+  #botToggle {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+  }
+
+  #chatBox {
+    width: 90vw;
+    right: 5vw;
+    bottom: 70px;
+    max-height: 70vh;
+    border-radius: 14px;
+  }
+
+  .chat-header {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  .chat-input input {
+    font-size: 13px;
+  }
+
+  .chat-input button {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+}
   </style>
 </head>
 <body>
@@ -2103,202 +2138,256 @@ backToTopBtn.addEventListener("click", () => {
   })();
 </script>
 
-<!-- CHATBOT (robot toggle + panel) START -->
+<!-- ==== Akash's AI Assistant Chatbot 🤖 ==== -->
 <style>
-/* --- Compact Robot Chat widget (add to your main <style> or paste here) --- */
-
-/* Ensure this widget doesn't sit under other elements */
-.robot-chat-wrap { position: fixed; right: 25px; bottom: 90px; z-index: 10005; display:flex; flex-direction: column; align-items: flex-end; gap:10px; }
-
-/* Robot toggle button (small round) */
-.robot-toggle {
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  background: linear-gradient(180deg,#7b61ff,#4ea8ff);
-  display:inline-grid;
-  place-items:center;
-  box-shadow: 0 10px 28px rgba(6,10,25,0.6);
-  cursor:pointer;
-  border: 2px solid rgba(255,255,255,0.08);
-  transition: transform 180ms ease, box-shadow 180ms ease;
-}
-.robot-toggle:hover { transform: translateY(-4px) scale(1.06); box-shadow: 0 14px 32px rgba(6,10,25,0.7); }
-
-/* small "robot" SVG inside */
-.robot-toggle svg { width:22px; height:22px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35)); }
-
-/* Chat panel (hidden by default) */
-.robot-panel {
-  width:320px;
-  max-width: calc(100vw - 48px);
-  background: linear-gradient(180deg, rgba(8,12,30,0.98), rgba(10,14,36,0.99));
-  color:#fff;
-  border-radius:12px;
-  overflow:hidden;
-  box-shadow: 0 10px 40px rgba(2,6,23,0.6);
-  transform-origin: bottom right;
-  transition: transform 220ms cubic-bezier(.2,.9,.2,1), opacity 180ms ease;
-  opacity:0;
-  transform: translateY(12px) scale(0.98);
-  pointer-events:none;
+/* Chatbot container */
+#aiChatbot {
+  position: fixed;
+  right: 24px;
+  bottom: 90px; /* keeps clear of Back to Top */
+  font-family: 'Inter', sans-serif;
+  z-index: 9999;
 }
 
-/* When open */
-.robot-panel.open { opacity:1; transform: translateY(0) scale(1); pointer-events:auto; }
-
-/* Panel header */
-.robot-panel .rp-head {
-  display:flex; align-items:center; gap:10px; padding:10px 12px;
-  border-bottom:1px solid rgba(255,255,255,0.03);
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+/* Robot toggle button */
+#botToggle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #6366f1, #4338ca);
+  color: white;
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(99,102,241,0.45);
+  transition: all 0.25s ease;
+  animation: pulseGlow 2.4s infinite ease-in-out;
 }
-.robot-panel .rp-head .mini-robot { width:28px; height:28px; border-radius:50%; background:linear-gradient(90deg,#6f55ff,#5db4ff); display:grid; place-items:center; }
+#botToggle:hover { transform: scale(1.08); }
 
-/* messages area */
-.robot-panel .rp-messages {
-  height:260px; overflow:auto; padding:12px; display:flex; flex-direction:column; gap:8px;
-  scrollbar-width: thin;
+@keyframes pulseGlow {
+  0%,100% { box-shadow: 0 0 10px rgba(99,102,241,0.6); }
+  50% { box-shadow: 0 0 24px rgba(99,102,241,0.9); }
 }
-.robot-panel .bubble { padding:9px 12px; border-radius:10px; max-width:82%; line-height:1.35; }
-.robot-panel .bubble.bot { background: rgba(255,255,255,0.06); align-self:flex-start; }
-.robot-panel .bubble.you { background: linear-gradient(90deg,#7b61ff,#5db4ff); color:white; align-self:flex-end; }
 
-/* input row */
-.robot-panel .rp-input { display:flex; gap:8px; padding:10px; border-top:1px solid rgba(255,255,255,0.03); }
-.robot-panel input[type="text"] { flex:1; padding:8px 10px; border-radius:8px; border:none; background: rgba(255,255,255,0.03); color:#fff; outline:none; }
-.robot-panel button.send { background: linear-gradient(90deg,#7b61ff,#5db4ff); color:#fff; border:none; padding:8px 11px; border-radius:8px; cursor:pointer; }
+/* Chatbox */
+#chatBox {
+  position: absolute;
+  right: 0;
+  bottom: 70px;
+  width: 330px;
+  max-height: 420px;
+  background: rgba(12, 16, 30, 0.95);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+  overflow: hidden;
+  display: none;
+  flex-direction: column;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-/* suggestion pills */
-.robot-panel .rp-suggest { padding:8px 10px; margin:8px 12px 0 12px; display:flex; gap:8px; flex-wrap:wrap; }
-.robot-panel .rp-suggest button { background: rgba(255,255,255,0.03); color:#fff; padding:6px 8px; border-radius:8px; border:1px solid rgba(255,255,255,0.02); cursor:pointer; }
+/* Chat header */
+.chat-header {
+  background: linear-gradient(90deg,#4f46e5,#3b82f6);
+  color: white;
+  font-weight: 600;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.chat-header span { font-size: 15px; }
+.chat-header button {
+  background: transparent; border: none; color: #fff; cursor: pointer; font-size: 18px;
+}
 
-/* small screens - move panel left a bit so it doesn't exceed viewport */
-@media (max-width:560px) {
-  .robot-chat-wrap { right:12px; left:12px; bottom:80px; align-items:center; }
-  .robot-panel { width:92vw; max-width:92vw; }
+/* Messages */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+.message {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: msgFade 0.4s ease forwards;
+  margin-bottom: 10px;
+}
+@keyframes msgFade {
+  to { opacity: 1; transform: translateY(0); }
+}
+.bot-msg, .user-msg {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  line-height: 1.4;
+}
+.bot-msg {
+  background: rgba(255,255,255,0.1);
+  color: #e3e8ff;
+}
+.user-msg {
+  background: linear-gradient(90deg,#6366f1,#3b82f6);
+  color: #fff;
+  margin-left: auto;
+}
+
+/* Typing animation */
+.typing {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #aaa;
+  animation: typingDots 1s infinite ease-in-out alternate;
+  margin-left: 2px;
+}
+@keyframes typingDots {
+  0% { opacity: 0.2; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-2px); }
+  100% { opacity: 0.2; transform: translateY(0); }
+}
+
+/* Input box */
+.chat-input {
+  display: flex;
+  padding: 8px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+}
+.chat-input input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
+.chat-input button {
+  margin-left: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: #6366f1;
+  color: white;
+  cursor: pointer;
 }
 </style>
 
-<div class="robot-chat-wrap" aria-hidden="false">
-  <!-- chat panel (hidden by default) -->
-  <div id="robotPanel" class="robot-panel" role="dialog" aria-label="Site chat">
-    <div class="rp-head">
-      <div class="mini-robot" aria-hidden="true">
-        <!-- tiny robot icon -->
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="#fff" aria-hidden="true">
-          <path d="M12 2a1 1 0 0 0-1 1v1H8a3 3 0 0 0-3 3v1H4a1 1 0 0 0-1 1v6a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-6a1 1 0 0 0-1-1h-1V7a3 3 0 0 0-3-3h-3V3a1 1 0 0 0-1-1zM8.5 11a.75.75 0 1 1 0-1.5A.75.75 0 0 1 8.5 11zm7 0a.75.75 0 1 1 0-1.5A.75.75 0 0 1 15.5 11z"/>
-        </svg>
+<div id="aiChatbot">
+  <div id="botToggle" title="Chat with Akash’s assistant">🤖</div>
+
+  <div id="chatBox" role="dialog" aria-label="Akash’s AI Assistant">
+    <div class="chat-header">
+      <span>Assistant</span>
+      <button id="closeChat">&times;</button>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot-msg">
+        <strong>Hi - I’m Akash’s AI Assistant 🤖</strong><br>
+        Here to help you explore the website.<br>
+        I can take you to any section - try:<br>
+        “projects”, “CV”, “publications”, or “take me to posters”.
       </div>
-      <div style="font-weight:600;">Assistant</div>
-      <div style="flex:1"></div>
-      <button id="robotClose" title="Close" style="background:none;border:none;color:rgba(255,255,255,0.65);cursor:pointer;font-size:16px">✕</button>
     </div>
 
-    <div class="rp-messages" id="rpMessages" role="log" aria-live="polite">
-      <!-- greeting -->
-      <div class="bubble bot">Hi — I can jump you to page sections. Try "take me to poster", "projects", "publications", or "CV".</div>
+    <div class="chat-input">
+      <input id="chatInput" placeholder="Type e.g. 'take me to poster'">
+      <button id="chatSend">Send</button>
     </div>
-
-    <div class="rp-suggest" aria-hidden="false">
-      <button class="sugg">projects</button>
-      <button class="sugg">poster</button>
-      <button class="sugg">publications</button>
-      <button class="sugg">CV</button>
-      <button class="sugg">contact</button>
-    </div>
-
-    <div class="rp-input">
-      <input id="rpInput" type="text" placeholder="Type e.g. 'take me to poster'">
-      <button class="send" id="rpSend">Send</button>
-    </div>
-  </div>
-
-  <!-- robot toggle button -->
-  <div id="robotToggle" class="robot-toggle" role="button" aria-label="Open chat">
-    <!-- friendly robot SVG (white) -->
-    <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-      <path d="M12 2a1 1 0 0 0-1 1v1H8a3 3 0 0 0-3 3v1H4a1 1 0 0 0-1 1v6a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-6a1 1 0 0 0-1-1h-1V7a3 3 0 0 0-3-3h-3V3a1 1 0 0 0-1-1zM8.5 11a.75.75 0 1 1 0-1.5A.75.75 0 0 1 8.5 11zm7 0a.75.75 0 1 1 0-1.5A.75.75 0 0 1 15.5 11z"/>
-    </svg>
   </div>
 </div>
 
 <script>
-/* Robot chat behavior: toggle + keyword routing + suggestions (no external service) */
-(function(){
-  const toggle = document.getElementById('robotToggle');
-  const panel = document.getElementById('robotPanel');
-  const closeBtn = document.getElementById('robotClose');
-  const send = document.getElementById('rpSend');
-  const input = document.getElementById('rpInput');
-  const messages = document.getElementById('rpMessages');
+const botToggle = document.getElementById('botToggle');
+const chatBox = document.getElementById('chatBox');
+const closeChat = document.getElementById('closeChat');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const chatSend = document.getElementById('chatSend');
 
-  function openPanel(){ panel.classList.add('open'); toggle.setAttribute('aria-expanded','true'); input.focus(); }
-  function closePanel(){ panel.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); toggle.focus(); }
+botToggle.addEventListener('click', () => {
+  chatBox.style.display = 'flex';
+  botToggle.style.display = 'none';
+  speak("Hi, I'm Akash's AI Assistant. Here to help you explore the website!");
+});
 
-  toggle.addEventListener('click', ()=> {
-    if(panel.classList.contains('open')) closePanel(); else openPanel();
-  });
-  closeBtn.addEventListener('click', closePanel);
+closeChat.addEventListener('click', () => {
+  chatBox.style.display = 'none';
+  botToggle.style.display = 'flex';
+});
 
-  function addMsg(text, who='bot'){
-    const d = document.createElement('div');
-    d.className = 'bubble ' + (who === 'bot' ? 'bot' : 'you');
-    d.innerHTML = text;
-    messages.appendChild(d);
-    messages.scrollTop = messages.scrollHeight;
+chatSend.addEventListener('click', sendMsg);
+chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendMsg(); });
+
+function sendMsg(){
+  const text = chatInput.value.trim();
+  if(!text) return;
+  addMessage(text, 'user-msg');
+  chatInput.value = '';
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    handleResponse(text.toLowerCase());
+  }, 800);
+}
+
+function addMessage(msg, cls){
+  const div = document.createElement('div');
+  div.className = 'message ' + cls;
+  div.innerHTML = msg;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function addTyping(){
+  const div = document.createElement('div');
+  div.className = 'message bot-msg typing-msg';
+  div.innerHTML = 'Typing<span class="typing"></span><span class="typing"></span><span class="typing"></span>';
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function removeTyping(){
+  const typing = document.querySelector('.typing-msg');
+  if(typing) typing.remove();
+}
+
+function handleResponse(q){
+  if(q.includes('project')) reply("Jumping to <a href='#projects' style='color:#8fd1ff'>Projects section</a> 🔬", '#projects');
+  else if(q.includes('poster')) reply("Heading to the <a href='#poster' style='color:#8fd1ff'>Poster section</a> 🧪", '#poster');
+  else if(q.includes('cv') || q.includes('resume')) reply("You can view my <a href='assets/CV.pdf' target='_blank' style='color:#8fd1ff'>CV here</a> 📄");
+  else if(q.includes('publication')) reply("Opening <a href='#publications' style='color:#8fd1ff'>Publications</a> 📚", '#publications');
+  else if(q.includes('contact')) reply("Sure — let’s scroll to the <a href='#contact' style='color:#8fd1ff'>Contact section</a> 💌", '#contact');
+  else if(q.includes('scroll down')) window.scrollBy({ top: 400, behavior: 'smooth' });
+  else if(q.includes('go home')) window.scrollTo({ top: 0, behavior: 'smooth' });
+  else reply("Hmm… I’m still learning 🤔. Try 'projects', 'CV', 'publications', or 'contact'.");
+}
+
+function reply(text, target){
+  addMessage(text, 'bot-msg');
+  if(target) setTimeout(() => {
+    document.querySelector(target)?.scrollIntoView({ behavior:'smooth' });
+  }, 1000);
+}
+
+function speak(text){
+  if('speechSynthesis' in window){
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'en-US';
+    utter.rate = 1.0;
+    speechSynthesis.speak(utter);
   }
-
-  function goToAnchor(selector){
-    const el = document.querySelector(selector);
-    if(!el){ addMsg("Sorry, I couldn't find that section on this page."); return; }
-    el.scrollIntoView({behavior:'smooth', block:'start'});
-    addMsg("Taking you to the \"" + (el.id || selector) + "\" section.");
-    // closePanel(); // optional: close after navigation
-  }
-
-  const ROUTES = [
-    {keys: ['project','projects','work'], action: ()=>goToAnchor('#projects')},
-    {keys: ['highlight','achievement','achievements','poster','posters'], action: ()=>goToAnchor('#achievements')},
-    {keys: ['publication','publications','paper','papers'], action: ()=>goToAnchor('#publications')},
-    {keys: ['education','school','degree'], action: ()=>goToAnchor('#education')},
-    {keys: ['cv','resume','download cv'], action: ()=>{ window.open('assets/CV.pdf','_blank'); addMsg('Opened CV in a new tab.'); }},
-    {keys: ['contact','email','reach'], action: ()=>goToAnchor('#contact')},
-    {keys: ['blog','medium','posts'], action: ()=>goToAnchor('#blog')},
-    {keys: ['hello','hi','hey'], action: ()=>addMsg("Hi! Try 'take me to projects' or 'poster' or 'contact'.")},
-  ];
-
-  function process(text){
-    if(!text || !text.trim()) return;
-    addMsg(text, 'you');
-    const t = text.toLowerCase();
-    const cleaned = t.replace(/(take me to|go to|show me|open)\s+/g,'');
-
-    for(const r of ROUTES){
-      for(const k of r.keys){
-        if(t.includes(k) || cleaned.includes(k)){
-          try{ r.action(); } catch(e){ addMsg("Oops — something went wrong."); console.error(e); }
-          return;
-        }
-      }
-    }
-
-    if(t.includes('orcid')) { addMsg('Open ORCID: <a href="https://orcid.org/0009-0002-3160-5961" target="_blank" rel="noopener">View ORCID iD</a>'); return; }
-    addMsg("Sorry — I don't know that yet. Try 'projects', 'CV', 'ORCID', 'blog', or 'contact'.");
-  }
-
-  send.addEventListener('click', ()=>{ process(input.value); input.value=''; input.focus(); });
-  input.addEventListener('keydown', (e)=>{ if(e.key === 'Enter'){ process(input.value); input.value=''; } });
-
-  // suggestion buttons
-  document.querySelectorAll('.rp-suggest .sugg').forEach(btn=>{
-    btn.addEventListener('click', ()=> { process(btn.textContent.trim()); });
-  });
-
-  // keep the chat panel above Back-to-Top. If you move #backToTop, adjust bottom values in CSS.
-  // Optionally keep the panel closed on load.
-})();
+}
 </script>
-<!-- CHATBOT (robot toggle + panel) END -->
+<!-- ==== End of Chatbot ==== -->
 </body>
 </html>
