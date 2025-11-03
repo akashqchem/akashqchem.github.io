@@ -1470,6 +1470,43 @@ body {
   display: block;
   transform: translateY(2px);
 }
+/* ORCID: force pixel-perfect center using grid + small upward nudge */
+.social-icons a.orcid-link {
+  display: inline-grid;            /* center child exactly */
+  place-items: center;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: transparent;
+  transition: all .22s ease;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+}
+
+/* make the SVG fill the circle nicely and remove inline baseline quirks */
+.orcid-svg {
+  display: block;                  /* removes baseline issues */
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  transform: translateY(-1px);     /* tiny upward nudge (adjust -2..0 px if needed) */
+}
+
+/* when hovered: green background + white glyph */
+.social-icons a.orcid-link:hover {
+  background: #A6CE39;
+  box-shadow: 0 10px 24px rgba(166,206,57,0.25);
+  transform: translateY(-4px) scale(1.06);
+}
+.social-icons a.orcid-link:hover .orcid-svg path,
+.social-icons a.orcid-link:hover .orcid-svg rect,
+.social-icons a.orcid-link:hover .orcid-svg circle {
+  fill: #ffffff;  /* icon turns white on green bg */
+}
+
+/* responsive tweak */
+@media (max-width: 520px) {
+  .social-icons a.orcid-link { width:40px; height:40px; }
+  .orcid-svg { width:26px; height:26px; transform: translateY(-1px); }
+}
 </style>
 <!-- JavaScript for thank-you message -->
 <script>
