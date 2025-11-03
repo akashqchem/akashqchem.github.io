@@ -1507,6 +1507,12 @@ body {
   .social-icons a.orcid-link { width:40px; height:40px; }
   .orcid-svg { width:26px; height:26px; transform: translateY(0px); }
 }
+/* FORCE nudge for quick test (temporary) */
+.orcid-svg {
+  display: block !important;
+  transform: translateY(-3px) !important;   /* increase until visually aligned (-4..0) */
+  will-change: transform;
+}
 </style>
 <!-- JavaScript for thank-you message -->
 <script>
