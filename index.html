@@ -995,9 +995,15 @@ body::before {
     <i class="fab fa-linkedin fa-lg"></i>
   </a>
 
-  <!-- ORCID official logo -->
+  <!-- ORCID official image (quick) -->
 <a class="text-white orcid-link" href="https://orcid.org/0009-0002-3160-5961" target="_blank" rel="noopener noreferrer" aria-label="ORCID iD">
-  <img src="https://info.orcid.org/wp-content/uploads/2020/12/orcid_16x16.png" alt="ORCID iD" width="26" height="26" style="border-radius:50%; background:#A6CE39; padding:3px;">
+  <img
+    src="https://info.orcid.org/wp-content/uploads/2020/12/orcid_16x16.png"
+    alt="ORCID iD"
+    width="36"
+    height="36"
+    style="border-radius:50%; background:#A6CE39; padding:3px; display:block;"
+  />
 </a>
 
   <a class="text-white" href="mailto:akash.shil@ucalgary.ca" aria-label="Email">
@@ -1418,6 +1424,45 @@ body {
     width: 40px;
     height: 40px;
   }
+}
+/* ORCID adjustments + hover */
+.orcid-link,
+.orcid-link img,
+.orcid-link .orcid-svg {
+  display:inline-grid;
+  place-items:center;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background: transparent;
+  transition: transform .22s ease, box-shadow .22s ease, background .22s ease;
+}
+
+.orcid-link img {
+  border-radius:50%;
+  background:#A6CE39;   /* green behind the small PNG if used */
+  padding:3px;
+  display:block;
+}
+
+.orcid-link .orcid-svg {
+  background: transparent;
+}
+
+.orcid-link:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 26px rgba(10,40,20,0.18);
+}
+
+/* ORCID hover: switch icon to white on green bg (inline svg path already white) */
+.orcid-link:hover img {
+  transform: scale(1.06);
+  box-shadow: 0 8px 22px rgba(166,206,57,0.24);
+}
+
+/* small screens */
+@media (max-width:520px) {
+  .orcid-link, .orcid-link img, .orcid-link .orcid-svg { width:40px; height:40px; }
 }
 </style>
 <!-- JavaScript for thank-you message -->
