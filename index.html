@@ -950,10 +950,6 @@ body::before {
   margin: 0 6px;
   font-size: 1.1rem;
 }
-  .card-body p {
-  font-size: 0.9rem; /* default is ~1rem; reduce slightly */
-  line-height: 1.6; /* keeps readability */
-}
   </style>
 </head>
 <body>
@@ -1716,6 +1712,11 @@ body {
   to {
     box-shadow: 0 0 10px rgba(0, 212, 255, 0.6), 0 0 15px rgba(0, 212, 255, 0.5);
   }
+}
+p.lead {
+  font-size: 0.9rem;  /* adjust between 0.85rem and 1rem as you like */
+  line-height: 1.6;
+  color: #d1d1e0;     /* optional – gives a softer look */
 }
 </style>
 <!-- JavaScript for thank-you message -->
