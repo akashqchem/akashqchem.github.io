@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Akash Shil — Quantum Chemistry & ML</title>
+  <title>Akash Shil - Quantum Chemistry & ML</title>
   <meta name="description" content="Akash Shil - Computational & Theoretical Chemistry.">
 
   <!-- Bootstrap & AOS -->
@@ -1987,6 +1987,15 @@ document.addEventListener('DOMContentLoaded', function () {
   </div>
 </section>
 
+<!-- FOOTER SITE UPDATE NOTE -->
+<section id="update-note">
+  <div class="container text-center mt-5 mb-4" data-aos="fade-up">
+    <p class="update-text">
+      Like electrons in motion, ideas evolve - revisit soon for new content.
+    </p>
+  </div>
+</section>
+
 <style>
   /* ===== Quote slideshow styles (dark-theme-friendly) ===== */
   #quote-section { background: transparent; display:flex; justify-content:center; align-items:center; }
@@ -2051,6 +2060,26 @@ document.addEventListener('DOMContentLoaded', function () {
     .quote { transition: none; transform: none; }
     .quote.active { opacity:1; }
   }
+
+/* ===== Update Note Styling ===== */
+#update-note {
+  background-color: transparent;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.update-text {
+  font-size: 1rem;               /* matches footer size */
+  color: #d1d1d1;                /* soft footer text tone */
+  font-style: italic;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 10px rgba(166, 220, 239, 0.2);  /* soft glow */
+  transition: all 0.3s ease;
+}
+
+.update-text:hover {
+  color: #a6dcef;                /* glow color matches accent */
+  text-shadow: 0 0 15px rgba(166, 220, 239, 0.5);
+}
 </style>
 
 <script>
