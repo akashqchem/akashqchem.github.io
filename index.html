@@ -1681,23 +1681,23 @@ body {
 }
 .badge-glow {
   display: inline-block;
-  background-color: rgba(0, 212, 255, 0.15); /* subtle blue tone */
-  color: #00d4ff;
+  background-color: #00d4ff; /* solid cyan fill like 'Ongoing' */
+  color: #ffffff; /* white text for contrast */
   padding: 4px 10px;
   border-radius: 6px;
   font-size: 0.9rem;
   font-weight: 500;
   text-transform: capitalize;
-  box-shadow: 0 0 3px rgba(0, 212, 255, 0.3), 0 0 6px rgba(0, 212, 255, 0.2);
-  animation: glowPulseSoft 3s infinite alternate;
+  box-shadow: 0 0 6px rgba(0, 212, 255, 0.5), 0 0 12px rgba(0, 212, 255, 0.4);
+  animation: softPulse 3s infinite alternate;
 }
 
-@keyframes glowPulseSoft {
+@keyframes softPulse {
   from {
-    box-shadow: 0 0 3px rgba(0, 212, 255, 0.3), 0 0 6px rgba(0, 212, 255, 0.2);
+    box-shadow: 0 0 6px rgba(0, 212, 255, 0.5), 0 0 12px rgba(0, 212, 255, 0.4);
   }
   to {
-    box-shadow: 0 0 8px rgba(0, 212, 255, 0.4), 0 0 12px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.6), 0 0 18px rgba(0, 212, 255, 0.5);
   }
 }
 .glow-badge {
