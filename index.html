@@ -957,12 +957,45 @@ body::before {
 <div class="animated-bg-wave" aria-hidden="true"></div>
   
   <!-- NAV -->
-  <nav class="navbar navbar-expand-lg navbar-light">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="#">AkashQChem</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<nav class="navbar navbar-expand-lg navbar-light">
+  <div class="container">
+
+    <!-- BRAND: animated bra–ket logo -->
+    <a class="navbar-brand fw-bold d-flex align-items-center" href="#" aria-label="AkashQChem homepage">
+
+      <!-- Animated Quantum Brand -->
+      <div class="qwrap" aria-hidden="true">
+        <span class="qitem bra" id="q-bra">⟨<span class="qname">Akash</span> |</span>
+
+        <!-- operator with crisp SVG -->
+        <span class="qitem operator" id="q-op" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="qGrad" x1="0" x2="1">
+                <stop offset="0" stop-color="var(--q-op-accent)" />
+                <stop offset="1" stop-color="var(--q-op-accent-2)" />
+              </linearGradient>
+            </defs>
+            <g transform="translate(6,6) scale(0.9)">
+              <circle cx="26" cy="26" r="20" fill="url(#qGrad)" opacity="0.98"/>
+              <text x="26" y="33" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
+                    font-size="28" font-weight="700" fill="var(--q-op-ink)">Q</text>
+              <rect x="20" y="6" width="12" height="3" rx="1.2" fill="var(--q-op-ink)"/>
+            </g>
+          </svg>
+        </span>
+
+        <span class="qitem ket" id="q-ket">| <span class="qname">Chem</span>⟩</span>
+      </div>
+
+      <!-- Fallback for screen readers / no JS -->
+      <span class="q-sr">AkashQChem — styled as bra Akash operator Q-hat ket Chem.</span>
+    </a>
+
+    <!-- Keep the toggler and menu below -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
       <div id="navmenu" class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link" href="#blog">Blog</a></li>
@@ -1718,6 +1751,131 @@ p.lead {
   line-height: 1.6;
   color: #d1d1e0;     /* optional – gives a softer look */
 }
+<!-- ===== CSS (put in your main stylesheet or <style> in head) ===== -->
+<style>
+/* Quantum brand: compact, responsive, accessible micro-animation
+   Variables below allow easy tuning to your site's colors/sizes.
+*/
+:root {
+  --q-font-family: 'Merriweather', Georgia, serif;
+  --q-brand-size-navbar: 20px;    /* size when placed in navbar */
+  --q-brand-size-hero: 40px;      /* alternate if you want a larger header */
+  --q-bra-color: #bfe6ff;         /* light cyan */
+  --q-ket-color: #bfe6ff;
+  --q-op-accent: #44e3ff;         /* gradient start */
+  --q-op-accent-2: #00bcd4;       /* gradient end */
+  --q-op-ink: #022a3a;            /* dark ink for Q letter */
+  --q-bg: transparent;
+  --q-gap: 14px;
+  --q-radius: 12px;
+}
+
+/* container — keeps spacing consistent with bootstrap nav */
+.quantum-brand {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+  background: var(--q-bg);
+  padding: 0;
+  margin: 0;
+}
+
+/* wrapper aligns everything on one line and prevents wrapping */
+.quantum-brand .qwrap {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--q-gap);
+  font-family: var(--q-font-family);
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* common item style */
+.quantum-brand .qitem {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+/* bra and ket text appearance */
+.quantum-brand .bra,
+.quantum-brand .ket {
+  color: var(--q-bra-color);
+  font-size: var(--q-brand-size-navbar);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+}
+
+/* small name inside bra/ket uses slightly bolder */
+.quantum-brand .qname {
+  color: inherit;
+  margin-inline: 6px;
+}
+
+/* operator alignment */
+.quantum-brand .operator {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width: calc(var(--q-brand-size-navbar) * 1.8);
+  height: calc(var(--q-brand-size-navbar) * 1.8);
+  margin: 0 4px;
+  filter: drop-shadow(0 8px 14px rgba(0,0,0,0.35));
+}
+
+/* ensure svg scales nicely */
+.quantum-brand .operator svg { display:block; width:100%; height:100%; }
+
+/* small devices: show simple text instead of fancy animation if width < 520px
+   This prevents overflow and keeps navbar usable on small phones.
+*/
+@media (max-width:520px) {
+  .quantum-brand .qwrap { gap:8px; }
+  .quantum-brand .bra, .quantum-brand .ket {
+    font-size: 14px; /* compact */
+    font-weight:700;
+  }
+  .quantum-brand .operator { width:28px; height:28px; filter:none; }
+}
+
+/* styling the "pill" look on dark backgrounds (optional)
+   You can uncomment the background if you want a pill around the group.
+*/
+/*
+.quantum-brand .qwrap {
+  padding:6px 10px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.02);
+}
+*/
+
+/* ---- Animation states ---- */
+.q-hidden { opacity:0; transform: translateY(0) scale(0.98); }
+.q-enter-left { transform: translateX(-18px) scale(0.98); opacity: 0; }
+.q-enter-right { transform: translateX(18px) scale(0.98); opacity: 0; }
+.q-pulse { transform: scale(0.95); opacity: 0.95; }
+
+/* Glow around operator when it pops */
+.q-op-glow {
+  box-shadow: 0 6px 28px rgba(0,187,200,0.28), inset 0 1px 0 rgba(255,255,255,0.03);
+  border-radius: 8px;
+}
+
+/* Respect reduced motion: disable transforms / transitions */
+@media (prefers-reduced-motion: reduce) {
+  .q-hidden, .q-enter-left, .q-enter-right, .q-pulse { transform: none !important; opacity: 1 !important; }
+  .quantum-brand .operator { transition: none !important; }
+}
+
+/* Visually-hidden accessible label (for screen readers) */
+.q-sr { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+
+/* Optional: if you want the brand to align visually in a navbar, tweak margin */
+.navbar .quantum-brand { margin-right: 6px; }
+
 </style>
 <!-- JavaScript for thank-you message -->
 <script>
@@ -2339,6 +2497,95 @@ backToTopBtn.addEventListener("click", () => {
       if(fallback) fallback.style.display = 'none';
     }
   })();
+</script>
+<!-- ===== JS (place before </body> or in your main JS bundle) ===== -->
+<script>
+(function () {
+  const bra = document.getElementById('q-bra');
+  const ket = document.getElementById('q-ket');
+  const op  = document.getElementById('q-op');
+
+  // If any element missing, bail out gracefully
+  if (!bra || !ket || !op) return;
+
+  // Respect reduced-motion preference
+  const rMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // On narrow screens we'll just show static brand (mobile friendly)
+  const narrow = window.matchMedia('(max-width:520px)').matches;
+
+  // Helper: show instantly (used for reduced-motion or narrow screens)
+  function showInstant() {
+    bra.classList.remove('q-hidden','q-enter-left');
+    bra.style.opacity = 1;
+    bra.style.transform = 'none';
+    op.classList.remove('q-hidden');
+    op.style.opacity = 1;
+    op.style.transform = 'none';
+    ket.classList.remove('q-hidden','q-enter-right');
+    ket.style.opacity = 1;
+    ket.style.transform = 'none';
+    // ensure no lingering classes
+    op.classList.remove('q-op-glow','q-pulse');
+  }
+
+  // If reduced motion or narrow screen -> do not animate (instant)
+  if (rMotion || narrow) {
+    showInstant();
+    return;
+  }
+
+  // Initial hidden state
+  bra.classList.add('q-hidden','q-enter-left');
+  op.classList.add('q-hidden');
+  ket.classList.add('q-hidden','q-enter-right');
+
+  // Use Web Animations API where available with fallback to CSS transitions
+  function animateIn() {
+    // Bra: slide in from left
+    bra.animate([
+      { transform: 'translateX(-16px) scale(0.98)', opacity: 0 },
+      { transform: 'translateX(0px) scale(1)', opacity: 1 }
+    ], { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' });
+
+    // Slight delay then operator pop
+    setTimeout(() => {
+      // operator pop (scale + glow)
+      op.animate([
+        { transform: 'scale(0.7)', opacity: 0 },
+        { transform: 'scale(1.12)', opacity: 1 },
+        { transform: 'scale(1)', opacity: 1 }
+      ], { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)' });
+
+      // add temporary glow class
+      op.classList.add('q-op-glow');
+      // remove glow after animation completes
+      setTimeout(() => op.classList.remove('q-op-glow'), 900);
+    }, 280);
+
+    // Ket: slide in from right with slightly more delay for rhythm
+    setTimeout(() => {
+      ket.animate([
+        { transform: 'translateX(16px) scale(0.98)', opacity: 0 },
+        { transform: 'translateX(0px) scale(1)', opacity: 1 }
+      ], { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' });
+    }, 560);
+  }
+
+  // small safety: ensure elements visible if browser doesn't support WAAPI
+  try {
+    animateIn();
+  } catch (e) {
+    // fallback: show instantly
+    showInstant();
+  }
+
+  // Optional: small hover micro-interaction for desktop (no motion prefs)
+  document.querySelectorAll('.quantum-brand .qwrap').forEach(el => {
+    el.addEventListener('mouseenter', () => { if (!rMotion) op.animate([{ transform:'scale(1)'},{ transform:'scale(1.05)'},{ transform:'scale(1)' }], { duration:400 }); });
+  });
+
+})();
 </script>
 </body>
 </html>
