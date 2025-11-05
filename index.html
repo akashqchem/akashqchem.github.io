@@ -950,37 +950,42 @@ body::before {
   margin: 0 6px;
   font-size: 1.1rem;
 }
-<!-- BRAND: animated bra–ket logo -->
-<a class="navbar-brand fw-bold d-flex align-items-center" href="#" aria-label="AkashQChem homepage">
+/* operator color controls the SVG via currentColor */
+.qitem.operator { color: #ffffff !important; }
 
-  <!-- Animated Quantum Brand -->
-  <div class="qwrap" aria-hidden="true">
-    <span class="qitem bra" id="q-bra">⟨<span class="qname">Akash</span> |</span>
+/* ensure the svg uses currentColor for all shapes; override inline attributes if present */
+.qitem.operator svg,
+.qitem.operator svg * {
+  fill: currentColor !important;
+  stroke: none !important;
+}
 
-    <!-- operator with crisp SVG -->
-    <span class="qitem operator" id="q-op" aria-hidden="true">
-      <svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true" focusable="false">
-        <defs>
-          <linearGradient id="qGrad" x1="0" x2="1">
-            <stop offset="0" stop-color="var(--q-op-accent)" />
-            <stop offset="1" stop-color="var(--q-op-accent-2)" />
-          </linearGradient>
-        </defs>
-        <g transform="translate(6,6) scale(0.9)">
-          <circle cx="26" cy="26" r="20" fill="url(#qGrad)" opacity="0.98"/>
-          <text x="26" y="33" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
-                font-size="28" font-weight="700" fill="var(--q-op-ink)">Q</text>
-          <rect x="20" y="6" width="12" height="3" rx="1.2" fill="var(--q-op-ink)"/>
-        </g>
-      </svg>
-    </span>
+/* keep the circular backdrop subtle and tunable */
+.qitem.operator svg .q-op-bg {
+  /* soft bluish glow; adjust opacity as you like */
+  fill: rgba(0, 140, 255, 0.10);
+  opacity: 1;
+}
 
-    <span class="qitem ket" id="q-ket">| <span class="qname">Chem</span>⟩</span>
-  </div>
+/* ensure the letter Q is crisp and bold */
+.qitem.operator svg .q-op-letter {
+  font-weight: 700;
+  fill: currentColor !important;
+}
 
-  <!-- Screen-reader fallback (hidden visually) -->
-  <span class="visually-hidden">AkashQChem — styled as bra Akash operator Q-hat ket Chem.</span>
-</a>
+/* ensure the hat uses same color */
+.qitem.operator svg .q-op-hat {
+  fill: currentColor !important;
+}
+
+/* size and layout */
+.qitem.operator svg { width:36px; height:36px; display:block; }
+
+/* small-screen tweaks */
+@media (max-width:480px) {
+  .qwrap .qname { font-size:13px; }
+  .qitem.operator svg { width:28px; height:28px; }
+}
 </style>
 </head>
 <body>
@@ -1007,12 +1012,25 @@ body::before {
             <stop offset="1" stop-color="var(--q-op-accent-2)" />
           </linearGradient>
         </defs>
-        <g transform="translate(6,6) scale(0.9)">
-          <circle cx="26" cy="26" r="20" fill="url(#qGrad)" opacity="0.98"/>
-          <text x="26" y="33" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
-                font-size="28" font-weight="700" fill="var(--q-op-ink)">Q</text>
-          <rect x="20" y="6" width="12" height="3" rx="1.2" fill="var(--q-op-ink)"/>
-        </g>
+        <g transform="translate(6,6) scale(0.9)" aria-hidden="true">
+  <!-- soft circular backdrop: keep it separate so CSS can tune opacity/color -->
+  <circle class="q-op-bg" cx="26" cy="26" r="20" />
+
+  <!-- use currentColor so CSS controls the letter color -->
+  <text class="q-op-letter"
+        x="26" y="33"
+        text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="28"
+        font-weight="700"
+        fill="currentColor">Q</text>
+
+  <!-- the hat above the Q uses currentColor too -->
+  <rect class="q-op-hat"
+        x="20" y="6"
+        width="12" height="3" rx="1.2"
+        fill="currentColor" />
+</g>
       </svg>
     </span>
 
@@ -2531,47 +2549,50 @@ backToTopBtn.addEventListener("click", () => {
 </script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  // Find the wrapper. Try both possible class names used earlier.
-  var wrap = document.querySelector('.qwrap') || document.querySelector('.qwrap-inline');
-  if (!wrap) return;
-
-  // Make sure navbar-brand can show overflow
-  var brand = wrap.closest('.navbar-brand');
-  if (brand) brand.style.overflow = 'visible';
-
-  // If the operator SVG uses CSS variables not present, provide sensible fallback colors:
-  var root = document.documentElement;
-  if (!getComputedStyle(root).getPropertyValue('--q-op-accent').trim()){
-    root.style.setProperty('--q-op-accent', '#00d1ff');
-    root.style.setProperty('--q-op-accent-2', '#48a6ff');
-    root.style.setProperty('--q-op-ink', '#042033');
+/* Animate the bra-ket brand when page loads.
+   Adds .animate to .qwrap after small delay so CSS keyframes run.
+   Respects prefers-reduced-motion for accessibility.
+*/
+(function(){
+  // do nothing on reduced-motion preference
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) {
+    document.querySelectorAll('.qwrap').forEach(w => w.classList.add('animate'));
+    return;
   }
 
-  // small delay then add animate class so users notice it
-  setTimeout(function(){ wrap.classList.add('animate'); }, 200);
-
-  // Respect prefers-reduced-motion
-  var m = window.matchMedia('(prefers-reduced-motion: reduce)');
-  if (m && m.matches) {
+  function startBrandAnimation() {
+    const wrap = document.querySelector('.qwrap');
+    if (!wrap) return;
+    // ensure initial state is hidden (in case of reload)
     wrap.classList.remove('animate');
-    // instantly show everything (no motion)
-    Array.from(wrap.querySelectorAll('.qitem')).forEach(function(el){
-      el.style.opacity = 1;
-      el.style.transform = 'none';
-    });
+    // small delay so the browser paints the initial hidden state
+    setTimeout(() => wrap.classList.add('animate'), 120);
   }
 
-  // Optional: replay animation when user hovers brand (desktop)
-  var brandLink = wrap.closest('a.navbar-brand');
-  if (brandLink && window.matchMedia('(hover: hover)').matches) {
-    brandLink.addEventListener('mouseenter', function(){
-      wrap.classList.remove('animate');
-      // force reflow then re-add
-      void wrap.offsetWidth;
-      setTimeout(()=>wrap.classList.add('animate'), 30);
-    });
+  // start when DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startBrandAnimation, {passive:true});
+  } else {
+    startBrandAnimation();
   }
+
+  // optional: restart animation if user clicks the brand (nice demo)
+  document.addEventListener('click', e=>{
+    if (e.target.closest('.qwrap') ) {
+      const w = e.target.closest('.qwrap');
+      w.classList.remove('animate');
+      requestAnimationFrame(()=> setTimeout(()=> w.classList.add('animate'), 60) );
+    }
+  }, {passive:true});
+})();
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var wrap = document.querySelector('.qwrap');
+  if(!wrap) return;
+  // add class to trigger CSS keyframe animations (you already have animation rules)
+  setTimeout(function(){ wrap.classList.add('animate'); }, 180);
 });
 </script>
 </body>
