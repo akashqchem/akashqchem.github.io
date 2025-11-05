@@ -950,42 +950,60 @@ body::before {
   margin: 0 6px;
   font-size: 1.1rem;
 }
-/* operator color controls the SVG via currentColor */
-.qitem.operator { color: #ffffff !important; }
+/* === Quantum brand: force inline non-wrapping layout (override other rules) === */
+.navbar-brand { overflow: visible; display: flex !important; align-items: center; gap: .5rem; }
 
-/* ensure the svg uses currentColor for all shapes; override inline attributes if present */
-.qitem.operator svg,
-.qitem.operator svg * {
-  fill: currentColor !important;
-  stroke: none !important;
+/* wrapper inline (fits in nav) */
+.qwrap {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  white-space: nowrap !important;
+  line-height: 1;
+  transform: translateZ(0); /* promote layer for smoother animation */
 }
 
-/* keep the circular backdrop subtle and tunable */
-.qitem.operator svg .q-op-bg {
-  /* soft bluish glow; adjust opacity as you like */
-  fill: rgba(0, 140, 255, 0.10);
-  opacity: 1;
+/* each piece: keep them inline and prevent internal wrapping */
+.qitem {
+  display: inline-flex !important;
+  align-items: center !important;
+  white-space: nowrap !important;
+  flex: 0 0 auto; /* never grow or shrink */
+  margin: 0;
+  padding: 0;
 }
 
-/* ensure the letter Q is crisp and bold */
-.qitem.operator svg .q-op-letter {
-  font-weight: 700;
-  fill: currentColor !important;
+/* explicit operator sizing + ensure svg is inline and not causing block wrap */
+.qitem.operator {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center;
+  color: #fff; /* operator color */
+  flex: 0 0 auto;
 }
 
-/* ensure the hat uses same color */
-.qitem.operator svg .q-op-hat {
-  fill: currentColor !important;
+.qitem.operator svg {
+  display: inline-block;   /* important to avoid block-level line-breaks */
+  width: 36px;
+  height: 36px;
+  vertical-align: middle;
 }
 
-/* size and layout */
-.qitem.operator svg { width:36px; height:36px; display:block; }
+/* ensure the Q letter in SVG uses the CSS currentColor (if you used fill:currentColor) */
+.qitem.operator svg text { fill: currentColor; }
 
-/* small-screen tweaks */
-@media (max-width:480px) {
-  .qwrap .qname { font-size:13px; }
-  .qitem.operator svg { width:28px; height:28px; }
+/* small-screen fallback: scale down but keep inline */
+@media (max-width: 760px) {
+  .qwrap { gap: .35rem; }
+  .qwrap .qname { font-size: 14px; }
+  .qitem.operator svg { width: 28px; height: 28px; }
 }
+
+/* accessibility: keep sr fallback visually-hidden */
+.visually-hidden, .q-sr { position: absolute !important; left: -9999px !important; width: 1px !important; height: 1px !important; overflow: hidden !important; }
+
 </style>
 </head>
 <body>
@@ -998,47 +1016,17 @@ body::before {
 
     <!-- BRAND: animated bra–ket logo -->
 <a class="navbar-brand fw-bold d-flex align-items-center" href="#" aria-label="AkashQChem homepage">
-
-  <!-- Animated Quantum Brand -->
   <div class="qwrap" aria-hidden="true">
     <span class="qitem bra" id="q-bra">⟨<span class="qname">Akash</span> |</span>
-
-    <!-- operator with crisp SVG -->
-    <span class="qitem operator" id="q-op" aria-hidden="true">
+    <span class="qitem operator" id="q-op">
+      <!-- inline svg -->
       <svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true" focusable="false">
-        <defs>
-          <linearGradient id="qGrad" x1="0" x2="1">
-            <stop offset="0" stop-color="var(--q-op-accent)" />
-            <stop offset="1" stop-color="var(--q-op-accent-2)" />
-          </linearGradient>
-        </defs>
-        <g transform="translate(6,6) scale(0.9)" aria-hidden="true">
-  <!-- soft circular backdrop: keep it separate so CSS can tune opacity/color -->
-  <circle class="q-op-bg" cx="26" cy="26" r="20" />
-
-  <!-- use currentColor so CSS controls the letter color -->
-  <text class="q-op-letter"
-        x="26" y="33"
-        text-anchor="middle"
-        font-family="Georgia, 'Times New Roman', serif"
-        font-size="28"
-        font-weight="700"
-        fill="currentColor">Q</text>
-
-  <!-- the hat above the Q uses currentColor too -->
-  <rect class="q-op-hat"
-        x="20" y="6"
-        width="12" height="3" rx="1.2"
-        fill="currentColor" />
-</g>
+        <!-- svg contents: circle + text + hat -->
       </svg>
     </span>
-
     <span class="qitem ket" id="q-ket">| <span class="qname">Chem</span>⟩</span>
   </div>
-
-  <!-- Screen-reader fallback (hidden visually) -->
-  <span class="visually-hidden">AkashQChem — styled as bra Akash operator Q-hat ket Chem.</span>
+  <span class="visually-hidden">AkashQChem - styled as bra Akash operator Q-hat ket Chem.</span>
 </a>
 
     <!-- Keep the toggler and menu below -->
