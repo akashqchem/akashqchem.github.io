@@ -1020,21 +1020,21 @@ body::before {
     <span class="qitem bra">⟨<span class="qname">Akash</span>|</span>
     <span class="qitem operator">
       <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-        <g transform="translate(6,6) scale(0.9)">
-  <!-- White Q -->
-  <text x="26" y="33"
+        <g transform="translate(6,6) scale(0.95)">
+  <!-- Slightly larger, bold white Q -->
+  <text x="26" y="34"
         text-anchor="middle"
         font-family="Georgia, 'Times New Roman', serif"
-        font-size="28"
+        font-size="30"
         font-weight="700"
         fill="#ffffff">Q</text>
 
-  <!-- Operator “hat” -->
-  <rect x="21" y="5"
-        width="10"
-        height="3"
-        rx="1"
-        fill="#ffffff" />
+  <!-- Slim, crisp cap (^) above Q -->
+  <path d="M20 7 L26 3 L32 7"
+        stroke="#ffffff"
+        stroke-width="2"
+        stroke-linecap="round"
+        fill="none" />
 </g>
       </svg>
     </span>
@@ -1852,28 +1852,19 @@ p.lead {
   .qwrap .qname { font-size: 14px; }
   .qitem.operator svg { width: 26px; height: 26px; }
 }
-/* Reduce space between operator and surrounding text */
 .qwrap {
   display: flex;
   align-items: center;
-  gap: 0.2rem; /* tighter gap */
-}
-
-.qitem {
-  display: inline-flex;
-  align-items: center;
-  color: #ffffff;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-weight: 600;
-  letter-spacing: -0.3px; /* slightly tighter text */
+  gap: 0.15rem; /* smaller space between parts */
 }
 
 .qitem.operator svg {
-  width: 28px;
-  height: 28px;
-  margin: 0 -2px; /* pull the operator slightly inward */
+  width: 32px;
+  height: 32px;
+  margin: 0 -3px; /* tucks operator slightly inward */
   vertical-align: middle;
 }
+
 </style>
 <!-- JavaScript for thank-you message -->
 <script>
