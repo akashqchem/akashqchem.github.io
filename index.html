@@ -950,7 +950,38 @@ body::before {
   margin: 0 6px;
   font-size: 1.1rem;
 }
-  </style>
+<!-- BRAND: animated bra–ket logo -->
+<a class="navbar-brand fw-bold d-flex align-items-center" href="#" aria-label="AkashQChem homepage">
+
+  <!-- Animated Quantum Brand -->
+  <div class="qwrap" aria-hidden="true">
+    <span class="qitem bra" id="q-bra">⟨<span class="qname">Akash</span> |</span>
+
+    <!-- operator with crisp SVG -->
+    <span class="qitem operator" id="q-op" aria-hidden="true">
+      <svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="qGrad" x1="0" x2="1">
+            <stop offset="0" stop-color="var(--q-op-accent)" />
+            <stop offset="1" stop-color="var(--q-op-accent-2)" />
+          </linearGradient>
+        </defs>
+        <g transform="translate(6,6) scale(0.9)">
+          <circle cx="26" cy="26" r="20" fill="url(#qGrad)" opacity="0.98"/>
+          <text x="26" y="33" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
+                font-size="28" font-weight="700" fill="var(--q-op-ink)">Q</text>
+          <rect x="20" y="6" width="12" height="3" rx="1.2" fill="var(--q-op-ink)"/>
+        </g>
+      </svg>
+    </span>
+
+    <span class="qitem ket" id="q-ket">| <span class="qname">Chem</span>⟩</span>
+  </div>
+
+  <!-- Screen-reader fallback (hidden visually) -->
+  <span class="visually-hidden">AkashQChem — styled as bra Akash operator Q-hat ket Chem.</span>
+</a>
+</style>
 </head>
 <body>
 <div class="animated-bg-layer" aria-hidden="true"></div>
@@ -961,36 +992,36 @@ body::before {
   <div class="container">
 
     <!-- BRAND: animated bra–ket logo -->
-    <a class="navbar-brand fw-bold d-flex align-items-center" href="#" aria-label="AkashQChem homepage">
+<a class="navbar-brand fw-bold d-flex align-items-center" href="#" aria-label="AkashQChem homepage">
 
-      <!-- Animated Quantum Brand -->
-      <div class="qwrap" aria-hidden="true">
-        <span class="qitem bra" id="q-bra">⟨<span class="qname">Akash</span> |</span>
+  <!-- Animated Quantum Brand -->
+  <div class="qwrap" aria-hidden="true">
+    <span class="qitem bra" id="q-bra">⟨<span class="qname">Akash</span> |</span>
 
-        <!-- operator with crisp SVG -->
-        <span class="qitem operator" id="q-op" aria-hidden="true">
-          <svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true" focusable="false">
-            <defs>
-              <linearGradient id="qGrad" x1="0" x2="1">
-                <stop offset="0" stop-color="var(--q-op-accent)" />
-                <stop offset="1" stop-color="var(--q-op-accent-2)" />
-              </linearGradient>
-            </defs>
-            <g transform="translate(6,6) scale(0.9)">
-              <circle cx="26" cy="26" r="20" fill="url(#qGrad)" opacity="0.98"/>
-              <text x="26" y="33" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
-                    font-size="28" font-weight="700" fill="var(--q-op-ink)">Q</text>
-              <rect x="20" y="6" width="12" height="3" rx="1.2" fill="var(--q-op-ink)"/>
-            </g>
-          </svg>
-        </span>
+    <!-- operator with crisp SVG -->
+    <span class="qitem operator" id="q-op" aria-hidden="true">
+      <svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="qGrad" x1="0" x2="1">
+            <stop offset="0" stop-color="var(--q-op-accent)" />
+            <stop offset="1" stop-color="var(--q-op-accent-2)" />
+          </linearGradient>
+        </defs>
+        <g transform="translate(6,6) scale(0.9)">
+          <circle cx="26" cy="26" r="20" fill="url(#qGrad)" opacity="0.98"/>
+          <text x="26" y="33" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
+                font-size="28" font-weight="700" fill="var(--q-op-ink)">Q</text>
+          <rect x="20" y="6" width="12" height="3" rx="1.2" fill="var(--q-op-ink)"/>
+        </g>
+      </svg>
+    </span>
 
-        <span class="qitem ket" id="q-ket">| <span class="qname">Chem</span>⟩</span>
-      </div>
+    <span class="qitem ket" id="q-ket">| <span class="qname">Chem</span>⟩</span>
+  </div>
 
-      <!-- Fallback for screen readers / no JS -->
-      <span class="q-sr">AkashQChem — styled as bra Akash operator Q-hat ket Chem.</span>
-    </a>
+  <!-- Screen-reader fallback (hidden visually) -->
+  <span class="visually-hidden">AkashQChem — styled as bra Akash operator Q-hat ket Chem.</span>
+</a>
 
     <!-- Keep the toggler and menu below -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
@@ -2498,94 +2529,50 @@ backToTopBtn.addEventListener("click", () => {
     }
   })();
 </script>
-<!-- ===== JS (place before </body> or in your main JS bundle) ===== -->
+
 <script>
-(function () {
-  const bra = document.getElementById('q-bra');
-  const ket = document.getElementById('q-ket');
-  const op  = document.getElementById('q-op');
+document.addEventListener('DOMContentLoaded', function () {
+  // Find the wrapper. Try both possible class names used earlier.
+  var wrap = document.querySelector('.qwrap') || document.querySelector('.qwrap-inline');
+  if (!wrap) return;
 
-  // If any element missing, bail out gracefully
-  if (!bra || !ket || !op) return;
+  // Make sure navbar-brand can show overflow
+  var brand = wrap.closest('.navbar-brand');
+  if (brand) brand.style.overflow = 'visible';
 
-  // Respect reduced-motion preference
-  const rMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // On narrow screens we'll just show static brand (mobile friendly)
-  const narrow = window.matchMedia('(max-width:520px)').matches;
-
-  // Helper: show instantly (used for reduced-motion or narrow screens)
-  function showInstant() {
-    bra.classList.remove('q-hidden','q-enter-left');
-    bra.style.opacity = 1;
-    bra.style.transform = 'none';
-    op.classList.remove('q-hidden');
-    op.style.opacity = 1;
-    op.style.transform = 'none';
-    ket.classList.remove('q-hidden','q-enter-right');
-    ket.style.opacity = 1;
-    ket.style.transform = 'none';
-    // ensure no lingering classes
-    op.classList.remove('q-op-glow','q-pulse');
+  // If the operator SVG uses CSS variables not present, provide sensible fallback colors:
+  var root = document.documentElement;
+  if (!getComputedStyle(root).getPropertyValue('--q-op-accent').trim()){
+    root.style.setProperty('--q-op-accent', '#00d1ff');
+    root.style.setProperty('--q-op-accent-2', '#48a6ff');
+    root.style.setProperty('--q-op-ink', '#042033');
   }
 
-  // If reduced motion or narrow screen -> do not animate (instant)
-  if (rMotion || narrow) {
-    showInstant();
-    return;
+  // small delay then add animate class so users notice it
+  setTimeout(function(){ wrap.classList.add('animate'); }, 200);
+
+  // Respect prefers-reduced-motion
+  var m = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (m && m.matches) {
+    wrap.classList.remove('animate');
+    // instantly show everything (no motion)
+    Array.from(wrap.querySelectorAll('.qitem')).forEach(function(el){
+      el.style.opacity = 1;
+      el.style.transform = 'none';
+    });
   }
 
-  // Initial hidden state
-  bra.classList.add('q-hidden','q-enter-left');
-  op.classList.add('q-hidden');
-  ket.classList.add('q-hidden','q-enter-right');
-
-  // Use Web Animations API where available with fallback to CSS transitions
-  function animateIn() {
-    // Bra: slide in from left
-    bra.animate([
-      { transform: 'translateX(-16px) scale(0.98)', opacity: 0 },
-      { transform: 'translateX(0px) scale(1)', opacity: 1 }
-    ], { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' });
-
-    // Slight delay then operator pop
-    setTimeout(() => {
-      // operator pop (scale + glow)
-      op.animate([
-        { transform: 'scale(0.7)', opacity: 0 },
-        { transform: 'scale(1.12)', opacity: 1 },
-        { transform: 'scale(1)', opacity: 1 }
-      ], { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)' });
-
-      // add temporary glow class
-      op.classList.add('q-op-glow');
-      // remove glow after animation completes
-      setTimeout(() => op.classList.remove('q-op-glow'), 900);
-    }, 280);
-
-    // Ket: slide in from right with slightly more delay for rhythm
-    setTimeout(() => {
-      ket.animate([
-        { transform: 'translateX(16px) scale(0.98)', opacity: 0 },
-        { transform: 'translateX(0px) scale(1)', opacity: 1 }
-      ], { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' });
-    }, 560);
+  // Optional: replay animation when user hovers brand (desktop)
+  var brandLink = wrap.closest('a.navbar-brand');
+  if (brandLink && window.matchMedia('(hover: hover)').matches) {
+    brandLink.addEventListener('mouseenter', function(){
+      wrap.classList.remove('animate');
+      // force reflow then re-add
+      void wrap.offsetWidth;
+      setTimeout(()=>wrap.classList.add('animate'), 30);
+    });
   }
-
-  // small safety: ensure elements visible if browser doesn't support WAAPI
-  try {
-    animateIn();
-  } catch (e) {
-    // fallback: show instantly
-    showInstant();
-  }
-
-  // Optional: small hover micro-interaction for desktop (no motion prefs)
-  document.querySelectorAll('.quantum-brand .qwrap').forEach(el => {
-    el.addEventListener('mouseenter', () => { if (!rMotion) op.animate([{ transform:'scale(1)'},{ transform:'scale(1.05)'},{ transform:'scale(1)' }], { duration:400 }); });
-  });
-
-})();
+});
 </script>
 </body>
 </html>
