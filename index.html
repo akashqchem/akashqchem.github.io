@@ -1016,17 +1016,30 @@ body::before {
 
     <!-- BRAND: animated bra–ket logo -->
 <a class="navbar-brand fw-bold d-flex align-items-center" href="#" aria-label="AkashQChem homepage">
-  <div class="qwrap" aria-hidden="true">
-    <span class="qitem bra" id="q-bra">⟨<span class="qname">Akash</span> |</span>
-    <span class="qitem operator" id="q-op">
-      <!-- inline svg -->
-      <svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true" focusable="false">
-        <!-- svg contents: circle + text + hat -->
+  <div class="qwrap">
+    <span class="qitem bra">⟨<span class="qname">Akash</span>|</span>
+    <span class="qitem operator">
+      <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+        <g transform="translate(6,6) scale(0.9)">
+  <!-- White Q -->
+  <text x="26" y="33"
+        text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="28"
+        font-weight="700"
+        fill="#ffffff">Q</text>
+
+  <!-- Operator “hat” -->
+  <rect x="21" y="5"
+        width="10"
+        height="3"
+        rx="1"
+        fill="#ffffff" />
+</g>
       </svg>
     </span>
-    <span class="qitem ket" id="q-ket">| <span class="qname">Chem</span>⟩</span>
+    <span class="qitem ket">| <span class="qname">Chem</span>⟩</span>
   </div>
-  <span class="visually-hidden">AkashQChem - styled as bra Akash operator Q-hat ket Chem.</span>
 </a>
 
     <!-- Keep the toggler and menu below -->
@@ -1790,129 +1803,77 @@ p.lead {
 }
 <!-- ===== CSS (put in your main stylesheet or <style> in head) ===== -->
 <style>
-/* Quantum brand: compact, responsive, accessible micro-animation
-   Variables below allow easy tuning to your site's colors/sizes.
-*/
-:root {
-  --q-font-family: 'Merriweather', Georgia, serif;
-  --q-brand-size-navbar: 20px;    /* size when placed in navbar */
-  --q-brand-size-hero: 40px;      /* alternate if you want a larger header */
-  --q-bra-color: #bfe6ff;         /* light cyan */
-  --q-ket-color: #bfe6ff;
-  --q-op-accent: #44e3ff;         /* gradient start */
-  --q-op-accent-2: #00bcd4;       /* gradient end */
-  --q-op-ink: #022a3a;            /* dark ink for Q letter */
-  --q-bg: transparent;
-  --q-gap: 14px;
-  --q-radius: 12px;
+
+/* Brand layout for bra ket */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: visible;
 }
 
-/* container — keeps spacing consistent with bootstrap nav */
-.quantum-brand {
+/* Wrap keeps everything inline */
+.qwrap {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* Each item stays inline */
+.qitem {
+  display: inline-flex;
+  align-items: center;
+  color: #ffffff;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 600;
+}
+
+/* Operator SVG color and size */
+.qitem.operator svg {
+  width: 32px;
+  height: 32px;
   display: inline-block;
   vertical-align: middle;
-  line-height: 1;
-  background: var(--q-bg);
-  padding: 0;
-  margin: 0;
 }
 
-/* wrapper aligns everything on one line and prevents wrapping */
-.quantum-brand .qwrap {
+.qitem.operator svg text,
+.qitem.operator svg rect {
+  fill: #ffffff;
+}
+
+.qitem.operator svg circle {
+  fill: rgba(255,255,255,0.08);
+}
+
+/* Small screen scaling */
+@media (max-width: 760px) {
+  .qwrap .qname { font-size: 14px; }
+  .qitem.operator svg { width: 26px; height: 26px; }
+}
+/* Reduce space between operator and surrounding text */
+.qwrap {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem; /* tighter gap */
+}
+
+.qitem {
   display: inline-flex;
   align-items: center;
-  gap: var(--q-gap);
-  font-family: var(--q-font-family);
-  white-space: nowrap;
-  user-select: none;
+  color: #ffffff;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 600;
+  letter-spacing: -0.3px; /* slightly tighter text */
 }
 
-/* common item style */
-.quantum-brand .qitem {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transform-origin: center;
-  will-change: transform, opacity;
+.qitem.operator svg {
+  width: 28px;
+  height: 28px;
+  margin: 0 -2px; /* pull the operator slightly inward */
+  vertical-align: middle;
 }
-
-/* bra and ket text appearance */
-.quantum-brand .bra,
-.quantum-brand .ket {
-  color: var(--q-bra-color);
-  font-size: var(--q-brand-size-navbar);
-  font-weight: 700;
-  letter-spacing: 0.2px;
-  text-shadow: 0 1px 0 rgba(0,0,0,0.2);
-}
-
-/* small name inside bra/ket uses slightly bolder */
-.quantum-brand .qname {
-  color: inherit;
-  margin-inline: 6px;
-}
-
-/* operator alignment */
-.quantum-brand .operator {
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width: calc(var(--q-brand-size-navbar) * 1.8);
-  height: calc(var(--q-brand-size-navbar) * 1.8);
-  margin: 0 4px;
-  filter: drop-shadow(0 8px 14px rgba(0,0,0,0.35));
-}
-
-/* ensure svg scales nicely */
-.quantum-brand .operator svg { display:block; width:100%; height:100%; }
-
-/* small devices: show simple text instead of fancy animation if width < 520px
-   This prevents overflow and keeps navbar usable on small phones.
-*/
-@media (max-width:520px) {
-  .quantum-brand .qwrap { gap:8px; }
-  .quantum-brand .bra, .quantum-brand .ket {
-    font-size: 14px; /* compact */
-    font-weight:700;
-  }
-  .quantum-brand .operator { width:28px; height:28px; filter:none; }
-}
-
-/* styling the "pill" look on dark backgrounds (optional)
-   You can uncomment the background if you want a pill around the group.
-*/
-/*
-.quantum-brand .qwrap {
-  padding:6px 10px;
-  border-radius: 14px;
-  background: rgba(255,255,255,0.02);
-}
-*/
-
-/* ---- Animation states ---- */
-.q-hidden { opacity:0; transform: translateY(0) scale(0.98); }
-.q-enter-left { transform: translateX(-18px) scale(0.98); opacity: 0; }
-.q-enter-right { transform: translateX(18px) scale(0.98); opacity: 0; }
-.q-pulse { transform: scale(0.95); opacity: 0.95; }
-
-/* Glow around operator when it pops */
-.q-op-glow {
-  box-shadow: 0 6px 28px rgba(0,187,200,0.28), inset 0 1px 0 rgba(255,255,255,0.03);
-  border-radius: 8px;
-}
-
-/* Respect reduced motion: disable transforms / transitions */
-@media (prefers-reduced-motion: reduce) {
-  .q-hidden, .q-enter-left, .q-enter-right, .q-pulse { transform: none !important; opacity: 1 !important; }
-  .quantum-brand .operator { transition: none !important; }
-}
-
-/* Visually-hidden accessible label (for screen readers) */
-.q-sr { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
-
-/* Optional: if you want the brand to align visually in a navbar, tweak margin */
-.navbar .quantum-brand { margin-right: 6px; }
-
 </style>
 <!-- JavaScript for thank-you message -->
 <script>
@@ -2534,54 +2495,6 @@ backToTopBtn.addEventListener("click", () => {
       if(fallback) fallback.style.display = 'none';
     }
   })();
-</script>
-
-<script>
-/* Animate the bra-ket brand when page loads.
-   Adds .animate to .qwrap after small delay so CSS keyframes run.
-   Respects prefers-reduced-motion for accessibility.
-*/
-(function(){
-  // do nothing on reduced-motion preference
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce) {
-    document.querySelectorAll('.qwrap').forEach(w => w.classList.add('animate'));
-    return;
-  }
-
-  function startBrandAnimation() {
-    const wrap = document.querySelector('.qwrap');
-    if (!wrap) return;
-    // ensure initial state is hidden (in case of reload)
-    wrap.classList.remove('animate');
-    // small delay so the browser paints the initial hidden state
-    setTimeout(() => wrap.classList.add('animate'), 120);
-  }
-
-  // start when DOM ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', startBrandAnimation, {passive:true});
-  } else {
-    startBrandAnimation();
-  }
-
-  // optional: restart animation if user clicks the brand (nice demo)
-  document.addEventListener('click', e=>{
-    if (e.target.closest('.qwrap') ) {
-      const w = e.target.closest('.qwrap');
-      w.classList.remove('animate');
-      requestAnimationFrame(()=> setTimeout(()=> w.classList.add('animate'), 60) );
-    }
-  }, {passive:true});
-})();
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  var wrap = document.querySelector('.qwrap');
-  if(!wrap) return;
-  // add class to trigger CSS keyframe animations (you already have animation rules)
-  setTimeout(function(){ wrap.classList.add('animate'); }, 180);
-});
 </script>
 </body>
 </html>
