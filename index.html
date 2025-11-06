@@ -1379,27 +1379,19 @@ body::before {
 </section>
 
 <script>
-/* ===== Render blog cards from a local array (easy to update) =====
-   To add a new post later, just add a new object to `posts`.
-*/
+/* Blog cards with optional thumbnail (replace the previous renderer) */
 (function(){
-  // Add your posts here. Keep newest first.
   const posts = [
     {
       title: "Understanding the Schrödinger Equation",
       url: "https://akashexplains.medium.com/everything-that-makes-chemistry-work-bonding-reactions-light-absorption-comes-from-how-a525e0d009fb",
       date: "06 Nov 2025",
       excerpt: "An accessible introduction to the Schrödinger equation - how it describes electrons, and why it matters for bonding, reactions and light absorption.",
-      tag: "Series: Electronic Structure Theory"
+      tag: "Series: Electronic Structure Theory",
+      // add your Medium post banner image URL here (right-click image -> Copy image address)
+      thumb: "https://miro.medium.com/v2/resize:fit:1100/format:webp/1*5SVNCl99dJTWi_UgK7JvCw.jpeg" 
     },
-    // Example future post entry:
-    // {
-    //   title: "Wavefunctions & Orbitals — Intuition without drowning in math",
-    //   url: "https://medium.com/...",
-    //   date: "DD MMM YYYY",
-    //   excerpt: "Short summary of post...",
-    //   tag: "Series: Electronic Structure"
-    // },
+    // add future posts the same way (thumb optional)
   ];
 
   const container = document.getElementById('blogGrid');
@@ -1411,66 +1403,89 @@ body::before {
     el.style.cssText = `
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.06);
-      padding: 1.6rem;
+      padding: 0;
       border-radius: 14px;
       box-shadow: 0 8px 28px rgba(0,0,0,0.45);
       display:flex;
-      flex-direction:row;
       gap:18px;
-      align-items:flex-start;
+      overflow: hidden;
       transition: transform .18s ease, box-shadow .18s ease;
     `;
     el.onmouseenter = () => el.style.transform='translateY(-6px)';
     el.onmouseleave = () => el.style.transform='translateY(0)';
 
-    // left column: metadata / tag
-    const left = document.createElement('div');
-    left.style.cssText = 'min-width:120px; text-align:left;';
-    left.innerHTML = `
-      <div style="font-size:0.85rem; color:#a5b7ff; font-weight:600; margin-bottom:8px;">${escapeHtml(p.tag || 'Blog')}</div>
-      <div style="font-size:0.8rem; color:#cfd8ff;">${escapeHtml(p.date || '')}</div>
-    `;
+    // Image column (if thumb provided)
+    const imgCol = document.createElement('div');
+    imgCol.style.cssText = 'width:320px; min-width:160px; max-width:360px; flex-shrink:0; background:#111; display:flex; align-items:center; justify-content:center;';
 
-    // right column: title + excerpt + button
-    const right = document.createElement('div');
-    right.style.cssText = 'flex:1;';
+    if (p.thumb) {
+      const img = document.createElement('img');
+      img.src = p.thumb;
+      img.alt = p.title;
+      img.style.cssText = 'width:100%; height:100%; max-height:180px; object-fit:cover; display:block;';
+      // wrap in a responsive container so height is controlled
+      const wrapper = document.createElement('div');
+      wrapper.style.cssText = 'width:100%; height:100%;';
+      wrapper.appendChild(img);
+      imgCol.appendChild(wrapper);
+    } else {
+      // no image: show tag area in left column
+      imgCol.innerHTML = `<div style="padding:18px; color:#cfd8ff; font-weight:600;">${escapeHtml(p.tag||'Blog')}</div>`;
+    }
+
+    // Text column
+    const textCol = document.createElement('div');
+    textCol.style.cssText = 'flex:1; padding:22px;';
+
+    const metaRow = document.createElement('div');
+    metaRow.style.cssText = 'font-size:0.85rem; color:#a5b7ff; font-weight:600; margin-bottom:8px;';
+    metaRow.textContent = p.tag || 'Blog';
 
     const title = document.createElement('h3');
+    title.style.cssText = 'margin:0 0 10px; font-family:"Times New Roman", serif; font-size:1.18rem;';
     title.innerHTML = `<a href="${p.url}" target="_blank" rel="noopener" style="color:#eaf0ff; text-decoration:none;">${escapeHtml(p.title)}</a>`;
-    title.style.cssText = 'margin:0 0 8px; font-family:"Times New Roman",serif; font-size:1.15rem;';
 
     const excerpt = document.createElement('p');
     excerpt.textContent = p.excerpt || '';
-    excerpt.style.cssText = 'margin:0 0 12px; color:#b7c6ff; line-height:1.6;';
+    excerpt.style.cssText = 'margin:0 0 14px; color:#b7c6ff; line-height:1.6;';
+
+    const metaDate = document.createElement('div');
+    metaDate.style.cssText = 'font-size:0.82rem; color:#cfd8ff; margin-bottom:10px;';
+    metaDate.textContent = p.date || '';
 
     const btn = document.createElement('a');
     btn.href = p.url; btn.target = '_blank'; btn.rel = 'noopener';
     btn.textContent = 'Read on Medium →';
     btn.style.cssText = 'display:inline-block; padding:8px 14px; border-radius:8px; background:linear-gradient(90deg,#8E9DFF,#A76FFF); color:white; text-decoration:none; font-weight:600;';
 
-    right.appendChild(title);
-    right.appendChild(excerpt);
-    right.appendChild(btn);
+    textCol.appendChild(metaRow);
+    textCol.appendChild(title);
+    textCol.appendChild(excerpt);
+    textCol.appendChild(metaDate);
+    textCol.appendChild(btn);
 
-    el.appendChild(left);
-    el.appendChild(right);
+    // append columns
+    el.appendChild(imgCol);
+    el.appendChild(textCol);
     return el;
   }
 
-  // small HTML escaping
   function escapeHtml(s){ return (s||'').toString().replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
 
   // render
   posts.forEach(p => container.appendChild(makeCard(p)));
 
-  // responsive: collapse card layout on narrow screens
-  const mq = window.matchMedia('(max-width:700px)');
+  // Responsive: stack image above text on small screens
+  const mq = window.matchMedia('(max-width:760px)');
   function adapt(m){
-    if (m.matches) {
-      document.querySelectorAll('.blog-card').forEach(c => c.style.flexDirection = 'column');
-    } else {
-      document.querySelectorAll('.blog-card').forEach(c => c.style.flexDirection = 'row');
-    }
+    document.querySelectorAll('.blog-card').forEach(c => {
+      if (m.matches) {
+        c.style.flexDirection = 'column';
+        c.querySelector('div').style.maxHeight = '220px';
+      } else {
+        c.style.flexDirection = 'row';
+      }
+    });
   }
   adapt(mq);
   mq.addEventListener ? mq.addEventListener('change', e => adapt(e)) : mq.addListener(adapt);
