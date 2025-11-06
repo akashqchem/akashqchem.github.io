@@ -1362,37 +1362,121 @@ body::before {
   <button class="hl-next" aria-label="Next">&#10095;</button>
 </div>
 
-<!-- BLOG -->
-<section id="blog" class="section-blog" data-aos="fade-up" data-aos-duration="900">
-  <div class="container">
-    <h2 class="section-title">Blog</h2>
+<!-- ===== BLOG (Medium posts) ===== -->
+<section id="blog" class="container" data-aos="fade-up">
+  <h2 class="section-title">Blog</h2>
 
-    <div class="blog-card">
-      <div class="blog-card-left">
-        <span class="badge bg-info text-dark ms-2 glow-badge">Coming Soon</span>
+  <div id="blogGrid" class="blog-grid" style="max-width:1000px; margin:1.2rem auto 3rem; display:grid; grid-template-columns:1fr; gap:18px;">
+    <!-- Cards will be injected here by JS -->
+  </div>
 
-        <h3 class="blog-card-title">A Beginner’s Journey through Electronic Structure Theory: From Wavefunctions to Density</h3>
-
-        <p class="lead">
-          I’m starting a blog series where I’ll explain core quantum-chemistry concepts in simple, intuitive terms.
-          Each post will explore topics like orbitals, basis sets, the self-consistent field (SCF) method, and
-          exchange-correlation functionals.
-        </p>
-
-        <ul class="blog-list">
-          <li>One concept per post - clear intuition + light math</li>
-        </ul>
-
-        <div class="blog-actions">
-          <a class="btn btn-primary" href="https://akashexplains.medium.com" target="_blank" rel="noopener">
-            Visit my Medium (preview & follow)
-          </a>
-        </div>
-      </div>
-
-    <p class="muted small">Short updates and drafts will appear on Medium first. Full series posts will be linked here as they publish.</p>
+  <div style="text-align:center; margin-top:0.6rem;">
+    <a id="allOnMedium" href="https://akashexplains.medium.com" target="_blank" rel="noopener" class="btn btn-primary"
+       style="display:inline-block; padding:10px 20px; border-radius:10px; text-decoration:none;">
+      View my Medium (all posts)
+    </a>
   </div>
 </section>
+
+<script>
+/* ===== Render blog cards from a local array (easy to update) =====
+   To add a new post later, just add a new object to `posts`.
+*/
+(function(){
+  // Add your posts here. Keep newest first.
+  const posts = [
+    {
+      title: "Understanding the Schrödinger Equation",
+      url: "https://akashexplains.medium.com/everything-that-makes-chemistry-work-bonding-reactions-light-absorption-comes-from-how-a525e0d009fb",
+      date: "06 Nov 2025",
+      excerpt: "An accessible introduction to the Schrödinger equation - how it describes electrons, and why it matters for bonding, reactions and light absorption.",
+      tag: "Series: Electronic Structure Theory"
+    },
+    // Example future post entry:
+    // {
+    //   title: "Wavefunctions & Orbitals — Intuition without drowning in math",
+    //   url: "https://medium.com/...",
+    //   date: "DD MMM YYYY",
+    //   excerpt: "Short summary of post...",
+    //   tag: "Series: Electronic Structure"
+    // },
+  ];
+
+  const container = document.getElementById('blogGrid');
+  if (!container) return;
+
+  function makeCard(p){
+    const el = document.createElement('article');
+    el.className = 'card blog-card';
+    el.style.cssText = `
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 1.6rem;
+      border-radius: 14px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+      display:flex;
+      flex-direction:row;
+      gap:18px;
+      align-items:flex-start;
+      transition: transform .18s ease, box-shadow .18s ease;
+    `;
+    el.onmouseenter = () => el.style.transform='translateY(-6px)';
+    el.onmouseleave = () => el.style.transform='translateY(0)';
+
+    // left column: metadata / tag
+    const left = document.createElement('div');
+    left.style.cssText = 'min-width:120px; text-align:left;';
+    left.innerHTML = `
+      <div style="font-size:0.85rem; color:#a5b7ff; font-weight:600; margin-bottom:8px;">${escapeHtml(p.tag || 'Blog')}</div>
+      <div style="font-size:0.8rem; color:#cfd8ff;">${escapeHtml(p.date || '')}</div>
+    `;
+
+    // right column: title + excerpt + button
+    const right = document.createElement('div');
+    right.style.cssText = 'flex:1;';
+
+    const title = document.createElement('h3');
+    title.innerHTML = `<a href="${p.url}" target="_blank" rel="noopener" style="color:#eaf0ff; text-decoration:none;">${escapeHtml(p.title)}</a>`;
+    title.style.cssText = 'margin:0 0 8px; font-family:"Times New Roman",serif; font-size:1.15rem;';
+
+    const excerpt = document.createElement('p');
+    excerpt.textContent = p.excerpt || '';
+    excerpt.style.cssText = 'margin:0 0 12px; color:#b7c6ff; line-height:1.6;';
+
+    const btn = document.createElement('a');
+    btn.href = p.url; btn.target = '_blank'; btn.rel = 'noopener';
+    btn.textContent = 'Read on Medium →';
+    btn.style.cssText = 'display:inline-block; padding:8px 14px; border-radius:8px; background:linear-gradient(90deg,#8E9DFF,#A76FFF); color:white; text-decoration:none; font-weight:600;';
+
+    right.appendChild(title);
+    right.appendChild(excerpt);
+    right.appendChild(btn);
+
+    el.appendChild(left);
+    el.appendChild(right);
+    return el;
+  }
+
+  // small HTML escaping
+  function escapeHtml(s){ return (s||'').toString().replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+  // render
+  posts.forEach(p => container.appendChild(makeCard(p)));
+
+  // responsive: collapse card layout on narrow screens
+  const mq = window.matchMedia('(max-width:700px)');
+  function adapt(m){
+    if (m.matches) {
+      document.querySelectorAll('.blog-card').forEach(c => c.style.flexDirection = 'column');
+    } else {
+      document.querySelectorAll('.blog-card').forEach(c => c.style.flexDirection = 'row');
+    }
+  }
+  adapt(mq);
+  mq.addEventListener ? mq.addEventListener('change', e => adapt(e)) : mq.addListener(adapt);
+
+})();
+</script>
   
 <!-- ===== CONTACT SECTION ===== -->
 <section id="contact" class="py-5">
