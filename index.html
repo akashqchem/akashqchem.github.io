@@ -1,2743 +1,840 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Akash Shil - Quantum Chemistry & ML</title>
-  <meta name="description" content="Akash Shil - Computational & Theoretical Chemistry.">
-
-  <!-- Bootstrap & AOS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
-  <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.4/css/academicons.min.css">
-  <style>
-  /* ---------- THEME COLORS ---------- */
-  :root{
-    --accent-start:#6a11cb;   /* violet */
-    --accent-end:#2575fc;     /* blue */
-    --bg-dark:#05060b;
-    --card-bg: rgba(255,255,255,0.03);
-    --muted: #cbd6ff;
-  }
-
-  /* ---------- GLOBAL STYLE ---------- */
-  body{
-    margin:0;
-    font-family:"Times New Roman", Times, serif;
-    background: var(--bg-dark);
-    color:#eef2ff;
-    -webkit-font-smoothing:antialiased;
-    line-height:1.6;
-  }
-
-  /* ---------- ANIMATED BACKGROUND ---------- */
-  :root {
-  --bg-a: #071226;
-  --bg-b: #0e1630;
-  --bg-c: #082033;
-}
-
-/* primary animated background layer */
-.animated-bg-layer {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: radial-gradient(800px 600px at 10% 10%, rgba(60,40,120,0.18), transparent 12%),
-              radial-gradient(600px 500px at 90% 80%, rgba(10,140,180,0.12), transparent 10%),
-              linear-gradient(180deg, var(--bg-a), var(--bg-b) 50%, var(--bg-c));
-  background-blend-mode: screen;
-  animation: bgShift 16s infinite alternate ease-in-out;
-  will-change: transform, opacity;
-  pointer-events: none;
-}
-
-/* quantum glow / wave enhancement */
-.animated-bg-wave {
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  background: radial-gradient(circle at 15% 30%, rgba(110,200,240,0.04) 0 8%, rgba(0,0,0,0) 12%),
-              radial-gradient(circle at 80% 60%, rgba(160,120,240,0.03) 0 10%, rgba(0,0,0,0) 16%);
-  filter: blur(28px);
-  animation: waveDrift 20s infinite linear;
-  will-change: transform, opacity;
-}
-
-/* animations */
-@keyframes bgShift {
-  0%   { transform: translate3d(0,0,0) scale(1); opacity: 1; }
-  50%  { transform: translate3d(-3%,2%,0) scale(1.03); opacity: .95; }
-  100% { transform: translate3d(2%,-2%,0) scale(1.02); opacity: 1; }
-}
-
-@keyframes waveDrift {
-  0%   { transform: translate3d(0,0,0) scale(1); opacity: 1; }
-  50%  { transform: translate3d(-2%,1.5%,0) scale(1.02); opacity: .95; }
-  100% { transform: translate3d(2%,-1.5%,0) scale(1); opacity: 1; }
-}
-
-/* motion accessibility */
-@media (prefers-reduced-motion: reduce) {
-  .animated-bg-layer,
-  .animated-bg-wave { animation: none; filter: none; }
-}
-
-  /* ---------- MOLECULE SVG BACKGROUND ---------- */
-  body::before{
-    content:"";
-    position:fixed; inset:0; z-index:-2;
-    background-image: url("data:image/svg+xml;utf8, \
-      <svg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'> \
-      <defs><g id='m'><circle cx='24' cy='24' r='4' fill='%23ffffff' fill-opacity='0.06'/> \
-      <circle cx='70' cy='24' r='3' fill='%23ffffff' fill-opacity='0.05'/> \
-      <line x1='28' y1='24' x2='66' y2='24' stroke='%23ffffff' stroke-opacity='0.03' stroke-width='1'/> \
-      <circle cx='150' cy='60' r='5' fill='%23ffffff' fill-opacity='0.04'/> \
-      </g></defs> \
-      <rect width='100%' height='100%' fill='transparent'/> \
-      <use href='%23m' x='0' y='0'/> \
-      <use href='%23m' x='120' y='80'/> \
-      <use href='%23m' x='40' y='180'/> \
-      </svg>");
-    background-repeat: repeat;
-    opacity:0.06;
-    pointer-events:none;
-  }
-
-  /* ---------- NAV ---------- */
-  .navbar{
-    background: rgba(6,8,18,0.55) !important;
-    backdrop-filter: blur(6px);
-    border-bottom: 1px solid rgba(255,255,255,0.03);
-  }
-  .navbar-brand, .nav-link{ color: #fff !important; font-family:"Times New Roman", Times, serif; }
-  .nav-link:hover{ color: #ffd166 !important; }
-
-  /* ---------- HERO ---------- */
-  .hero{
-    padding:5.5rem 0 2.5rem;
-    text-align:center;
-    position:relative;
-  }
-  .profile-img{
-    width:176px;height:176px;object-fit:cover;border-radius:50%;
-    border:6px solid rgba(255,255,255,0.98);
-    box-shadow: 0 8px 36px rgba(94,46,255,0.18);
-    transition:transform .35s,box-shadow .35s;
-    background:#fff;
-  }
-  .profile-img:hover{ transform:translateY(-6px) scale(1.03); box-shadow: 0 18px 56px rgba(94,46,255,0.28); }
-
-  h1.hero-title{
-    font-weight:700;
-    font-size: clamp(30px, 4vw, 46px);
-    margin-top:1rem;
-    color:#fff;
-  }
-  .subtitle{
-    color:var(--muted);
-    font-size:18px;
-    margin-bottom:1rem;
-    min-height:28px;
-  }
-  .typing { display:inline-block; border-right:2px solid rgba(255,255,255,0.65); padding-right:4px; margin-left:6px; }
-
-/* === View Projects Button === */
-.btn-primary {
-  background: linear-gradient(135deg, #6d5dfc, #5f3dc4);  /* bright violet gradient */
-  border: none;
-  color: #fff;
-  font-weight: 600;
-  box-shadow: 0 8px 25px rgba(109, 93, 252, 0.25);
-  transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(109, 93, 252, 0.45);
-}
-
-/* === Download CV Button === */
-.btn-outline-primary {
-  background: linear-gradient(135deg, #3b5bdb, #4361ee);  /* deep blue gradient */
-  color: #fff;
-  border: none;
-  font-weight: 600;
-  box-shadow: 0 8px 25px rgba(67, 97, 238, 0.25);
-  transition: all 0.3s ease;
-}
-
-.btn-outline-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(67, 97, 238, 0.45);
-}
-.btn-sm {
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 0.95rem;
-}
-
-  /* ---------- FLOATING FORMULA PARTICLES ---------- */
-  .particle {
-    position: absolute;
-    color: rgba(255,255,255,0.92);
-    font-family:"Times New Roman", Times, serif;
-    font-size: 15px;
-    padding: 6px 10px;
-    border-radius: 10px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-    box-shadow:0 6px 18px rgba(0,0,0,0.45);
-    opacity:0.92;
-    pointer-events:none;
-  }
-  .particle.small{ font-size:14px; opacity:0.9; }
-  .particle.dim{ opacity:0.6; background:transparent; box-shadow:none; color: rgba(220,230,255,0.85); }
-  
- /* ---- Publication Card Glow (accent color match) ---- */
-.card.mx-auto {
-  position: relative;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 15px;
-  box-shadow:
-    0 0 20px rgba(174, 191, 255, 0.15),
-    0 0 40px rgba(174, 191, 255, 0.10);
-  transition: box-shadow 0.4s ease-in-out, transform 0.3s ease-in-out;
-}
-
-.card.mx-auto:hover {
-  box-shadow:
-    0 0 30px rgba(174, 191, 255, 0.25),
-    0 0 60px rgba(174, 191, 255, 0.18);
-  transform: translateY(-4px);
-}
-
-/* Space and formatting for math/label blocks inside floating particles */
-.particle.small div + div {
-  margin-top: 4px; /* space between “Loss Function:” and its equation */
-}
-
-.particle.p3.small {
-  padding: 8px 10px;  /* adds gentle breathing room inside */
-  line-height: 1.5;   /* improves readability */
-}
-    /* ---------- Kohn-Sham small card styling ---------- */
-.ks-equation {
-  max-width: 480px;      /* keeps the box compact */
-  padding: 14px 18px;
-  text-align: center;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border-radius: 12px;
-  box-shadow: 0 12px 40px rgba(5,6,15,0.55);
-  backdrop-filter: blur(4px) saturate(110%);
-  color: #dfeff6;
-  pointer-events: none;  /* non-interactive (like your other floating particles) */
-  font-family: "Georgia", "Times New Roman", serif;
-  line-height: 1.12;
-}
-
-/* title (bold) */
-.ks-title {
-  font-weight: 700 !important;
-  color: #ffffff !important;
-  margin-bottom: 8px;
-  font-size: 0.95rem;
-  opacity: 1 !important;
-  text-align: center;
-  letter-spacing: 0.2px;
-}
-/* equation single-line */
-.ks-eqn-single {
-  font-style: normal; /* upright for math */
-  color: #cfeff0;
-  margin: 6px 0;
-  font-size: clamp(0.95rem, 1.02vw, 1.02rem);
-  white-space: nowrap;
-  display: inline-block;
-}
-
-/* smaller screens: hide to avoid overlap */
-@media (max-width: 740px) {
-  .ks-equation { display:none; }
-}
-/* responsive: hide floating particle on narrow screens */
-@media (max-width: 740px) {
-  .ks-equation { display:none; }
-}
-/* title */
-.ks-title { 
-  font-weight:700;
-  color: #ffffff;
-  margin-bottom: 8px;
-  font-size: 0.95rem;
-  opacity: 0.98;
-}
-
-/* equation */
-.ks-eqn {
-  font-style: normal; /* keep upright for math */
-  font-family: "Georgia", "Times New Roman", serif;
-  color: #cfeff0;
-  margin: 6px 0;
-  line-height: 1.12;
-  font-size: clamp(0.9rem, 1.05vw, 1.05rem);
-}
-
-/* break equation into lines and emphasize RHS */
-.ks-line { display:block; white-space:nowrap; }
-.ks-line.equals { margin-top: 6px; font-weight:700; color:#ffffff; }
-
-/* small caption under equation */
-.ks-caption {
-  margin-top: 8px;
-  font-size: 0.78rem;
-  color: rgba(255,255,255,0.72);
-  font-style: italic;
-}
-
-/* responsive: keep things neat on smaller screens */
-@media (max-width: 740px) {
-  .ks-equation { display:none; } /* hide floating particle on narrow screens to avoid overlap */
-}   
-  @keyframes float1 { 0%{transform:translateY(0)}50%{transform:translateY(-18px)}100%{transform:translateY(0)}}
-  @keyframes float2 { 0%{transform:translateY(0)}50%{transform:translateY(-28px)}100%{transform:translateY(0)}}
-  @keyframes float3 { 0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
-  .p1{ animation: float1 6.8s ease-in-out infinite; }
-  .p2{ animation: float2 8.6s ease-in-out infinite; }
-  .p3{ animation: float3 7.4s ease-in-out infinite; }
-
-  /* ---------- CONTENT ---------- */
-  section{ padding:3.25rem 0; }
-  .section-title{ font-weight:bold; color:#fff; font-size:22px; border-left:4px solid rgba(255,255,255,0.06); padding-left:10px; margin-bottom:1rem; }
-  .card{ background:var(--card-bg); border:none; color:#eef2ff; font-family:"Times New Roman", Times, serif; }
-  .project-card{ border-radius:14px; overflow:hidden; transition:transform .28s, box-shadow .28s; }
-  .project-card:hover{ transform:translateY(-10px); box-shadow:0 20px 60px rgba(40,40,120,0.14); }
-  .muted-small{ color: #cbd6ff; opacity:0.8; font-size:1rem; }
-    /* Ensure justified text on all devices */
-p, li, .section-text {
-  text-align: justify;
-  text-justify: inter-word;
-  hyphens: auto;
-}
-
-/* Adjust readability for small screens */
-@media (max-width: 768px) {
-  p, li, .section-text {
-    text-align: justify !important;
-    text-justify: inter-word !important;
-    word-spacing: 1px;
-    line-height: 1.6;
-  }
-}
-
-  footer{ padding:2rem 0; color: #b5c2ff; text-align:center; border-top:1px solid rgba(255,255,255,0.03); }
-
-    @media (max-width:768px){ .particle{display:none;} }
-  footer{ padding:2rem 0; color:#b5c2ff; text-align:center; border-top:1px solid rgba(255,255,255,0.03); }
-
-/* Mobile-friendly particle rules (replace the old "display:none" block) */
-@media (max-width:768px) {
-  /* show a simplified, lighter version of particles on phones */
-  .particle {
-    display: block !important;
-    position: absolute;
-    font-size: 13px;           /* smaller text */
-    padding: 6px 8px;
-    border-radius: 8px;
-    opacity: 0.85;
-    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-    box-shadow: none;         /* remove heavy shadows for performance */
-    pointer-events: none;
-    z-index: 4;               /* make sure particles sit above bg but below hero content */
-    transform: none;
-    transition: none;
-  }
-
-  /* make dim particles even subtler */
-  .particle.dim { opacity: 0.65; font-size: 12px; background: transparent; }
-
-  /* shorter float animations so they don't appear jittery on mobile */
-  .p1, .p2, .p3 {
-    animation-duration: 6s !important;
-    will-change: transform;
-  }
-
-  /* reduce number of floating elements if you added many — hide extras via class */
-  .particle.extra { display: none !important; } /* add class="extra" to particles you want hidden on phones */
-
-  /* Slightly reduce overlay strength on small screens */
-  .animated-bg { opacity: 0.06 !important; }
-}
-
-/* Ensure profile image sits above animated background/particles */
-.profile-img {
-  position: relative;
-  z-index: 5;              /* bring image to front */
-}
-
-/* Make hero area slightly smaller so content below is visible faster */
-.hero {
-  padding: 3.5rem 0 1.5rem; /* reduce top/bottom so About section is nearer */
-  z-index: 2;
-}
-
-/* Reduce overlay brightness a touch so content below is readable */
-.animated-bg { opacity: 0.12 !important; }
-
-/* In case body::before SVG overlay is too strong */
-body::before { opacity: 0.04 !important; }
-
-    /* ---------- VISIBILITY & TYPOGRAPHY FIXES ---------- */
-
-/* Use Times New Roman everywhere for good readability */
-body, h1, h2, h3, p, a, li {
-  font-family: "Times New Roman", Times, serif !important;
-}
-
-/* Ensure any SVG/body overlay is subtle & behind content */
-.animated-bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;               /* background layer */
-  opacity: 0.10 !important; /* lighten background so content is readable */
-  pointer-events: none;
-}
-
-/* If you used body::before overlay, make it faint and behind */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  opacity: 0.03 !important;
-  pointer-events: none;
-}
-
-/* Ensure hero section and everything inside it sits above the animated background */
-.hero, .hero * {
-  position: relative;
-  z-index: 5; /* bring hero content to front */
-}
-
-/* Make sure profile image is above overlay and centered nicely */
-.profile-img {
-  position: relative;
-  z-index: 6; /* above hero content */
-  display: inline-block;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
-}
-
-/* make hero a bit shorter (optional) so About section is nearer */
-.hero {
-  padding-top: 3rem;
-  padding-bottom: 1.5rem;
-}
-
-/* Subtitle style and container for typing text */
-.subtitle {
-  font-size: 1.15rem;
-  color: rgba(255,255,255,0.9);
-  margin-top: 0.25rem;
-  margin-bottom: 1rem;
-}
-
-/* Typing word container */
-#subtitle-typed {
-  font-weight: 600;
-  margin-left: 0.5rem;
-  white-space: nowrap;
-}
-
-/* small visual improvements for hero buttons and social icons */
-.btn {
-  z-index: 6;
-}
-
-/* reduce overlay strength on mobile a bit more */
-@media (max-width: 768px) {
-  .animated-bg { opacity: 0.06 !important; }
-  .hero { padding-top: 2rem; }
-}
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 8px rgba(255,255,255,0.05); }
-  50% { box-shadow: 0 0 14px rgba(255,255,255,0.12); }
-}
-#publications .card {
-  animation: pulseGlow 6s ease-in-out infinite;
-}
-  #contact a:hover i {
-  opacity: 0.8;
-  transform: scale(1.05);
-  transition: all 0.2s ease-in-out;
-}
-  #about a:hover {
-  color: #d8e9ff !important;
-  text-decoration: underline;
-  text-shadow: 0 0 6px rgba(166, 220, 239, 0.4);
-  transition: all 0.2s ease-in-out;
-}
-  a.text-white:hover {
-  color: #00aaff !important;
-  text-shadow: 0 0 10px rgba(0, 170, 255, 0.6);
-}
-  @media (max-width: 768px) {
-  .project-card img {
-    width: 85% !important;
-  }
-}
-  /* ---------------- Animated checkmark thank-you overlay ---------------- */
-#thankyou-overlay {
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: rgba(3,6,12,0.6);
-  z-index: 9999;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .35s ease;
-}
-
-#thankyou-overlay.visible {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.thank-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-  border-radius: 14px;
-  padding: 26px 32px;
-  width: min(560px, 90vw);
-  text-align: center;
-  box-shadow: 0 14px 50px rgba(0,0,0,0.45);
-  color: #eef2ff;
-  font-family: "Times New Roman", Times, serif;
-}
-
-/* svg container */
-.thank-svg {
-  width: 96px;
-  height: 96px;
-  margin: 0 auto 14px;
-  display:block;
-}
-
-/* circle pulse */
-.check-circle {
-  fill: none;
-  stroke: rgba(94,46,255,0.18);
-  stroke-width: 6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  filter: drop-shadow(0 6px 18px rgba(37,117,252,0.12));
-  transform-origin: 50% 50%;
-  transform: scale(.92);
-  opacity: 0;
-  transition: all .45s cubic-bezier(.2,.9,.2,1);
-}
-
-/* check path: ready to animate */
-.check {
-  fill: none;
-  stroke: #6cf0d8;
-  stroke-width: 6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
-  transition: stroke-dashoffset .6s cubic-bezier(.2,.9,.2,1) .15s;
-}
-
-/* small pop */
-.thank-card.visible .check-circle {
-  transform: scale(1);
-  opacity: 1;
-}
-
-.thank-card.visible .check {
-  stroke-dashoffset: 0;
-}
-
-/* heading + message */
-.thank-title {
-  font-size: 1.35rem;
-  font-weight: 700;
-  margin: 8px 0 6px;
-  color: #ffffff;
-}
-.thank-msg {
-  color: rgba(255,255,255,0.9);
-  margin-bottom: 12px;
-  font-size: 0.98rem;
-}
-
-/* close button */
-.thank-close {
-  display:inline-block;
-  margin-top: 10px;
-  padding: 8px 14px;
-  border-radius: 8px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.06);
-  color: #fff;
-  cursor:pointer;
-  transition: background .18s ease, transform .12s ease;
-}
-.thank-close:hover { background: rgba(255,255,255,0.06); transform: translateY(-2px); }
-
-/* small responsive tweak */
-@media (max-width:560px){
-  .thank-card { padding: 18px 18px; }
-  .thank-svg { width: 84px; height:84px; }
-  .thank-title { font-size:1.1rem; }
-}
-  /* ---------- THANK-YOU OVERLAY ANIMATIONS ---------- */
-/* overlay container hidden by default */
-#thankyou-overlay {
-  position: fixed;
-  inset: 0;
-  display: none;           /* shown by JS */
-  align-items: center;
-  justify-content: center;
-  background: rgba(4,6,12,0.6);
-  z-index: 9999;
-}
-
-/* the card */
-.thank-card {
-  width: min(520px, 90%);
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-  backdrop-filter: blur(6px) saturate(110%);
-  border-radius: 14px;
-  padding: 28px;
-  box-shadow: 0 18px 50px rgba(5,6,15,0.6);
-  transform: translateY(18px) scale(.98);
-  opacity: 0;
-  transition: transform .45s cubic-bezier(.2,.9,.3,1), opacity .35s ease;
-  text-align: center;
-}
-
-/* when visible, pop in */
-#thankyou-overlay.show .thank-card {
-  transform: translateY(0) scale(1);
-  opacity: 1;
-}
-
-/* svg circle and check animation */
-.thank-svg { width: 120px; height: 120px; margin: 0 auto 14px; display:block; }
-.check-circle { fill: none; stroke: rgba(42, 255, 160, 0.12); stroke-width: 10; }
-.check-path {
-  fill: none;
-  stroke: #2CFFB0;           /* bright check color */
-  stroke-width: 6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 140;     /* initial stroke dash for animate */
-  stroke-dashoffset: 140;
-  transition: stroke-dashoffset .7s cubic-bezier(.2,.9,.3,1);
-}
-
-/* small scale / glow on success */
-#thankyou-overlay.show .check-path {
-  stroke-dashoffset: 0;
-  filter: drop-shadow(0 6px 14px rgba(44,255,176,0.14));
-}
-
-/* subtle card glow after check */
-#thankyou-overlay.show .thank-card {
-  box-shadow: 0 30px 80px rgba(28,32,56,0.65), 0 6px 28px rgba(44,255,176,0.04);
-}
-
-/* nice entrance for text */
-.thank-title { font-size:1.25rem; font-weight:700; margin-top:6px; color:#e9fff3; }
-.thank-msg  { color: rgba(255,255,255,0.85); margin-top:8px; line-height:1.5; }
-
-/* small accessible close button styling */
-.thank-close { margin-top:18px; border:0; background:transparent; color: rgba(255,255,255,0.7); cursor:pointer; }
-  
-  /* Center tagline under name */
-.tagline {
-  text-align: center;
-  font-size: 1.1rem;
-  color: #ffffffd0;
-  margin-top: 6px;
-  line-height: 1.6;
-}
-/* ===== subtle glow behind hero name ===== */
-.hero-title {
-  position: relative;    /* create positioning context for pseudo */
-  z-index: 2;            /* keep text above the glow */
-  display: inline-block; /* shrink-wrap for nicer glow placement */
-  padding: 0 6px;
-  text-shadow: 0 6px 18px rgba(5,10,30,0.35); /* subtle lift */
-}
-/* radial glow (behind the text) */
-.hero-title::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: min(680px, 78vw);   /* responsive width */
-  height: min(220px, 34vw);  /* responsive height */
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 1;                 /* behind the text (hero-title is z-index:2) */
-  background: radial-gradient(
-    circle at 50% 45%,
-    rgba(99,102,241,0.16) 0%,
-    rgba(99,102,241,0.10) 20%,
-    rgba(99,102,241,0.04) 40%,
-    rgba(99,102,241,0.00) 70%
-  );
-  filter: blur(26px);
-  opacity: 0.95;
-}
-
-/* tune for smaller screens */
-@media (max-width: 520px) {
-  .hero-title::after {
-    width: min(420px, 86vw);
-    height: min(160px, 40vw);
-    filter: blur(20px);
-  }
-}
-    
-/* Subtitle styling (for typing line) */
-.subtitle {
-  text-align: center;
-  font-size: 1.1rem;
-  color: #ffffffd0;
-  margin-top: 6px;
-  line-height: 1.6;
-}
-
-/* Typing cursor blinking effect */
-.typing::after {
-  content: '|';
-  animation: blink 0.8s infinite;
-  color: #a5b4ff;
-  font-weight: 300;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
-}
-  /* HIGHLIGHTS: thumbnails + modal */
-.highlight-thumb {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.04);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.35);
-  cursor: zoom-in;
-}
-
-/* Slightly reduce card padding on small screens */
-@media (max-width: 768px) {
-  .highlight-thumb { height: 160px; }
-}
-
-/* Lightbox modal */
-.hl-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(3,6,12,0.88);
-  z-index: 99999;
-  align-items: center;
-  justify-content: center;
-}
-.hl-modal[aria-hidden="false"] { display: flex; }
-
-.hl-inner {
-  max-width: 1100px;
-  width: 92%;
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 20px;
-  align-items: center;
-}
-.hl-inner img { width: 100%; height: auto; border-radius: 10px; box-shadow: 0 14px 50px rgba(0,0,0,0.6); }
-
-.hl-caption {
-  color: #e6f2ff;
-  font-style: italic;
-  font-size: 0.98rem;
-  line-height: 1.5;
-  max-height: 70vh;
-  overflow: auto;
-}
-
-/* close & nav buttons */
-.hl-close, .hl-prev, .hl-next {
-  position: absolute;
-  background: rgba(255,255,255,0.06);
-  color: #fff;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 20px;
-}
-.hl-close { top: 18px; right: 20px; }
-.hl-prev { left: 18px; top: 50%; transform: translateY(-50%); }
-.hl-next { right: 18px; top: 50%; transform: translateY(-50%); }
-
-.hl-close:hover, .hl-prev:hover, .hl-next:hover { background: rgba(255,255,255,0.12); }
-
-/* For small screens: stack modal */
-@media (max-width: 900px) {
-  .hl-inner { grid-template-columns: 1fr; padding: 18px; }
-  .hl-caption { max-height: none; margin-top: 10px; }
-}
-  #education {
-  font-weight: 700;
-  font-size: 22px;
-  color: #ffffff;
-  letter-spacing: 0.5px;
-}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Akash Shil — Quantum Chemistry & Machine Learning</title>
+<meta name="description" content="Akash Shil — Computational & Theoretical Chemistry. DFT, TDDFT & ML for covalent drug discovery." />
+<meta name="color-scheme" content="dark" />
+
+<!-- Distinctive type pairing: Fraunces (display serif) / Newsreader (text serif) / JetBrains Mono (labels) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   THEME — "computational elegance": deep ink, phosphor-teal,
+   sparing amber. No violet→blue gradients.
+   ============================================================ */
 :root{
-  --bg-a: #071226;
-  --bg-b: #0e1630;
-  --bg-c: #082033;
+  --ink-0:#080b11;          /* base */
+  --ink-1:#0b0f17;          /* page */
+  --ink-2:#0f141e;          /* surface */
+  --line: rgba(180,200,225,0.10);
+  --line-strong: rgba(180,200,225,0.18);
+
+  --text:#e9edf3;
+  --text-2:#b3bdcc;
+  --muted:#8492a6;
+
+  --teal:#54e0c4;           /* primary accent (phosphor / spectroscopy) */
+  --teal-dim:#2f9c8b;
+  --amber:#e8b25a;          /* secondary accent (used sparingly) */
+
+  --shadow: 0 24px 60px -28px rgba(0,0,0,0.7);
+  --radius: 16px;
+  --maxw: 1120px;
+
+  --font-display:"Fraunces","Georgia",serif;
+  --font-body:"Newsreader","Iowan Old Style","Georgia",serif;
+  --font-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
 }
 
-/* container that covers the page background */
-.animated-bg-layer {
-  position: fixed;
-  inset: 0;
-  z-index: -1;                 /* behind content */
-  background: radial-gradient(800px 600px at 10% 10%, rgba(60,40,120,0.18), transparent 12%),
-              radial-gradient(600px 500px at 90% 80%, rgba(10,140,180,0.12), transparent 10%),
-              linear-gradient(180deg, var(--bg-a), var(--bg-b) 50%, var(--bg-c));
-  background-blend-mode: screen;
-  animation: bgShift 16s infinite alternate ease-in-out;
-  will-change: transform, opacity;
-  pointer-events: none;
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--ink-1);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:18px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
 }
 
-/* reduced motion respect */
-@media (prefers-reduced-motion: reduce) {
-  .animated-bg-layer { animation: none; }
+/* ---------- atmospheric background layers ---------- */
+.bg{position:fixed; inset:0; z-index:-3; pointer-events:none;
+  background:
+    radial-gradient(720px 520px at 12% 8%, rgba(84,224,196,0.07), transparent 60%),
+    radial-gradient(680px 600px at 88% 92%, rgba(120,150,210,0.06), transparent 60%),
+    linear-gradient(180deg,#070a10, #0b0f17 45%, #090d14);
+}
+/* faint molecular dot-grid */
+.bg-grid{position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.5;
+  background-image:radial-gradient(rgba(180,205,230,0.06) 1px, transparent 1.4px);
+  background-size:34px 34px;
+  mask-image:radial-gradient(circle at 50% 30%, #000 0%, transparent 80%);
+}
+/* subtle film grain for depth */
+.bg-grain{position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.035; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
-@keyframes bgShift {
-  0%   { transform: translate3d(0,0,0) scale(1);   opacity: 1;  }
-  50%  { transform: translate3d(-3%,2%,0) scale(1.03); opacity: .95; }
-  100% { transform: translate3d(2%,-2%,0) scale(1.02); opacity: 1; }
+/* ---------- shared layout ---------- */
+.wrap{max-width:var(--maxw); margin-inline:auto; padding-inline:clamp(20px,5vw,40px);}
+section{padding:clamp(64px,9vw,108px) 0; position:relative;}
+a{color:var(--teal); text-decoration:none;}
+a:hover{color:#8defd9;}
+img{max-width:100%; display:block;}
+
+.eyebrow{
+  font-family:var(--font-mono); font-size:.72rem; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--teal-dim); font-weight:500;
+  display:flex; align-items:center; gap:.8rem;
 }
-  /* ===== Blur effect for Highlight cards ===== */
-#achievements .highlight-card {
-  transition: filter 0.3s ease, transform 0.3s ease;
+.eyebrow::before{content:""; width:26px; height:1px; background:var(--teal-dim);}
+
+.section-title{
+  font-family:var(--font-display); font-weight:430; font-optical-sizing:auto;
+  font-size:clamp(1.9rem,4vw,2.9rem); line-height:1.08; letter-spacing:-.01em;
+  margin:.5rem 0 1.6rem; color:#fff;
+}
+.lede{color:var(--text-2); max-width:64ch; font-size:1.12rem;}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav{
+  position:sticky; top:0; z-index:60;
+  backdrop-filter:saturate(140%) blur(12px);
+  background:linear-gradient(180deg, rgba(8,11,17,0.82), rgba(8,11,17,0.55));
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{display:flex; align-items:center; justify-content:space-between; height:66px;}
+.brand{display:inline-flex; align-items:center; gap:.15rem; font-family:var(--font-display);
+  font-size:1.18rem; color:#fff; white-space:nowrap; letter-spacing:.01em;}
+.brand .bra,.brand .ket{color:#fff;}
+.brand .bra,.brand .ket{opacity:.92;}
+.brand .qname{color:var(--teal); padding:0 .12em;}
+.brand .qop{display:inline-flex; width:30px; height:30px; margin:0 -2px;}
+.brand .qop svg{width:100%; height:100%;}
+
+.nav-links{display:flex; gap:1.7rem; list-style:none; margin:0; padding:0;}
+.nav-links a{font-family:var(--font-mono); font-size:.78rem; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--text-2);}
+.nav-links a:hover{color:#fff;}
+.nav-toggle{display:none; background:none; border:1px solid var(--line-strong);
+  border-radius:10px; width:42px; height:38px; color:#fff; cursor:pointer; align-items:center; justify-content:center;}
+.nav-toggle svg{width:20px;height:20px;}
+
+@media (max-width:860px){
+  .nav-toggle{display:inline-flex;}
+  .nav-links{position:absolute; top:66px; left:0; right:0; flex-direction:column; gap:0;
+    background:rgba(10,14,21,0.97); border-bottom:1px solid var(--line);
+    max-height:0; overflow:hidden; transition:max-height .35s ease;}
+  .nav-links.open{max-height:480px;}
+  .nav-links li{border-top:1px solid var(--line);}
+  .nav-links a{display:block; padding:14px 24px; font-size:.85rem;}
 }
 
-/* When hovering over the whole container */
-#achievements:hover .highlight-card {
-  filter: blur(4px);
-  transform: scale(0.98);
-  opacity: 0.6;
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{padding-top:clamp(56px,8vw,88px); padding-bottom:clamp(48px,7vw,80px); overflow:hidden;}
+.hero-grid{display:grid; grid-template-columns:1.15fr .85fr; gap:clamp(28px,5vw,64px); align-items:center;}
+.hero h1{font-family:var(--font-display); font-optical-sizing:auto; font-weight:420;
+  font-size:clamp(3rem,8vw,5.4rem); line-height:.96; letter-spacing:-.025em; margin:.55rem 0 .4rem; color:#fff;}
+.hero h1 em{font-style:italic; color:var(--teal);}
+.hero .role{font-family:var(--font-mono); font-size:clamp(.92rem,1.5vw,1.04rem);
+  color:var(--text-2); letter-spacing:.01em; min-height:1.6em;}
+.hero .role .typed{color:var(--teal);}
+.hero .role .cursor{display:inline-block; width:.6ch; color:var(--teal); animation:blink 1s steps(1) infinite;}
+@keyframes blink{50%{opacity:0;}}
+.hero p.bio{margin:1.4rem 0 0; color:var(--text-2); max-width:52ch;}
+
+.cta-row{display:flex; flex-wrap:wrap; gap:.8rem; margin-top:1.8rem;}
+.btn{font-family:var(--font-mono); font-size:.82rem; letter-spacing:.04em; text-transform:uppercase;
+  padding:.78rem 1.3rem; border-radius:11px; cursor:pointer; display:inline-flex; align-items:center; gap:.6rem;
+  transition:transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;}
+.btn-solid{background:var(--teal); color:#04120e; font-weight:600; border:1px solid var(--teal);
+  box-shadow:0 14px 34px -16px rgba(84,224,196,0.7);}
+.btn-solid:hover{transform:translateY(-2px); color:#04120e; box-shadow:0 20px 40px -16px rgba(84,224,196,0.85);}
+.btn-ghost{background:transparent; color:var(--text); border:1px solid var(--line-strong);}
+.btn-ghost:hover{transform:translateY(-2px); border-color:var(--teal); color:#fff;}
+
+.socials{display:flex; gap:.55rem; margin-top:1.6rem;}
+.socials a{width:42px; height:42px; border-radius:11px; border:1px solid var(--line);
+  display:inline-flex; align-items:center; justify-content:center; color:var(--text-2);
+  background:rgba(255,255,255,0.015); transition:all .22s ease;}
+.socials a:hover{color:var(--teal); border-color:var(--teal); transform:translateY(-3px); background:rgba(84,224,196,0.06);}
+.socials svg{width:19px; height:19px; fill:currentColor;}
+
+/* photo + decorative equation rail */
+.hero-portrait{position:relative; justify-self:center;}
+.portrait-frame{position:relative; width:min(330px,72vw); aspect-ratio:1; border-radius:24px;
+  padding:10px; background:linear-gradient(150deg, rgba(84,224,196,0.16), rgba(120,150,210,0.05));
+  border:1px solid var(--line-strong); box-shadow:var(--shadow);}
+.portrait-frame img{width:100%; height:100%; object-fit:cover; border-radius:16px;}
+.portrait-frame::after{content:""; position:absolute; inset:-1px; border-radius:24px;
+  box-shadow:inset 0 0 0 1px rgba(84,224,196,0.15); pointer-events:none;}
+.portrait-tag{position:absolute; bottom:-14px; left:50%; transform:translateX(-50%);
+  font-family:var(--font-mono); font-size:.66rem; letter-spacing:.18em; text-transform:uppercase;
+  background:var(--ink-2); border:1px solid var(--line-strong); color:var(--teal);
+  padding:.4rem .8rem; border-radius:30px; white-space:nowrap;}
+
+/* faint floating equations — contained, never overlapping copy */
+.eqn{position:absolute; font-family:var(--font-mono); color:rgba(200,220,235,0.5);
+  font-size:.66rem; line-height:1.5; border:1px solid var(--line); border-radius:10px;
+  background:rgba(12,17,25,0.55); padding:.55rem .7rem; backdrop-filter:blur(2px); pointer-events:none;}
+.eqn b{color:var(--teal); font-weight:500; display:block; margin-bottom:.2rem; letter-spacing:.04em;}
+.eqn.e1{top:-6%; right:-14%; animation:drift 9s ease-in-out infinite;}
+.eqn.e2{bottom:6%; right:-20%; animation:drift 11s ease-in-out infinite .6s;}
+.eqn.e3{top:42%; left:-22%; animation:drift 10s ease-in-out infinite .3s;}
+@keyframes drift{50%{transform:translateY(-12px);}}
+@media (max-width:1080px){.eqn{display:none;}}
+
+@media (max-width:860px){
+  .hero-grid{grid-template-columns:1fr; text-align:center;}
+  .hero p.bio{margin-inline:auto;}
+  .cta-row,.socials{justify-content:center;}
+  .hero-portrait{order:-1; margin-bottom:1.4rem;}
 }
 
-/* When hovering over a single card - keep it sharp and slightly lifted */
-#achievements .highlight-card:hover {
-  filter: blur(0);
-  transform: scale(1.02);
-  opacity: 1;
-  z-index: 2;
-}
-  
-/* ===== Focus/blur effect for Projects (same idea as Achievements) ===== */
-#projects .project-card {
-  transition: filter 280ms cubic-bezier(.2,.9,.3,1),
-              transform 280ms cubic-bezier(.2,.9,.3,1),
-              opacity 220ms ease;
-  will-change: filter, transform, opacity;
+/* ============================================================
+   ABOUT / EDUCATION
+   ============================================================ */
+.about-grid{display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,5vw,56px);}
+@media (max-width:860px){.about-grid{grid-template-columns:1fr;}}
+.about-grid p{color:var(--text-2);}
+.sub-h{font-family:var(--font-mono); font-size:.78rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--teal); margin:0 0 1rem;}
+
+.timeline{list-style:none; margin:0; padding:0; position:relative;}
+.timeline::before{content:""; position:absolute; left:7px; top:6px; bottom:6px; width:1px; background:var(--line-strong);}
+.timeline li{position:relative; padding:0 0 1.6rem 2rem;}
+.timeline li::before{content:""; position:absolute; left:2px; top:.6rem; width:11px; height:11px; border-radius:50%;
+  background:var(--ink-1); border:2px solid var(--teal-dim);}
+.timeline li.now::before{background:var(--teal); border-color:var(--teal); box-shadow:0 0 0 4px rgba(84,224,196,0.15);}
+.timeline .deg{font-family:var(--font-display); font-size:1.18rem; color:#fff; font-weight:500;}
+.timeline .where{color:var(--text-2);}
+.timeline .meta{font-family:var(--font-mono); font-size:.72rem; letter-spacing:.05em; color:var(--muted); display:block; margin-top:.2rem;}
+.timeline .note{color:var(--muted); font-size:.96rem;}
+.timeline .gold{color:var(--amber); font-style:italic;}
+
+/* ============================================================
+   PROJECTS
+   ============================================================ */
+.proj-grid{display:grid; grid-template-columns:1fr 1fr; gap:28px;}
+@media (max-width:860px){.proj-grid{grid-template-columns:1fr;}}
+.proj{border:1px solid var(--line); border-radius:var(--radius); background:var(--ink-2);
+  overflow:hidden; display:flex; flex-direction:column; transition:transform .3s ease, border-color .3s ease, box-shadow .3s ease;}
+.proj:hover{transform:translateY(-6px); border-color:var(--line-strong); box-shadow:var(--shadow);}
+.proj-media{padding:22px; display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(120% 100% at 50% 0%, rgba(84,224,196,0.05), transparent 70%); border-bottom:1px solid var(--line);}
+.proj-media img{max-height:230px; width:auto; object-fit:contain; border-radius:8px;}
+.proj-body{padding:24px 26px 28px;}
+.proj h3{font-family:var(--font-display); font-weight:480; font-size:1.32rem; line-height:1.25; color:#fff; margin:.2rem 0 1rem;}
+.proj p{color:var(--text-2); font-size:1.02rem; margin:0;}
+.proj p em{font-style:italic;}
+.tag{font-family:var(--font-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase;
+  padding:.32rem .7rem; border-radius:30px; vertical-align:middle; margin-left:.4rem; white-space:nowrap;}
+.tag-live{background:rgba(84,224,196,0.12); color:var(--teal); border:1px solid rgba(84,224,196,0.35);}
+.tag-soon{background:rgba(232,178,90,0.10); color:var(--amber); border:1px solid rgba(232,178,90,0.30);}
+
+/* ============================================================
+   PUBLICATIONS (tasteful empty-state)
+   ============================================================ */
+.pub-card{max-width:680px; margin-inline:auto; text-align:center; border:1px solid var(--line);
+  border-radius:var(--radius); background:var(--ink-2); padding:clamp(30px,5vw,48px);
+  position:relative; overflow:hidden;}
+.pub-card::before{content:""; position:absolute; inset:0; background:radial-gradient(420px 200px at 50% -20%, rgba(84,224,196,0.10), transparent 70%);}
+.pub-card p{position:relative;}
+.pub-card .q{font-family:var(--font-display); font-style:italic; font-size:1.22rem; color:var(--text); margin:0;}
+.pub-card .soon{font-family:var(--font-mono); font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; color:var(--teal); margin-top:1.2rem;}
+
+/* ============================================================
+   HIGHLIGHTS  (grid + lightbox)  — no content-hiding blur
+   ============================================================ */
+.hl-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+@media (max-width:880px){.hl-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:560px){.hl-grid{grid-template-columns:1fr;}}
+.hl{border:1px solid var(--line); border-radius:var(--radius); background:var(--ink-2);
+  overflow:hidden; transition:transform .28s ease, border-color .28s ease, box-shadow .28s ease;}
+.hl:hover{transform:translateY(-5px); border-color:var(--line-strong); box-shadow:var(--shadow);}
+.hl-thumb{width:100%; aspect-ratio:4/3; object-fit:cover; cursor:zoom-in; display:block;
+  filter:saturate(102%); transition:filter .3s ease;}
+.hl:hover .hl-thumb{filter:saturate(112%) brightness(1.03);}
+.hl-meta{padding:18px 20px 22px;}
+.hl-meta h4{font-family:var(--font-display); font-weight:500; font-size:1.08rem; color:#fff; margin:0 0 .35rem; line-height:1.25;}
+.hl-date{font-family:var(--font-mono); font-size:.72rem; letter-spacing:.06em; color:var(--amber); margin:0 0 .7rem;}
+.hl-cap{color:var(--muted); font-size:.92rem; margin:0;}
+
+/* lightbox */
+.lb{position:fixed; inset:0; z-index:200; display:none; align-items:center; justify-content:center;
+  background:rgba(5,8,13,0.92); backdrop-filter:blur(4px); padding:24px;}
+.lb[aria-hidden="false"]{display:flex;}
+.lb-inner{display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:24px; max-width:1080px; width:100%; align-items:center;}
+.lb-inner img{width:100%; max-height:80vh; object-fit:contain; border-radius:12px; box-shadow:0 30px 80px rgba(0,0,0,0.6);}
+.lb-cap{color:var(--text-2); font-size:.98rem; line-height:1.6; max-height:74vh; overflow:auto;}
+.lb-cap em{font-style:italic;}
+.lb-btn{position:absolute; background:rgba(255,255,255,0.06); border:1px solid var(--line-strong); color:#fff;
+  width:46px; height:46px; border-radius:12px; cursor:pointer; font-size:20px; display:flex; align-items:center; justify-content:center;}
+.lb-btn:hover{background:rgba(84,224,196,0.16); border-color:var(--teal);}
+.lb-close{top:22px; right:22px;}
+.lb-prev{left:22px; top:50%; transform:translateY(-50%);}
+.lb-next{right:22px; top:50%; transform:translateY(-50%);}
+@media (max-width:840px){.lb-inner{grid-template-columns:1fr;} .lb-cap{max-height:24vh;}}
+
+/* ============================================================
+   BLOG
+   ============================================================ */
+.blog-card{display:grid; grid-template-columns:300px 1fr; gap:0; max-width:920px; margin-inline:auto;
+  border:1px solid var(--line); border-radius:var(--radius); background:var(--ink-2); overflow:hidden;
+  transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;}
+.blog-card:hover{transform:translateY(-5px); border-color:var(--line-strong); box-shadow:var(--shadow);}
+.blog-thumb{width:100%; height:100%; min-height:180px; object-fit:cover;}
+.blog-text{padding:26px 28px;}
+.blog-tag{font-family:var(--font-mono); font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--teal); margin:0 0 .5rem;}
+.blog-text h3{font-family:var(--font-display); font-weight:500; font-size:1.3rem; color:#fff; margin:0 0 .6rem; line-height:1.25;}
+.blog-text h3 a{color:#fff;} .blog-text h3 a:hover{color:var(--teal);}
+.blog-text p{color:var(--text-2); margin:0 0 .6rem;}
+.blog-date{font-family:var(--font-mono); font-size:.74rem; color:var(--muted); margin:0 0 1rem;}
+.blog-readlink{font-family:var(--font-mono); font-size:.8rem; letter-spacing:.04em;}
+.blog-foot{text-align:center; margin-top:2rem;}
+@media (max-width:680px){.blog-card{grid-template-columns:1fr;} .blog-thumb{aspect-ratio:16/8; min-height:0;}}
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.contact-grid{display:grid; grid-template-columns:.9fr 1.1fr; gap:clamp(28px,5vw,56px); align-items:start;}
+@media (max-width:860px){.contact-grid{grid-template-columns:1fr;}}
+.contact-aside p{color:var(--text-2);}
+.contact-aside .direct{font-family:var(--font-mono); font-size:.86rem; margin-top:1.4rem; display:flex; flex-direction:column; gap:.5rem;}
+.contact-aside .direct a{color:var(--text-2);} .contact-aside .direct a:hover{color:var(--teal);}
+.form{border:1px solid var(--line); border-radius:var(--radius); background:var(--ink-2); padding:clamp(22px,4vw,32px);}
+.form label{display:block; font-family:var(--font-mono); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:0 0 .5rem;}
+.form .field{margin-bottom:1.2rem;}
+.form input,.form textarea{width:100%; background:rgba(255,255,255,0.025); border:1px solid var(--line-strong);
+  border-radius:11px; color:#fff; padding:.8rem .9rem; font-family:var(--font-body); font-size:1rem; outline:none; transition:border-color .2s ease, box-shadow .2s ease;}
+.form input:focus,.form textarea:focus{border-color:var(--teal); box-shadow:0 0 0 3px rgba(84,224,196,0.12);}
+.form textarea{resize:vertical;}
+#thankYouMessage{display:none; margin-top:1rem; color:var(--teal); font-family:var(--font-mono); font-size:.92rem;}
+
+/* ============================================================
+   QUOTES
+   ============================================================ */
+.quotes{padding:clamp(48px,7vw,86px) 0;}
+.q-stage{position:relative; min-height:120px; max-width:760px; margin-inline:auto; text-align:center;}
+.q-item{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  opacity:0; transform:translateY(10px); transition:opacity .55s ease, transform .55s ease; pointer-events:none;}
+.q-item.active{opacity:1; transform:none; pointer-events:auto;}
+.q-text{font-family:var(--font-display); font-style:italic; font-weight:380; font-size:clamp(1.3rem,3vw,1.8rem); color:#fff; margin:0; line-height:1.35;}
+.q-by{font-family:var(--font-mono); font-size:.78rem; letter-spacing:.08em; color:var(--teal-dim); margin-top:1rem;}
+.q-dots{display:flex; gap:.55rem; justify-content:center; margin-top:1.8rem;}
+.q-dot{width:8px; height:8px; border-radius:50%; border:none; background:rgba(255,255,255,0.18); cursor:pointer; transition:all .2s ease;}
+.q-dot.active{background:var(--teal); transform:scale(1.25);}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.update-note{text-align:center; padding:48px 0 8px;}
+.update-note p{font-family:var(--font-display); font-style:italic; color:var(--muted); margin:0;}
+footer{border-top:1px solid var(--line); padding:34px 0; text-align:center;}
+footer small{font-family:var(--font-mono); font-size:.76rem; letter-spacing:.04em; color:var(--muted);}
+footer strong{color:var(--text-2); font-weight:500;}
+
+/* back to top */
+#toTop{position:fixed; bottom:26px; right:26px; z-index:80; width:46px; height:46px; border-radius:13px;
+  background:var(--ink-2); border:1px solid var(--line-strong); color:var(--teal); cursor:pointer; font-size:18px;
+  display:flex; align-items:center; justify-content:center; opacity:0; visibility:hidden; transform:translateY(8px);
+  transition:all .3s ease; box-shadow:var(--shadow);}
+#toTop.show{opacity:1; visibility:visible; transform:none;}
+#toTop:hover{border-color:var(--teal); transform:translateY(-3px);}
+
+/* ---------- scroll reveal ---------- */
+.reveal{opacity:0; transform:translateY(22px); transition:opacity .7s cubic-bezier(.2,.8,.2,1), transform .7s cubic-bezier(.2,.8,.2,1);}
+.reveal.in{opacity:1; transform:none;}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;}
+  .reveal{opacity:1; transform:none; transition:none;}
+  html{scroll-behavior:auto;}
 }
 
-/* When hovering anywhere over the projects container, blur all cards */
-#projects:hover .project-card {
-  filter: blur(4px) brightness(.86);
-  transform: scale(0.985);
-  opacity: 0.78;
-  pointer-events: auto; /* keep interactions on hovered one possible */
-}
-
-/* Keep the hovered card sharp and slightly lifted (focus) */
-#projects .project-card:hover {
-  filter: none !important;
-  transform: scale(1.02) !important;
-  opacity: 1 !important;
-  z-index: 5; /* bring it above other (blurred) cards */
-  box-shadow: 0 20px 60px rgba(40,40,120,0.16);
-  transition-duration: 200ms;
-}
-
-/* Optional: more pronounced pop for the image inside hovered card */
-#projects .project-card:hover .highlight-thumb,
-#projects .project-card:hover img {
-  transform: translateY(-6px) scale(1.02);
-}
-/* ===== Touch-friendly blur support for Achievements & Projects ===== */
-
-/* Blur state triggered by container class (used for touch) */
-#achievements.touch-active .highlight-card,
-#projects.touch-active .project-card {
-  filter: blur(4px) brightness(.86);
-  transform: scale(0.985);
-  opacity: 0.78;
-}
-
-/* Keep the hovered or focused card sharp (desktop :hover + touch .focused) */
-#achievements .highlight-card:hover,
-#achievements .highlight-card.focused,
-#projects .project-card:hover,
-#projects .project-card.focused {
-  filter: none !important;
-  transform: scale(1.02) !important;
-  opacity: 1 !important;
-  z-index: 5;
-  box-shadow: 0 20px 60px rgba(40,40,120,0.16);
-}
-
-/* Make the blur lighter on small devices for performance */
-@media (max-width: 900px) {
-  #achievements.touch-active .highlight-card,
-  #projects.touch-active .project-card {
-    filter: blur(2px) brightness(.9);
-  }
-}
-  /* Back to Top Button */
-#backToTop {
-  position: fixed;
-  bottom: 25px;
-  right: 25px;
-  z-index: 99;
-  background-color: rgba(80, 150, 255, 0.85);
-  color: white;
-  border: none;
-  outline: none;
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 20px;
-  box-shadow: 0 0 15px rgba(120, 200, 255, 0.4),
-              0 0 30px rgba(100, 160, 255, 0.25);
-  transition: all 0.3s ease;
-  opacity: 0;
-  visibility: hidden;
-  animation: glowPulse 4s infinite ease-in-out;
-}
-
-/* Hover Effect */
-#backToTop:hover {
-  background-color: rgba(100, 170, 255, 1);
-  transform: scale(1.15);
-  box-shadow: 0 0 25px rgba(140, 210, 255, 0.8),
-              0 0 50px rgba(100, 170, 255, 0.5);
-}
-
-/* Visible State */
-#backToTop.show {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* Subtle glowing animation */
-@keyframes glowPulse {
-  0% {
-    box-shadow: 0 0 10px rgba(120, 200, 255, 0.3),
-                0 0 25px rgba(100, 160, 255, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 18px rgba(150, 220, 255, 0.5),
-                0 0 45px rgba(100, 180, 255, 0.35);
-  }
-  100% {
-    box-shadow: 0 0 10px rgba(120, 200, 255, 0.3),
-                0 0 25px rgba(100, 160, 255, 0.2);
-  }
-}
-/* ORCID Icon Styling (matches other social icons) */
-.social-icons a.orcid-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1); /* same faint background */
-  color: #fff; /* white icon color */
-  transition: all 0.3s ease;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
-  padding-top: 1px;
-}
-
-/* on hover: lift + glow */
-.social-icons a.orcid-link:hover {
-  transform: translateY(-4px);
-  background: rgba(40, 60, 120, 0.4);
-  box-shadow: 0 12px 28px rgba(30, 70, 160, 0.7);
-}
-
-/* make SVG scale well */
-.social-icons a.orcid-link .orcid-svg {
-  width: 25px;
-  height: 25px;
-  fill: currentColor; /* white */
-}
-
-/* responsive tweak */
-@media (max-width: 600px) {
-  .social-icons a.orcid-link {
-    width: 38px;
-    height: 38px;
-  }
-  .social-icons a.orcid-link .orcid-svg {
-    width: 20px;
-    height: 20px;
-  }
-}
-  .social-icons a {
-  margin: 0 6px;
-  font-size: 1.1rem;
-}
-/* === Quantum brand: force inline non-wrapping layout (override other rules) === */
-.navbar-brand { overflow: visible; display: flex !important; align-items: center; gap: .5rem; }
-
-/* wrapper inline (fits in nav) */
-.qwrap {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  align-items: center !important;
-  gap: 0.5rem !important;
-  white-space: nowrap !important;
-  line-height: 1;
-  transform: translateZ(0); /* promote layer for smoother animation */
-}
-
-/* each piece: keep them inline and prevent internal wrapping */
-.qitem {
-  display: inline-flex !important;
-  align-items: center !important;
-  white-space: nowrap !important;
-  flex: 0 0 auto; /* never grow or shrink */
-  margin: 0;
-  padding: 0;
-}
-
-/* explicit operator sizing + ensure svg is inline and not causing block wrap */
-.qitem.operator {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center;
-  color: #fff; /* operator color */
-  flex: 0 0 auto;
-}
-
-.qitem.operator svg {
-  display: inline-block;   /* important to avoid block-level line-breaks */
-  width: 36px;
-  height: 36px;
-  vertical-align: middle;
-}
-
-/* ensure the Q letter in SVG uses the CSS currentColor (if you used fill:currentColor) */
-.qitem.operator svg text { fill: currentColor; }
-
-/* small-screen fallback: scale down but keep inline */
-@media (max-width: 760px) {
-  .qwrap { gap: .35rem; }
-  .qwrap .qname { font-size: 14px; }
-  .qitem.operator svg { width: 28px; height: 28px; }
-}
-
-/* accessibility: keep sr fallback visually-hidden */
-.visually-hidden, .q-sr { position: absolute !important; left: -9999px !important; width: 1px !important; height: 1px !important; overflow: hidden !important; }
-
+/* selection */
+::selection{background:rgba(84,224,196,0.28); color:#fff;}
 </style>
 </head>
 <body>
-<div class="animated-bg-layer" aria-hidden="true"></div>
-<div class="animated-bg-wave" aria-hidden="true"></div>
-  
-  <!-- NAV -->
-<nav class="navbar navbar-expand-lg navbar-light">
-  <div class="container">
+<div class="bg" aria-hidden="true"></div>
+<div class="bg-grid" aria-hidden="true"></div>
+<div class="bg-grain" aria-hidden="true"></div>
 
-    <!-- BRAND: animated bra–ket logo -->
-<a class="navbar-brand fw-bold d-flex align-items-center" href="#" aria-label="AkashQChem homepage">
-  <div class="qwrap">
-    <span class="qitem bra">⟨<span class="qname">Akash</span>|</span>
-    <span class="qitem operator">
-      <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-        <g transform="translate(6,6) scale(1.05)">
-  <!-- Slightly larger, bold white Q -->
-  <text x="26" y="35"
-        text-anchor="middle"
-        font-family="Georgia, 'Times New Roman', serif"
-        font-size="34"
-        font-weight="700"
-        fill="#ffffff">Q</text>
+<!-- ===================== NAV ===================== -->
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top" aria-label="Akash — Quantum Chemistry homepage">
+      <span class="bra">⟨</span><span class="qname">Akash</span><span class="bra">|</span>
+      <span class="qop" aria-hidden="true">
+        <svg viewBox="0 0 40 40">
+          <text x="20" y="29" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="26" font-weight="600" fill="#fff">Q</text>
+          <path d="M12 9 L20 4 L28 9" stroke="#54e0c4" stroke-width="2" stroke-linecap="round" fill="none"/>
+        </svg>
+      </span>
+      <span class="ket">|</span><span class="qname">Chem</span><span class="ket">⟩</span>
+    </a>
 
-  <!-- Slim, crisp cap (^) above Q -->
-  <path d="M19 8 L26 3 L33 8"
-        stroke="#ffffff"
-        stroke-width="2.2"
-        stroke-linecap="round"
-        fill="none" />
-</g>
-      </svg>
-    </span>
-    <span class="qitem ket">| <span class="qname">Chem</span>⟩</span>
-  </div>
-</a>
-
-    <!-- Keep the toggler and menu below -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
-      <span class="navbar-toggler-icon"></span>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
     </button>
-      <div id="navmenu" class="collapse navbar-collapse">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="#blog">Blog</a></li>
-          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
-          <li class="nav-item"><a class="nav-link" href="#publications">Publications</a></li>
-          <li class="nav-item"><a class="nav-link" href="#education">Education</a></li>
-          <li class="nav-item"><a class="nav-link" href="#achievements">Highlights & Achievements</a></li>
-          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#publications">Publications</a></li>
+      <li><a href="#highlights">Highlights</a></li>
+      <li><a href="#blog">Blog</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div class="hero-copy reveal">
+      <span class="eyebrow">Computational &amp; Theoretical Chemistry</span>
+      <h1>Akash <em>Shil</em></h1>
+      <p class="role">
+        Computational &amp; Theoretical Chemistry —
+        <span class="typed" id="typed"></span><span class="cursor">▍</span>
+      </p>
+      <p class="bio">DFT / TDDFT &amp; machine learning to design molecules and predictive models for covalent drug reactivity.</p>
+
+      <div class="cta-row">
+        <a class="btn btn-solid" href="#projects">View Projects</a>
+        <a class="btn btn-ghost" href="assets/CV.pdf" target="_blank" rel="noopener">Download CV</a>
+      </div>
+
+      <div class="socials">
+        <a href="https://github.com/akashqchem" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub">
+          <svg viewBox="0 0 24 24"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.4 11.4 0 0 1 6 0C18 5 19 5.3 19 5.3c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>
+        </a>
+        <a href="https://www.linkedin.com/in/akash-shil-9b5039268" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn">
+          <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.8 0 0 .77 0 1.73v20.54C0 23.23.8 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+        </a>
+        <a href="https://orcid.org/0009-0002-3160-5961" target="_blank" rel="noopener" aria-label="ORCID" title="ORCID">
+          <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zM7.37 18.16H5.6V7.93h1.77v10.23zM6.48 6.85a1.03 1.03 0 1 1 0-2.06 1.03 1.03 0 0 1 0 2.06zm11.16 11.31h-1.74v-4.99c0-1.19-.02-2.72-1.66-2.72-1.66 0-1.91 1.3-1.91 2.64v5.07h-1.74V7.93h1.67v1.4h.02c.34-.64 1.17-1.32 2.41-1.32 2.58 0 3.06 1.7 3.06 3.91v6.24z"/></svg>
+        </a>
+        <a href="mailto:akash.shil@ucalgary.ca" aria-label="Email" title="Email">
+          <svg viewBox="0 0 24 24"><path d="M2 4h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm10 7.5L3 6v.5l9 5.5 9-5.5V6l-9 5.5z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-portrait reveal">
+      <div class="eqn e1"><b>Gradient Descent</b>θ := θ − α ∇<sub>θ</sub>J(θ)</div>
+      <div class="eqn e2"><b>Kohn–Sham</b>(−ℏ²/2m ∇² + V<sub>ext</sub> + V<sub>H</sub> + V<sub>xc</sub>[ρ]) ψ<sub>i</sub> = E<sub>i</sub> ψ<sub>i</sub></div>
+      <div class="eqn e3"><b>Loss Function</b>L(w) = (1/2n)‖y−Xw‖₂² + (λ/2)‖w‖₂²</div>
+      <div class="portrait-frame">
+        <img src="assets/img/Headshot.jpeg" alt="Akash Shil" />
+      </div>
+      <span class="portrait-tag">DFT · TDDFT · Δ-ML</span>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== ABOUT ===================== -->
+<section id="about">
+  <div class="wrap">
+    <span class="eyebrow reveal">About</span>
+    <h2 class="section-title reveal">A chemist working where quantum theory meets machine learning.</h2>
+
+    <div class="about-grid">
+      <div class="reveal">
+        <p>Hi, I'm <strong>Akash Shil</strong> - a chemist specializing in computational and theoretical chemistry. My work blends DFT/TDDFT and machine learning to design molecules and predictive models for covalent drug reactivity.</p>
+        <h3 class="sub-h" style="margin-top:2rem;">Research Summary</h3>
+        <p>My MSc work at IIT Tirupati studied halogenation and π-conjugation effects on BODIPY dyes via DFT and TDDFT, yielding design insights for metal-free photocatalysts. My next step involves developing Δ-machine learning models for predicting covalent drug reactivity, leveraging quantum chemistry databases.</p>
+      </div>
+
+      <div class="reveal">
+        <h3 class="sub-h">Education</h3>
+        <ul class="timeline">
+          <li>
+            <span class="deg">B.Sc. (Hons.) Chemistry</span>
+            <div class="where">The ICFAI University, Tripura</div>
+            <span class="meta">Sept 2020 – Sept 2023</span>
+            <div class="gold">Gold Medalist (Rank 1, University Topper)</div>
+          </li>
+          <li>
+            <span class="deg">M.Sc. (Hons.) Chemistry</span>
+            <div class="where">Indian Institute of Technology (IIT) Tirupati</div>
+            <span class="meta">July 2023 – July 2025</span>
+            <div class="note">Thesis under the supervision of
+              <a href="https://mannaarun17.wixsite.com/manna" target="_blank" rel="noopener" title="Visit Dr. Arun K. Manna's Research Page">Dr. Arun K. Manna</a>.</div>
+          </li>
+          <li class="now">
+            <span class="deg">M.Sc. (Thesis-based)</span>
+            <div class="where">University of Calgary, Canada</div>
+            <span class="meta">2026 – Present</span>
+            <div class="note">Supervised by
+              <a href="https://www.prasadresearchgroup.ca/" target="_blank" rel="noopener" title="Visit Dr. Viki Kumar Prasad's Research Group">Dr. Viki Kumar Prasad</a>.
+              <em class="gold">Focus: Developing Δ-Machine Learning Model for Predicting Covalent Drug Reactivity.</em></div>
+          </li>
         </ul>
       </div>
     </div>
-  </nav>
-
-  <!-- HERO -->
-  <header class="hero">
-    <div class="container position-relative">
-
-      <!-- floating ML equations -->
-     <div class="particle p1 small" style="left:12%; top:14%;">
-  <div><strong>Gradient Descent:</strong></div>
-  <div>θ : = θ - α ∇<sub>θ</sub>J(θ)</div>
-</div>
-<!-- Kohn–Sham equation (single-line version) -->
-<div class="particle p2 small dim ks-equation" style="left:14%; top:22%;">
-  <div class="ks-title"><strong>Kohn-Sham equation:</strong></div>
-
-  <div class="ks-eqn-single">
-    (− &#8463;<sup>2</sup> / 2m &nbsp;∇<sup>2</sup> + V<sub>ext</sub>(r) + V<sub>H</sub>(r) + V<sub>xc</sub>[ρ(r)])
-    &nbsp;ψ<sub>i</sub>(r) = E<sub>i</sub> &nbsp;ψ<sub>i</sub>(r)
   </div>
-</div>
-<div class="particle p3 small" style="left:22%; top:52%;">
-  <div><strong>Loss Function:</strong></div>
-  <div>L(w) = (1/2n)‖y−Xw‖<sub>2</sub><sup>2</sup> + (λ/2)‖w‖<sub>2</sub><sup>2</sup></div>
-</div>
-
-      <img src="assets/img/Headshot.jpeg" alt="Akash Shil" class="profile-img mb-3" data-aos="zoom-in">
-      <h1 class="hero-title" data-aos="fade-up">Akash Shil</h1>
-
-      <p class="subtitle" data-aos="fade-up" data-aos-delay="120">
-  <span id="subtitle-static">Computational & Theoretical Chemistry - </span>
-  <span id="subtitle-typed" class="typing" aria-live="polite"></span>
-</p>
-
-      <div class="d-flex justify-content-center gap-2" data-aos="fade-up" data-aos-delay="180">
-        <a class="btn btn-primary btn-sm" href="#projects">View Projects</a>
-        <a class="btn btn-outline-primary btn-sm" href="assets/CV.pdf" target="_blank" rel="noopener">Download CV</a>
-      </div>
-
-<!-- Social icons (hero) -->
-<div class="mt-3 d-flex justify-content-center gap-3 social-icons" data-aos="fade-up" data-aos-delay="220">
-  <a class="text-white" href="https://github.com/akashqchem" 
-     target="_blank" rel="noopener noreferrer" 
-     aria-label="GitHub" title="GitHub">
-    <i class="fab fa-github fa-lg"></i>
-  </a>
-
-  <a class="text-white linkedin" href="https://www.linkedin.com/in/akash-shil-9b5039268" 
-     target="_blank" rel="noopener noreferrer" 
-     aria-label="LinkedIn" title="LinkedIn">
-    <i class="fab fa-linkedin fa-lg"></i>
-  </a>
-
-  <!-- ORCID inline SVG -->
-  <a class="social-icon orcid-link" href="https://orcid.org/0009-0002-3160-5961" 
-     target="_blank" rel="noopener noreferrer" 
-     aria-label="ORCID profile (opens in new tab)" title="ORCID">
-    <svg class="orcid-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" aria-hidden="true" focusable="false">
-      <title>ORCID</title>
-      <circle cx="128" cy="128" r="122" fill="currentColor" />
-      <text x="78" y="160" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="110" fill="#0e0e0e">iD</text>
-    </svg>
-  </a>
-
-  <a class="text-white" href="mailto:akash.shil@ucalgary.ca" 
-     aria-label="Email" title="Email">
-    <i class="fa-solid fa-envelope fa-lg"></i>
-  </a>
-</div>
-</header>
-
-  <!-- ABOUT -->
-  <section id="about">
-    <div class="container" data-aos="fade-up">
-      <h2 class="section-title">About</h2>
-      <p>Hi, I'm <strong>Akash Shil</strong> - a chemist specializing in computational and theoretical chemistry. My work blends DFT/TDDFT and machine learning to design molecules and predictive models for covalent drug reactivity.</p>
-
-      <h5 id="education"><strong>Education</strong></h5>
-<ul>
-  <li>
-    <strong>B.Sc. (Hons.) Chemistry</strong> - The ICFAI University, Tripura (Sept 2020 - Sept 2023)  
-    <br><em>Gold Medalist (Rank 1, University Topper)</em>
-  </li>
-
-  <li>
-    <strong>M.Sc. (Hons.) Chemistry</strong> - Indian Institute of Technology (IIT) Tirupati (July 2023 - July 2025)  
-    <br>Thesis under the supervision of 
-    <a href="https://mannaarun17.wixsite.com/manna" 
-       target="_blank" 
-       style="color:#a6dcef; text-decoration:none;"
-       title="Visit Dr. Arun K. Manna’s Research Page">
-       Dr. Arun K. Manna
-    </a>.
-  </li>
-
-  <li>
-    <strong>M.Sc. (Thesis-based)</strong> - University of Calgary, Canada (2026 - Present)  
-    <br>Supervised by 
-    <a href="https://www.prasadresearchgroup.ca/" 
-       target="_blank" 
-       style="color:#a6dcef; text-decoration:none;"
-       title="Visit Dr. Viki Kumar Prasad’s Research Group">
-       Dr. Viki Kumar Prasad
-    </a>.  
-    <em>Focus: Developing Δ-Machine Learning Model for Predicting Covalent Drug Reactivity.</em>
-  </li>
-</ul>
-      <h5>Research Summary</h5>
-      <p>My MSc work at IIT Tirupati studied halogenation and π-conjugation effects on BODIPY dyes via DFT and TDDFT, yielding design insights for metal-free photocatalysts. My next step involves developing Δ-machine learning models for predicting covalent drug reactivity, leveraging quantum chemistry databases.</p>
-       </div>
-  </section>
-
-  <!-- PROJECTS -->
-<section id="projects" class="bg-dark">
-  <div class="container" data-aos="fade-up">
-    <h2 class="section-title">Selected Projects</h2>
-    <div class="row g-4 mt-2">
-
-      <!-- Project 1: MSc work (IIT Tirupati) -->
-<div class="col-md-6">
-  <div class="card project-card h-100 text-center">
-    <!-- Rectangular container for BODIPY image -->
-    <div class="d-flex justify-content-center mt-3">
-  <div style="
-      width: 100%;
-      max-width: 320px;
-      height: auto;
-      background: rgba(255,255,255,0.03);
-      box-shadow: 0 0 25px rgba(255,255,255,0.08);
-      border-radius: 12px;
-      overflow: hidden;
-      padding: 6px;
-    margin-bottom: 12px;">
-    <img src="assets/img/bodipy_structure.png"
-         alt="BODIPY Molecular Structure"
-         style="width: 100%; height: auto; object-fit: contain;">
-  </div>
-</div>
-
-    <div class="card-body">
-      <h5 class="card-title mt-3">
-        Tailored Ground and Excited-State Redox Potentials Through Halogenation and/or Extended π-Conjugation in BODIPY Dye: A Computational Perspective
-        <span class="badge bg-info text-dark ms-2">Ongoing</span>
-      </h5>
-      <p class="muted-small">
-        <em>
-          This computational study investigates the effects of halogenation and π-extended conjugation 
-          on the ground-state and excited-state redox potentials of meso-substituted BODIPY using 
-          density functional theory (DFT) and time-dependent DFT (TDDFT). Systematically, we examine 
-          the electronic structure, optical properties, and redox behaviour of ethynyl and non-ethynyl 
-          substituted BODIPYs with halogens (F, Cl, Br, I). Our results reveal that heavy halogenation 
-          stabilizes both singlet and triplet excited states and reduces their energy gaps, while 
-          π-extension via ethynyl group enhances charge transfer and improves the dyes' ability to 
-          accept electrons. These changes suggest large systematic shifts in the redox potentials 
-          and will provide an opportunity to systematically tune BODIPYs for unique performance in 
-          photoredox catalysis. Overall, this research provides insights to design new efficient 
-          metal-free photocatalysts with enhanced electronic properties, advancing sustainable energy 
-          and catalysis.
-        </em>
-      </p>
-    </div>
-  </div>
-</div>
-      <!-- Project 2: Upcoming work (UCalgary) -->
-<div class="col-md-6">
-  <div class="card project-card h-100 text-center">
-    <!-- Rectangular container for ML project image -->
-    <div class="d-flex justify-content-center mt-3">
-      <div style="
-          width: 100%;
-          max-width: 320px;
-          height: auto;
-          background: rgba(255,255,255,0.03);
-          box-shadow: 0 0 25px rgba(255,255,255,0.08);
-          border-radius: 12px;
-          overflow: hidden;
-          padding: 6px;
-          margin-bottom: 12px;">
-        <img src="assets/img/ML.jpg"
-             alt="Machine Learning for Covalent Drug Discovery"
-             style="width: 100%; height: auto; object-fit: contain;">
-      </div>
-    </div>
-
-    <div class="card-body">
-      <h5 class="card-title mt-3">
-        Machine Learning for Covalent Drug Discovery
-        <span class="badge-glow">Coming soon</span>
-      </h5>
-      <p class="muted-small">
-        <em>
-          Upcoming research at the <strong>University of Calgary</strong> integrating quantum-chemical databases 
-          with advanced machine learning architectures to predict covalent binding sites 
-          and molecular reactivity - paving the way for data-driven drug discovery.
-        </em>
-      </p>
-    </div>
-  </div>
-</div>
-</div>
-</div>
 </section>
- <!-- PUBLICATIONS -->
+
+<!-- ===================== PROJECTS ===================== -->
+<section id="projects">
+  <div class="wrap">
+    <span class="eyebrow reveal">Selected Work</span>
+    <h2 class="section-title reveal">Selected Projects</h2>
+
+    <div class="proj-grid">
+      <!-- Project 1 -->
+      <article class="proj reveal">
+        <div class="proj-media">
+          <img src="assets/img/bodipy_structure.png" alt="BODIPY Molecular Structure" />
+        </div>
+        <div class="proj-body">
+          <h3>Tailored Ground and Excited-State Redox Potentials Through Halogenation and/or Extended π-Conjugation in BODIPY Dye: A Computational Perspective
+            <span class="tag tag-live">Ongoing</span>
+          </h3>
+          <p><em>This computational study investigates the effects of halogenation and π-extended conjugation on the ground-state and excited-state redox potentials of meso-substituted BODIPY using density functional theory (DFT) and time-dependent DFT (TDDFT). Systematically, we examine the electronic structure, optical properties, and redox behaviour of ethynyl and non-ethynyl substituted BODIPYs with halogens (F, Cl, Br, I). Our results reveal that heavy halogenation stabilizes both singlet and triplet excited states and reduces their energy gaps, while π-extension via ethynyl group enhances charge transfer and improves the dyes' ability to accept electrons. These changes suggest large systematic shifts in the redox potentials and will provide an opportunity to systematically tune BODIPYs for unique performance in photoredox catalysis. Overall, this research provides insights to design new efficient metal-free photocatalysts with enhanced electronic properties, advancing sustainable energy and catalysis.</em></p>
+        </div>
+      </article>
+
+      <!-- Project 2 -->
+      <article class="proj reveal">
+        <div class="proj-media">
+          <img src="assets/img/graphical_abstract.svg" alt="Graphical abstract — Machine Learning for Covalent Drug Discovery" />
+        </div>
+        <div class="proj-body">
+          <h3>Machine Learning for Covalent Drug Discovery
+            <span class="tag tag-soon">Coming soon</span>
+          </h3>
+          <p><em>Upcoming research at the <strong>University of Calgary</strong> integrating quantum-chemical databases with advanced machine learning architectures to predict covalent binding sites and molecular reactivity - paving the way for data-driven drug discovery.</em></p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PUBLICATIONS ===================== -->
 <section id="publications">
-  <div class="container text-center" data-aos="fade-up">
-    <h2 class="section-title">Publications</h2>
-    <div class="card mx-auto" style="max-width:600px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:1.8rem;">
-      <p style="font-family:'Times New Roman', Times, serif; color:#dce4ff; font-size:1.05rem; line-height:1.6;">
-        <em>“My research journey in computational and theoretical chemistry continues - upcoming publications will be shared here soon.”</em>
-      </p>
-      <p style="color:#aebaff; margin-top:1rem;">
-         <strong>Stay tuned for exciting updates!</strong>
-      </p>
-    </div>
-  </div>
-</section>
- <!-- ===== HIGHLIGHTS & ACHIEVEMENTS ===== -->
-<section id="achievements">
-  <div class="container" data-aos="fade-up">
-    <h2 class="section-title">Highlights & Achievements</h2>
-    <p class="muted-small mb-4">
-      A curated timeline of research experiences, academic milestones, and key moments.
-    </p>
-
-    <div class="row g-4">
-  <!-- Card 8: Joining of PRG Lab, 2026 -->
-<div class="col-md-6 col-lg-4">
-  <article class="card project-card h-100 text-center p-3 highlight-card achievement-card">
-    <img src="assets/img/PRG_join_lab.jpeg" alt="Joining Prasad Research Group at University of Calgary"
-         class="highlight-thumb mb-3 ach-image"
-         data-full="assets/img/PRG_join_lab.jpeg">
-
-    <h5 class="fw-bold mt-3">Joined the Prasad Research Group at UCalgary</h5>
-
-    <p class="achievement-date">5<sup>th</sup> January, 2026</p>
-
-    <p class="muted-small">
-    <em>
-  Officially joined the <strong>Prasad Research Group (PRG)</strong> at the
-  <strong>University of Calgary</strong> to begin my graduate research journey.
-  (From left to right: Mr. Sumit, Mr. Saiyam, Dr. Viki, Mr. Ashwin, and me - Akash.)
-</em>
-    </p>
-  </article>
-</div>
-      <!-- Card 7: Offer from UCalgary, 2026 -->
-<div class="col-md-6 col-lg-4">
-  <article class="card project-card h-100 text-center p-3 highlight-card achievement-card">
-    <img src="assets/img/offer.jpg" alt="Offer of admission - University of Calgary" class="highlight-thumb mb-3 ach-image" data-full="assets/img/offer.jpg">
-    <h5 class="fw-bold mt-3">Offer of Admission - University of Calgary</h5>
-    <p class="achievement-date">16<sup>th</sup> June, 2025</p>
-    <p class="muted-small"><em>Received an offer of admission to the University of Calgary for the M.Sc. Chemistry (Thesis-based) program, Winter 2026 - thrilled to join the <strong>Prasad Research Group (PRG)</strong> under <strong>Dr. Viki Kumar Prasad</strong>.</em></p>
-  </article>
-</div>
-
-<!-- Card 2: Degree -->
-<div class="col-md-6 col-lg-4">
-  <article class="card project-card h-100 text-center p-3 highlight-card achievement-card">
-    <img src="assets/img/degree.jpg" alt="MSc Degree - IIT Tirupati" class="highlight-thumb mb-3 ach-image" data-full="assets/img/degree.jpg">
-    <h5 class="fw-bold mt-3">MSc Chemistry Degree - IIT Tirupati</h5>
-    <p class="achievement-date">9<sup>th</sup> July, 2025</p>
-    <p class="muted-small"><em>Official Master of Science (MSc) degree in Chemistry awarded in July 2025 by the Indian Institute of Technology Tirupati. Certificate verifies successful completion of the postgraduate program, as attested by institute authorities.</em></p>
-  </article>
-</div>
-
-<!-- Card 5: Defense -->
-<div class="col-md-6 col-lg-4">
-  <article class="card project-card h-100 text-center p-3 highlight-card achievement-card">
-    <img src="assets/img/defense.jpg" alt="Final MSc defense" class="highlight-thumb mb-3 ach-image" data-full="assets/img/defense.jpg">
-    <h5 class="fw-bold mt-3">Final MSc Defense Presentation</h5>
-    <p class="achievement-date">14<sup>th</sup> May, 2025</p>
-    <p class="muted-small"><em>Grateful to my supervisor, <strong>Dr. Arun K. Manna</strong>, and my research group for their constant guidance and encouragement during my defense and throughout this academic journey.</em></p>
-  </article>
-</div>
-
-<!-- Card 3: Group Photo -->
-<div class="col-md-6 col-lg-4">
-  <article class="card project-card h-100 text-center p-3 highlight-card achievement-card">
-    <img src="assets/img/group.jpg" alt="Research group photo" class="highlight-thumb mb-3 ach-image" data-full="assets/img/group.jpg">
-    <h5 class="fw-bold mt-3">More Than Just a Research Group</h5>
-    <p class="achievement-date">12<sup>th</sup> May, 2025</p>
-    <p class="muted-small"><em>Grateful to be part of the Materials Modelling and Simulation Group at IIT Tirupati, led by Dr. Arun K. Manna. A snapshot of our team - colleagues who became family in the lab. This photo captures a special moment with our team (from left to right): Lekshmi di, Annette di, Arun sir, me (Akash), and Devanand bhaiya.</em></p>
-  </article>
-</div>
-
-<!-- Card 4: Farewell -->
-<div class="col-md-6 col-lg-4">
-  <article class="card project-card h-100 text-center p-3 highlight-card achievement-card">
-    <img src="assets/img/farewell.jpg" alt="Farewell moment" class="highlight-thumb mb-3 ach-image" data-full="assets/img/farewell.jpg">
-    <h5 class="fw-bold mt-3">Farewell Moments</h5>
-    <p class="achievement-date">10<sup>th</sup> May, 2025</p>
-    <p class="muted-small"><em>Farewell moments with my supervisor and labmates - deeply grateful for their mentorship, camaraderie, and the invaluable memories we created together during this remarkable journey.</em></p>
-  </article>
-</div>
-
-<!-- Card 6: Poster Presentation -->
-<div class="col-md-6 col-lg-4">
-  <article class="card project-card h-100 text-center p-3 highlight-card achievement-card">
-    <img src="assets/img/poster.jpg" alt="Poster presentation" class="highlight-thumb mb-3 ach-image" data-full="assets/img/poster.jpg">
-    <h5 class="fw-bold mt-3">Department Poster Presentation</h5>
-    <p class="achievement-date">15<sup>th</sup> April, 2025</p>
-    <p class="muted-small"><em>Presented my research on the computational modelling of BODIPY dyes - sharing insights and receiving valuable feedback from faculty and peers during the departmental poster presentation.</em></p>
-  </article>
-</div>
-
-<!-- Card 1: Gold Medal, IUT'23 -->
-<div class="col-md-6 col-lg-4">
-  <article class="card project-card h-100 text-center p-3 highlight-card achievement-card">
-    <img src="assets/img/medal.jpg" alt="Gold medal - ICFAI University" class="highlight-thumb mb-3 ach-image" data-full="assets/img/medal.jpg">
-    <h5 class="fw-bold mt-3">Honoured with the Gold Medal - BSc Class of 2023</h5>
-    <p class="achievement-date">29<sup>th</sup> September, 2023</p>
-    <p class="muted-small"><em>Grateful to have received the Gold Medal for highest academic excellence from The ICFAI University, Tripura. This achievement is not mine alone - I’m deeply thankful to my professors, batchmates, and family for their unwavering support.</em></p>
-  </article>
-</div>
-    </div>
-  </div>
-</section>
-<!-- Lightbox modal (single modal used for all thumbnails) -->
-<div id="hl-modal" class="hl-modal" aria-hidden="true" role="dialog" aria-labelledby="hl-modal-title">
-  <button class="hl-close" aria-label="Close">&times;</button>
-  <div class="hl-inner">
-    <img id="hl-fullimg" src="" alt="">
-    <div id="hl-caption" class="hl-caption"></div>
-  </div>
-  <button class="hl-prev" aria-label="Previous">&#10094;</button>
-  <button class="hl-next" aria-label="Next">&#10095;</button>
-</div>
-
-<!-- ===== BLOG (Medium posts) ===== -->
-<section id="blog" class="container" data-aos="fade-up">
-  <h2 class="section-title">Blog</h2>
-
-  <div id="blogGrid" class="blog-grid" style="max-width:1000px; margin:1.2rem auto 3rem; display:grid; grid-template-columns:1fr; gap:18px;">
-    <!-- Cards will be injected here by JS -->
-  </div>
-
-  <div style="text-align:center; margin-top:0.6rem;">
-    <a id="allOnMedium" href="https://akashexplains.medium.com" target="_blank" rel="noopener" class="btn btn-primary"
-       style="display:inline-block; padding:10px 20px; border-radius:10px; text-decoration:none;">
-      View my Medium (all posts)
-    </a>
-  </div>
-</section>
-
-<script>
-/* Blog cards with optional thumbnail (replace the previous renderer) */
-(function(){
-  const posts = [
-    {
-      title: "Understanding the Schrödinger Equation",
-      url: "https://akashexplains.medium.com/everything-that-makes-chemistry-work-bonding-reactions-light-absorption-comes-from-how-a525e0d009fb",
-      date: "06 Nov 2025",
-      excerpt: "An accessible introduction to the Schrödinger equation.",
-      tag: "Series: Electronic Structure Theory",
-      // add your Medium post banner image URL here (right-click image -> Copy image address)
-      thumb: "https://miro.medium.com/v2/resize:fit:1100/format:webp/1*5SVNCl99dJTWi_UgK7JvCw.jpeg" 
-    },
-    // add future posts the same way (thumb optional)
-  ];
-
-  const container = document.getElementById('blogGrid');
-  if (!container) return;
-
-  function makeCard(p){
-    const el = document.createElement('article');
-    el.className = 'card blog-card';
-    el.style.cssText = `
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-      padding: 0;
-      border-radius: 14px;
-      box-shadow: 0 8px 28px rgba(0,0,0,0.45);
-      display:flex;
-      gap:18px;
-      overflow: hidden;
-      transition: transform .18s ease, box-shadow .18s ease;
-    `;
-    el.onmouseenter = () => el.style.transform='translateY(-6px)';
-    el.onmouseleave = () => el.style.transform='translateY(0)';
-
-    // Image column (if thumb provided)
-    const imgCol = document.createElement('div');
-    imgCol.style.cssText = 'width:320px; min-width:160px; max-width:360px; flex-shrink:0; background:#111; display:flex; align-items:center; justify-content:center;';
-
-    if (p.thumb) {
-      const img = document.createElement('img');
-      img.src = p.thumb;
-      img.alt = p.title;
-      img.style.cssText = 'width:100%; height:100%; max-height:180px; object-fit:cover; display:block;';
-      // wrap in a responsive container so height is controlled
-      const wrapper = document.createElement('div');
-      wrapper.style.cssText = 'width:100%; height:100%;';
-      wrapper.appendChild(img);
-      imgCol.appendChild(wrapper);
-    } else {
-      // no image: show tag area in left column
-      imgCol.innerHTML = `<div style="padding:18px; color:#cfd8ff; font-weight:600;">${escapeHtml(p.tag||'Blog')}</div>`;
-    }
-
-    // Text column
-    const textCol = document.createElement('div');
-    textCol.style.cssText = 'flex:1; padding:22px;';
-
-    const metaRow = document.createElement('div');
-    metaRow.style.cssText = 'font-size:0.85rem; color:#a5b7ff; font-weight:600; margin-bottom:8px;';
-    metaRow.textContent = p.tag || 'Blog';
-
-    const title = document.createElement('h3');
-    title.style.cssText = 'margin:0 0 10px; font-family:"Times New Roman", serif; font-size:1.18rem;';
-    title.innerHTML = `<a href="${p.url}" target="_blank" rel="noopener" style="color:#eaf0ff; text-decoration:none;">${escapeHtml(p.title)}</a>`;
-
-    const excerpt = document.createElement('p');
-    excerpt.textContent = p.excerpt || '';
-    excerpt.style.cssText = 'margin:0 0 14px; color:#b7c6ff; line-height:1.6;';
-
-    const metaDate = document.createElement('div');
-    metaDate.style.cssText = 'font-size:0.82rem; color:#cfd8ff; margin-bottom:10px;';
-    metaDate.textContent = p.date || '';
-
-    const btn = document.createElement('a');
-    btn.href = p.url; btn.target = '_blank'; btn.rel = 'noopener';
-    btn.textContent = 'Read on Medium →';
-    btn.style.cssText = 'display:inline-block; padding:8px 14px; border-radius:8px; background:linear-gradient(90deg,#8E9DFF,#A76FFF); color:white; text-decoration:none; font-weight:600;';
-
-    textCol.appendChild(metaRow);
-    textCol.appendChild(title);
-    textCol.appendChild(excerpt);
-    textCol.appendChild(metaDate);
-    textCol.appendChild(btn);
-
-    // append columns
-    el.appendChild(imgCol);
-    el.appendChild(textCol);
-    return el;
-  }
-
-  function escapeHtml(s){ return (s||'').toString().replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-
-  // render
-  posts.forEach(p => container.appendChild(makeCard(p)));
-
-  // Responsive: stack image above text on small screens
-  const mq = window.matchMedia('(max-width:760px)');
-  function adapt(m){
-    document.querySelectorAll('.blog-card').forEach(c => {
-      if (m.matches) {
-        c.style.flexDirection = 'column';
-        c.querySelector('div').style.maxHeight = '220px';
-      } else {
-        c.style.flexDirection = 'row';
-      }
-    });
-  }
-  adapt(mq);
-  mq.addEventListener ? mq.addEventListener('change', e => adapt(e)) : mq.addListener(adapt);
-
-})();
-</script>
-  
-<!-- ===== CONTACT SECTION ===== -->
-<section id="contact" class="py-5">
-  <div class="container" data-aos="fade-up">
-    <h2 class="section-title">Contact</h2>
-    <p class="muted-small" style="margin-bottom:1.5rem; text-align:center;">
-      Open to collaboration in molecular modeling, electronic structure theory, and ML for covalent drug discovery. <br>
-      Have a thought, collaboration idea, or just want to say hello? I’d love to hear from you.
-    </p>
-
-    <!-- ===== Contact / Message Form (Formspree) ===== -->
-    <div class="contact-form-wrapper">
-      <form id="contactForm" action="https://formspree.io/f/mnnodbnj" method="POST">
-        <div class="form-group">
-          <label for="name">Your Name</label>
-          <input type="text" id="name" name="name" required placeholder="Enter your name">
-        </div>
-
-        <div class="form-group">
-          <label for="email">Your Email</label>
-          <input type="email" id="email" name="_replyto" required placeholder="Enter your email">
-        </div>
-
-        <div class="form-group">
-          <label for="message">Your Message</label>
-          <textarea id="message" name="message" rows="5" required placeholder="Write your message here..."></textarea>
-        </div>
-
-        <button type="submit" class="btn btn-primary" id="sendBtn">Send Message</button>
-
-        <div id="thankYouMessage" style="display:none; margin-top:1rem; color:#b7f5c7; font-size:1.1rem;">
-          ✅ Thank you for reaching out! I appreciate your time and will get back to you soon.
-        </div>
-      </form>
+  <div class="wrap">
+    <span class="eyebrow reveal" style="justify-content:center;">Publications</span>
+    <h2 class="section-title reveal" style="text-align:center;">Publications</h2>
+    <div class="pub-card reveal">
+      <p class="q">“My research journey in computational and theoretical chemistry continues - upcoming publications will be shared here soon.”</p>
+      <p class="soon">Stay tuned for exciting updates!</p>
     </div>
   </div>
 </section>
 
-<!-- Styling -->
-<style>
-#contact {
-  font-family: "Times New Roman", Times, serif;
-  text-align: center;
-  color: #eef2ff;
-}
+<!-- ===================== HIGHLIGHTS ===================== -->
+<section id="highlights">
+  <div class="wrap">
+    <span class="eyebrow reveal">Milestones</span>
+    <h2 class="section-title reveal">Highlights &amp; Achievements</h2>
+    <p class="lede reveal" style="margin-bottom:2.4rem;">A curated timeline of research experiences, academic milestones, and key moments.</p>
 
-.contact-form-wrapper {
-  background: rgba(255,255,255,0.02);
-  border-radius: 16px;
-  padding: 2rem;
-  max-width: 600px;
-  margin: auto;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-  border: 1px solid rgba(255,255,255,0.05);
-}
+    <div class="hl-grid">
+      <article class="hl reveal">
+        <img class="hl-thumb" src="assets/img/PRG_join_lab.jpeg" alt="Joining Prasad Research Group at University of Calgary" data-full="assets/img/PRG_join_lab.jpeg" />
+        <div class="hl-meta">
+          <h4>Joined the Prasad Research Group at UCalgary</h4>
+          <p class="hl-date">5<sup>th</sup> January, 2026</p>
+          <p class="hl-cap"><em>Officially joined the <strong>Prasad Research Group (PRG)</strong> at the <strong>University of Calgary</strong> to begin my graduate research journey. (From left to right: Mr. Sumit, Mr. Saiyam, Dr. Viki, Mr. Ashwin, and me - Akash.)</em></p>
+        </div>
+      </article>
 
-form label {
-  display: block;
-  text-align: left;
-  font-weight: bold;
-  margin-bottom: 0.4rem;
-}
+      <article class="hl reveal">
+        <img class="hl-thumb" src="assets/img/offer.jpg" alt="Offer of admission - University of Calgary" data-full="assets/img/offer.jpg" />
+        <div class="hl-meta">
+          <h4>Offer of Admission - University of Calgary</h4>
+          <p class="hl-date">16<sup>th</sup> June, 2025</p>
+          <p class="hl-cap"><em>Received an offer of admission to the University of Calgary for the M.Sc. Chemistry (Thesis-based) program, Winter 2026 - thrilled to join the <strong>Prasad Research Group (PRG)</strong> under <strong>Dr. Viki Kumar Prasad</strong>.</em></p>
+        </div>
+      </article>
 
-form input, form textarea {
-  width: 100%;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
-  color: #fff;
-  padding: 0.75rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  outline: none;
-}
+      <article class="hl reveal">
+        <img class="hl-thumb" src="assets/img/degree.jpg" alt="MSc Degree - IIT Tirupati" data-full="assets/img/degree.jpg" />
+        <div class="hl-meta">
+          <h4>MSc Chemistry Degree - IIT Tirupati</h4>
+          <p class="hl-date">9<sup>th</sup> July, 2025</p>
+          <p class="hl-cap"><em>Official Master of Science (MSc) degree in Chemistry awarded in July 2025 by the Indian Institute of Technology Tirupati. Certificate verifies successful completion of the postgraduate program, as attested by institute authorities.</em></p>
+        </div>
+      </article>
 
-form input:focus, form textarea:focus {
-  border-color: #7d8aff;
-  box-shadow: 0 0 10px rgba(125,138,255,0.3);
-}
+      <article class="hl reveal">
+        <img class="hl-thumb" src="assets/img/defense.jpg" alt="Final MSc defense" data-full="assets/img/defense.jpg" />
+        <div class="hl-meta">
+          <h4>Final MSc Defense Presentation</h4>
+          <p class="hl-date">14<sup>th</sup> May, 2025</p>
+          <p class="hl-cap"><em>Grateful to my supervisor, <strong>Dr. Arun K. Manna</strong>, and my research group for their constant guidance and encouragement during my defense and throughout this academic journey.</em></p>
+        </div>
+      </article>
 
-.btn-primary {
-  background: linear-gradient(90deg, #5a4eff, #7d8aff);
-  color: #fff;
-  padding: 0.6rem 1.6rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
+      <article class="hl reveal">
+        <img class="hl-thumb" src="assets/img/group.jpg" alt="Research group photo" data-full="assets/img/group.jpg" />
+        <div class="hl-meta">
+          <h4>More Than Just a Research Group</h4>
+          <p class="hl-date">12<sup>th</sup> May, 2025</p>
+          <p class="hl-cap"><em>Grateful to be part of the Materials Modelling and Simulation Group at IIT Tirupati, led by Dr. Arun K. Manna. A snapshot of our team - colleagues who became family in the lab. This photo captures a special moment with our team (from left to right): Lekshmi di, Annette di, Arun sir, me (Akash), and Devanand bhaiya.</em></p>
+        </div>
+      </article>
 
-.btn-primary:hover {
-  background: linear-gradient(90deg, #7d8aff, #a6b1ff);
-}
+      <article class="hl reveal">
+        <img class="hl-thumb" src="assets/img/farewell.jpg" alt="Farewell moment" data-full="assets/img/farewell.jpg" />
+        <div class="hl-meta">
+          <h4>Farewell Moments</h4>
+          <p class="hl-date">10<sup>th</sup> May, 2025</p>
+          <p class="hl-cap"><em>Farewell moments with my supervisor and labmates - deeply grateful for their mentorship, camaraderie, and the invaluable memories we created together during this remarkable journey.</em></p>
+        </div>
+      </article>
 
-@media (max-width:768px) {
-  .contact-form-wrapper { padding: 1.5rem; }
-}
-/* Elegant date styling under title */
-.achievement-date {
-  color: #f3e8ff;
-  font-family: "French Script MT", "Brush Script MT", cursive;
-  font-size: 20px;
-  font-style: italic;
-  letter-spacing: 0.5px;
-  margin-top: 6px;
-  margin-bottom: 10px;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.4);
-}
-  .badge-comingsoon {
-  background: linear-gradient(135deg, #00bcd4, #3f51b5);
-  color: #fff;
-  font-weight: 500;
-  border: none;
-  box-shadow: 0 0 10px rgba(63, 81, 181, 0.5);
-}
-body {
-  text-shadow: 0 0 4px rgba(0,0,0,0.2);
-}
-/* ---------- Social Icons + ORCID Styling ---------- */
-.social-icons {
-  display: inline-flex;
-  gap: 18px;
-  align-items: center;
-  justify-content: center;
-  margin-top: 14px;
-}
+      <article class="hl reveal">
+        <img class="hl-thumb" src="assets/img/poster.jpg" alt="Poster presentation" data-full="assets/img/poster.jpg" />
+        <div class="hl-meta">
+          <h4>Department Poster Presentation</h4>
+          <p class="hl-date">15<sup>th</sup> April, 2025</p>
+          <p class="hl-cap"><em>Presented my research on the computational modelling of BODIPY dyes - sharing insights and receiving valuable feedback from faculty and peers during the departmental poster presentation.</em></p>
+        </div>
+      </article>
 
-.social-icons a {
-  display: inline-grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  text-decoration: none;
-  color: rgba(255,255,255,0.95);
-  background: transparent;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
-  transition: all 0.25s ease;
-}
-
-.social-icons a:hover {
-  transform: translateY(-4px) scale(1.06);
-}
-
-/* LinkedIn hover glow */
-.social-icons a.linkedin:hover {
-  background: radial-gradient(circle at 50% 40%, rgba(17, 97, 255, 0.2) 0 40%, transparent 100%);
-  box-shadow: 0 8px 20px rgba(10, 85, 200, 0.2);
-  color: #FFFFFF;
-}
-
-/* ORCID brand style */
-.social-icons a.orcid-link .ai-orcid {
-  color: #A6CE39; /* brand green */
-  font-size: 0.9rem;  /* balanced smaller size */
-  transition: all 0.25s ease;
-}
-
-/* ORCID hover: green circle + white icon */
-.social-icons a.orcid-link:hover {
-  background: #A6CE39;
-  box-shadow: 0 8px 20px rgba(166, 206, 57, 0.35);
-  transform: translateY(-4px) scale(1.06);
-}
-
-.social-icons a.orcid-link:hover .ai-orcid {
-  color: #ffffff;
-}
-
-/* smaller screens */
-@media (max-width:520px) {
-  .social-icons a {
-    width: 40px;
-    height: 40px;
-  }
-}
-/* ORCID adjustments + hover */
-.orcid-link,
-.orcid-link img,
-.orcid-link .orcid-svg {
-  display:inline-grid;
-  place-items:center;
-  width:44px;
-  height:44px;
-  border-radius:50%;
-  background: transparent;
-  transition: transform .22s ease, box-shadow .22s ease, background .22s ease;
-}
-
-.orcid-link img {
-  border-radius:50%;
-  background:#A6CE39;   /* green behind the small PNG if used */
-  padding:3px;
-  display:block;
-}
-
-.orcid-link .orcid-svg {
-  background: transparent;
-}
-
-.orcid-link:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 26px rgba(10,40,20,0.18);
-}
-
-/* ORCID hover: switch icon to white on green bg (inline svg path already white) */
-.orcid-link:hover img {
-  transform: scale(1.06);
-  box-shadow: 0 8px 22px rgba(166,206,57,0.24);
-}
-
-/* small screens */
-@media (max-width:520px) {
-  .orcid-link, .orcid-link img, .orcid-link .orcid-svg { width:40px; height:40px; }
-}
-.orcid-svg {
-  display: block;
-  transform: translateY(2px);
-}
-/* BLOG section styles */
-.section-blog {
-  padding: 72px 0;
-  background: linear-gradient(180deg, rgba(6,18,41,0.14) 0%, rgba(6,18,41,0.06) 100%);
-  border-top: 1px solid rgba(255,255,255,0.03);
-  color: #dbeaf7;
-}
-
-.section-blog .section-title {
-  margin-bottom: 30px;
-  color: #e9f0f7;
-  font-size: 1.6rem;
-  margin-left: 6px;
-}
-
-/* Card layout */
-.blog-card {
-  display: flex;
-  gap: 28px;
-  align-items: stretch;
-  background: linear-gradient(180deg, rgba(13,26,50,0.35), rgba(7,16,36,0.2));
-  border-radius: 12px;
-  padding: 28px;
-  box-shadow: 0 8px 30px rgba(3,10,30,0.45);
-  border: 1px solid rgba(255,255,255,0.03);
-}
-
-/* left column */
-.blog-card-left {
-  flex: 1 1 62%;
-  color: #dbeaf7;
-  min-width: 280px;
-}
-
-.badge-coming {
-  display: inline-block;
-  padding: 6px 12px;
-  background: rgba(26,187,255,0.06);   /* soft cyan background */
-  color: #a6dcef;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  letter-spacing: 0.2px;
-  position: relative;
-
-  /* Glow effect */
-  box-shadow: 0 0 22px rgba(90,230,255,0.09), 0 0 8px rgba(90,230,255,0.06) inset;
-}
-
-/* subtle continuous glow animation (smooth) */
-@keyframes smoothGlow {
-  0% { box-shadow: 0 0 6px rgba(90,230,255,0.06), 0 0 2px rgba(90,230,255,0.03) inset; }
-  50% { box-shadow: 0 0 26px rgba(90,230,255,0.12), 0 0 10px rgba(90,230,255,0.06) inset; }
-  100% { box-shadow: 0 0 6px rgba(90,230,255,0.06), 0 0 2px rgba(90,230,255,0.03) inset; }
-}
-.badge-coming { animation: smoothGlow 2.8s ease-in-out infinite; }
-
-.blog-card-title {
-  margin: 6px 0 12px;
-  font-size: 1.35rem;
-  color: #ffffff;
-  font-weight: 700;
-}
-
-.lead {
-  color: #cfe9fb;
-  line-height: 1.6;
-  margin-bottom: 12px;
-}
-
-/* list style */
-.blog-list {
-  margin: 12px 0 18px 1rem;
-  color: #d4e9fb;
-  list-style: disc;
-}
-
-/* Actions */
-.blog-actions {
-  margin-top: 14px;
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.btn {
-  padding: 10px 16px;
-  border-radius: 8px;
-  text-decoration: none;
-  display: inline-block;
-  font-weight: 600;
-}
-
-/* primary button */
-.btn-primary {
-  background: linear-gradient(90deg, #6b63ff 0%, #7a8bff 100%);
-  color: #fff;
-  border: none;
-  box-shadow: 0 6px 18px rgba(91,79,255,0.14);
-}
-
-/* right column decorative */
-.blog-card-right {
-  flex: 0 0 32%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 220px;
-}
-
-.card-accent {
-  width: 100%;
-  padding: 20px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.02);
-  text-align: center;
-  color: #bfe6ff;
-  box-shadow: inset 0 -20px 40px rgba(8,20,40,0.18);
-}
-
-.accent-title {
-  font-weight: 700;
-  margin-bottom: 8px;
-  color: #e6f7ff;
-  font-size: 14px;
-}
-
-.accent-math {
-  font-size: 13px;
-  opacity: 0.95;
-  line-height: 1.45;
-}
-
-/* small helper text */
-.section-blog .muted.small {
-  margin-top: 18px;
-  color: rgba(209,230,247,0.6);
-  font-size: 0.95rem;
-}
-
-/* responsive */
-@media (max-width: 900px) {
-  .blog-card { flex-direction: column; padding: 20px; }
-  .blog-card-right { order: -1; width: 100%; margin-bottom: 18px; }
-  .blog-card-left { width: 100%; }
-}
-.badge-glow {
-  display: inline-block;
-  background-color: #00d4ff; /* solid cyan fill like 'Ongoing' */
-  color: #ffffff; /* white text for contrast */
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  text-transform: capitalize;
-  box-shadow: 0 0 6px rgba(0, 212, 255, 0.5), 0 0 12px rgba(0, 212, 255, 0.4);
-  animation: softPulse 3s infinite alternate;
-}
-
-@keyframes softPulse {
-  from {
-    box-shadow: 0 0 6px rgba(0, 212, 255, 0.5), 0 0 12px rgba(0, 212, 255, 0.4);
-  }
-  to {
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.6), 0 0 18px rgba(0, 212, 255, 0.5);
-  }
-}
-.glow-badge {
-  box-shadow: 0 0 4px rgba(0, 212, 255, 0.4), 0 0 8px rgba(0, 212, 255, 0.3);
-  animation: glowPulse 2s infinite alternate;
-}
-
-@keyframes glowPulse {
-  from {
-    box-shadow: 0 0 4px rgba(0, 212, 255, 0.4), 0 0 8px rgba(0, 212, 255, 0.3);
-  }
-  to {
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.6), 0 0 15px rgba(0, 212, 255, 0.5);
-  }
-}
-p.lead {
-  font-size: 0.9rem;  /* adjust between 0.85rem and 1rem as you like */
-  line-height: 1.6;
-  color: #d1d1e0;     /* optional – gives a softer look */
-}
-<!-- ===== CSS (put in your main stylesheet or <style> in head) ===== -->
-<style>
-
-/* Brand layout for bra ket */
-.navbar-brand {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  overflow: visible;
-}
-
-/* Wrap keeps everything inline */
-.qwrap {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  white-space: nowrap;
-  line-height: 1;
-}
-
-/* Each item stays inline */
-.qitem {
-  display: inline-flex;
-  align-items: center;
-  color: #ffffff;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-weight: 600;
-}
-
-/* Operator SVG color and size */
-.qitem.operator svg {
-  width: 32px;
-  height: 32px;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.qitem.operator svg text,
-.qitem.operator svg rect {
-  fill: #ffffff;
-}
-
-.qitem.operator svg circle {
-  fill: rgba(255,255,255,0.08);
-}
-
-/* Small screen scaling */
-@media (max-width: 760px) {
-  .qwrap .qname { font-size: 14px; }
-  .qitem.operator svg { width: 26px; height: 26px; }
-}
-.qwrap {
-  display: flex;
-  align-items: center;
-  gap: -0.05rem; /* smaller space between parts */
-}
-
-.qitem.operator svg {
-  width: 34px;
-  height: 34px;
-  margin: 0 -10px; /* tucks operator slightly inward */
-  vertical-align: middle;
-}
-
-/* ===== Blog: blurred by default, clear on hover =====*/
-.blog-card {
-  overflow: hidden;
-  position: relative;
-  border-radius: 14px; /* keep same radius as your card */
-  transition: box-shadow 0.35s ease, transform 0.35s ease;
-}
-
-/* Target common image patterns in the card: <img> or .cover background */
-.blog-card img,
-.blog-card .cover {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  transition: transform 0.45s cubic-bezier(.2,.9,.2,1),
-              filter 0.45s cubic-bezier(.2,.9,.2,1),
-              opacity 0.45s cubic-bezier(.2,.9,.2,1);
-  /* blurred by default */
-  filter: brightness(0.85) blur(4px);
-  transform: scale(1.02);
-}
-
-/* If you use a separate .cover element with background-image */
-.blog-card .cover {
-  background-position: center;
-  background-size: cover;
-}
-
-/* Hover/Focus: make image crisp & slightly zoom-in */
-.blog-card:hover img,
-.blog-card:focus-within img,
-.blog-card:hover .cover,
-.blog-card:focus-within .cover {
-  filter: none;              /* remove blur */
-  transform: scale(1.06);    /* gentle zoom to emphasize */
-}
-
-/* Optional: subtle overlay that fades in/out for contrast */
-.blog-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.18), rgba(0,0,0,0.38));
-  opacity: 1; /* darker by default to improve text contrast on blurred image */
-  transition: opacity 0.45s ease;
-  pointer-events: none;
-  border-radius: inherit;
-}
-
-.blog-card:hover::after,
-.blog-card:focus-within::after {
-  opacity: 0; /* remove overlay when hovered so image becomes fully visible */
-}
-
-/* Optional: hover lift & glow for the whole card */
-.blog-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 40px rgba(40,60,120,0.25);
-}
-
-/* Respect reduced motion preferences */
-@media (prefers-reduced-motion: reduce) {
-  .blog-card img,
-  .blog-card .cover {
-    transition: none;
-    transform: none;
-  }
-  .blog-card { transition: none; }
-}
-</style>
-<!-- JavaScript for thank-you message -->
-<script>
-document.getElementById('contactForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-
-  const form = e.target;
-  const thankYou = document.getElementById('thankYouMessage');
-  const sendBtn = document.getElementById('sendBtn');
-
-  fetch(form.action, {
-    method: 'POST',
-    body: new FormData(form),
-    headers: { 'Accept': 'application/json' }
-  }).then(response => {
-    if (response.ok) {
-      form.reset();
-      sendBtn.style.display = 'none';
-      thankYou.style.display = 'block';
-    } else {
-      thankYou.style.color = '#ffb4b4';
-      thankYou.textContent = '❌ Oops! Something went wrong. Please try again later.';
-      thankYou.style.display = 'block';
-    }
-  }).catch(() => {
-    thankYou.style.color = '#ffb4b4';
-    thankYou.textContent = '⚠️ Network error. Please try again.';
-    thankYou.style.display = 'block';
-  });
-});
-</script>  
-  <footer>
-    <div class="container">
-      <small>© <span id="year"></span> <strong>Akash Shil</strong> - DFT, TDDFT & ML for Covalent Drug Discovery</small>
+      <article class="hl reveal">
+        <img class="hl-thumb" src="assets/img/medal.jpg" alt="Gold medal - ICFAI University" data-full="assets/img/medal.jpg" />
+        <div class="hl-meta">
+          <h4>Honoured with the Gold Medal - BSc Class of 2023</h4>
+          <p class="hl-date">29<sup>th</sup> September, 2023</p>
+          <p class="hl-cap"><em>Grateful to have received the Gold Medal for highest academic excellence from The ICFAI University, Tripura. This achievement is not mine alone - I'm deeply thankful to my professors, batchmates, and family for their unwavering support.</em></p>
+        </div>
+      </article>
     </div>
-  </footer>
-
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
-<script>
-/* Init AOS */
-AOS.init({ duration: 700, once: true });
-
-/* ---------- Typing effect (robust & unobtrusive) ---------- */
-const phrases = [
-  'Quantum Chemistry Researcher',
-  'Δ-ML for Covalent Drug Reactivity',
-  'Molecular Modeling & Simulation'
-];
-
-const el = () => document.getElementById('subtitle-typed'); // lazily fetch in DOMContentLoaded
-let phraseIndex = 0;
-let letterIndex = 0;
-let typingSpeed = 40;    // ms per character
-let pauseBetween = 1400; // pause at end of phrase
-let deletingSpeed = 28;
-let isDeleting = false;
-
-function tick() {
-  const node = el();
-  if (!node) return; // safe guard
-
-  const current = phrases[phraseIndex % phrases.length];
-  if (!isDeleting) {
-    // typing
-    node.textContent = current.slice(0, ++letterIndex);
-    if (letterIndex === current.length) {
-      // finished typing, pause, then delete
-      isDeleting = true;
-      setTimeout(tick, pauseBetween);
-      return;
-    }
-    setTimeout(tick, typingSpeed + Math.random() * 20);
-  } else {
-    // deleting
-    node.textContent = current.slice(0, --letterIndex);
-    if (letterIndex === 0) {
-      isDeleting = false;
-      phraseIndex++;
-      setTimeout(tick, 220); // small pause before next word
-      return;
-    }
-    setTimeout(tick, deletingSpeed + Math.random() * 16);
-  }
-}
-
-/* Wait for DOM ready and start */
-document.addEventListener('DOMContentLoaded', function () {
-  // small initial delay so AOS animations don't clash
-  setTimeout(() => {
-    // ensure element exists
-    if (el()) setTimeout(tick, 250);
-  }, 450);
-
-  // set copyright year if element exists
-  const y = new Date().getFullYear();
-  const yEl = document.getElementById('year');
-  if (yEl) yEl.textContent = y;
-});
-</script>
-
-<!-- Thank you overlay (hidden by default) -->
-<div id="thankyou-overlay" aria-hidden="true">
-  <div class="thank-card" role="dialog" aria-modal="true" aria-labelledby="thank-title" tabindex="-1">
-    <svg class="thank-svg" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
-      <circle class="check-circle" cx="60" cy="60" r="44"></circle>
-      <path class="check" d="M40 62 L54 76 L80 46" stroke-linecap="round" stroke-linejoin="round"></path>
-    </svg>
-
-    <div id="thank-title" class="thank-title">Thank you — message received</div>
-    <div class="thank-msg">I appreciate your note. I’ll read it and get back to you soon.</div>
-    <button type="button" class="thank-close" id="thank-close">Close</button>
   </div>
+</section>
+
+<!-- Lightbox -->
+<div class="lb" id="lb" aria-hidden="true" role="dialog" aria-label="Image viewer">
+  <button class="lb-btn lb-close" id="lbClose" aria-label="Close">&times;</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous">&#10094;</button>
+  <div class="lb-inner">
+    <img id="lbImg" src="" alt="" />
+    <div class="lb-cap" id="lbCap"></div>
+  </div>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next">&#10095;</button>
 </div>
-<script>
-/* Animated checkmark thank-you behavior
-   - Ensure your form has id="contact-form"
-   - Formspree endpoint used: https://formspree.io/f/mnnodbnj
-*/
-(function(){
-  const endpoint = 'https://formspree.io/f/mnnodbnj'; // my formspree endpoint
-  const form = document.getElementById('contact-form'); // make sure your form uses this id
-  const overlay = document.getElementById('thankyou-overlay');
-  const card = overlay ? overlay.querySelector('.thank-card') : null;
-  const closeBtn = document.getElementById('thank-close');
 
-  function showThankYou() {
-    if(!overlay || !card) return;
-    overlay.classList.add('visible');
-    // slight delay for SVG pop
-    setTimeout(()=> card.classList.add('visible'), 40);
-    // auto close after 3.7s (optional)
-    setTimeout(hideThankYou, 3700);
-    // announce for screen readers
-    overlay.setAttribute('aria-hidden','false');
-  }
+<!-- ===================== BLOG ===================== -->
+<section id="blog">
+  <div class="wrap">
+    <span class="eyebrow reveal">Writing</span>
+    <h2 class="section-title reveal">Blog</h2>
+    <div id="blogGrid" class="reveal"></div>
+    <div class="blog-foot reveal">
+      <a class="btn btn-ghost" href="https://akashexplains.medium.com" target="_blank" rel="noopener">View my Medium (all posts)</a>
+    </div>
+  </div>
+</section>
 
-  function hideThankYou() {
-    if(!overlay || !card) return;
-    card.classList.remove('visible');
-    overlay.classList.remove('visible');
-    overlay.setAttribute('aria-hidden','true');
-  }
+<!-- ===================== CONTACT ===================== -->
+<section id="contact">
+  <div class="wrap">
+    <span class="eyebrow reveal">Get in touch</span>
+    <h2 class="section-title reveal">Contact</h2>
+    <div class="contact-grid">
+      <div class="contact-aside reveal">
+        <p>Open to collaboration in molecular modeling, electronic structure theory, and ML for covalent drug discovery.</p>
+        <p>Have a thought, collaboration idea, or just want to say hello? I'd love to hear from you.</p>
+        <div class="direct">
+          <a href="mailto:akash.shil@ucalgary.ca">→ akash.shil@ucalgary.ca</a>
+          <a href="https://orcid.org/0009-0002-3160-5961" target="_blank" rel="noopener">→ ORCID 0009-0002-3160-5961</a>
+        </div>
+      </div>
 
-  if (closeBtn) {
-    closeBtn.addEventListener('click', hideThankYou);
-  }
+      <div class="form reveal">
+        <form id="contactForm" action="https://formspree.io/f/mnnodbnj" method="POST">
+          <div class="field">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" required placeholder="Enter your name" />
+          </div>
+          <div class="field">
+            <label for="email">Your Email</label>
+            <input type="email" id="email" name="_replyto" required placeholder="Enter your email" />
+          </div>
+          <div class="field">
+            <label for="message">Your Message</label>
+            <textarea id="message" name="message" rows="5" required placeholder="Write your message here..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-solid" id="sendBtn">Send Message</button>
+          <div id="thankYouMessage">✅ Thank you for reaching out! I appreciate your time and will get back to you soon.</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
 
-  // intercept form submit and POST to Formspree via fetch
-  if(form){
-    form.addEventListener('submit', async function(e){
-      e.preventDefault();
-      // optional: you can disable submit button here to prevent double-submits
-      const submitBtn = form.querySelector('[type="submit"]');
-      if(submitBtn) submitBtn.disabled = true;
-
-      try {
-        const data = new FormData(form);
-        // send
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json'
-          },
-          body: data
-        });
-
-        if (res.ok) {
-          // clear form inputs (optional)
-          form.reset();
-          window.showThankYou();
-        } else {
-          // if formspree returns error, try to read message
-          const payload = await res.json().catch(()=>({}));
-          const msg = payload.error || 'Something went wrong — please try again.';
-          alert('Error sending message: ' + msg);
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Network error while sending message. Please try again later.');
-      } finally {
-        if(submitBtn) submitBtn.disabled = false;
-      }
-    });
-  } else {
-    // If your form id is different, log hint
-    console.warn('Contact form not found. Please add id="contact-form" to your <form> element.');
-  }
-
-  // allow closing overlay by pressing Escape
-  document.addEventListener('keydown', function(ev){
-    if(ev.key === 'Escape') hideThankYou();
-  });
-
-})();
-</script>
-<script>
-/* show / hide thank-you overlay + optional chime */
-(function(){
-  const overlay = document.getElementById('thankyou-overlay');
-  const thankClose = document.querySelector('.thank-close');
-
-  function showThankYou() {
-    if(!overlay) return;
-    // make it visible and trigger CSS transitions
-    overlay.style.display = 'flex';
-    // small delay to allow CSS to pick up display -> then add class
-    requestAnimationFrame(()=>{
-      overlay.classList.add('show');
-    });
-
-    // optional subtle sound (uncomment if you add file to assets)
-    // const audio = new Audio('assets/snd/chime.mp3');
-    // audio.volume = 0.15;
-    // audio.play().catch(()=>{ /* ignore autoplay blocked */ });
-  }
-
-  function hideThankYou() {
-    if(!overlay) return;
-    overlay.classList.remove('show');
-    // wait for transition then hide fully
-    setTimeout(()=> overlay.style.display = 'none', 450);
-  }
-
-  // close button
-  if(thankClose) thankClose.addEventListener('click', hideThankYou);
-
-  // close on Escape
-  document.addEventListener('keydown', function(ev){
-    if(ev.key === 'Escape') hideThankYou();
-  });
-
-  // Expose globally so your form code can call it:
-  window.showThankYou = showThankYou;
-  window.hideThankYou = hideThankYou;
-
-})();
-</script>
-<!-- ===== Quote slideshow (paste before </body>) ===== -->
-<section id="quote-section" aria-label="Inspirational quotes" style="padding:48px 12px 96px;">
-  <div class="quote-wrap" tabindex="0" aria-live="polite">
-    <div class="quote-slider">
-      <!-- QUOTE 1 -->
-      <blockquote class="quote">
-        <p class="quote-text">“A goal without a plan is just a wish.”</p>
-        <footer class="quote-author">- Antoine de Saint-Exupéry</footer>
+<!-- ===================== QUOTES ===================== -->
+<section class="quotes">
+  <div class="wrap">
+    <div class="q-stage" id="qStage" tabindex="0" aria-live="polite">
+      <blockquote class="q-item active">
+        <p class="q-text">“A goal without a plan is just a wish.”</p>
+        <footer class="q-by">— Antoine de Saint-Exupéry</footer>
       </blockquote>
-
-      <!-- QUOTE 2 -->
-      <blockquote class="quote">
-        <p class="quote-text">“When the why is clear, the how is easy.”</p>
-        <footer class="quote-author">- Jim Rohn</footer>
+      <blockquote class="q-item">
+        <p class="q-text">“When the why is clear, the how is easy.”</p>
+        <footer class="q-by">— Jim Rohn</footer>
       </blockquote>
-
-      <!-- QUOTE 3 -->
-      <blockquote class="quote">
-        <p class="quote-text">“where there is a will, there is a way.”</p>
-        <footer class="quote-author">- George Herbert</footer>
+      <blockquote class="q-item">
+        <p class="q-text">“Where there is a will, there is a way.”</p>
+        <footer class="q-by">— George Herbert</footer>
       </blockquote>
-      
-      <!-- Add additional quotes below by copying one of the <blockquote class="quote"> blocks -->
     </div>
-
-    <!-- dots will be generated automatically by JS -->
-    <div class="quote-controls" aria-hidden="true"></div>
+    <div class="q-dots" id="qDots"></div>
   </div>
 </section>
 
-<!-- FOOTER SITE UPDATE NOTE -->
-<section id="update-note">
-  <div class="container text-center mt-5 mb-4" data-aos="fade-up">
-    <p class="update-text">
-      Like electrons in motion, ideas keep evolving - revisit soon for new content.
-    </p>
-  </div>
-</section>
+<!-- ===================== UPDATE NOTE + FOOTER ===================== -->
+<div class="update-note">
+  <div class="wrap"><p>Like electrons in motion, ideas keep evolving - revisit soon for new content.</p></div>
+</div>
+<footer>
+  <div class="wrap"><small>© <span id="year"></span> <strong>Akash Shil</strong> — DFT, TDDFT &amp; ML for Covalent Drug Discovery</small></div>
+</footer>
 
-<style>
-  /* ===== Quote slideshow styles (dark-theme-friendly) ===== */
-  #quote-section { background: transparent; display:flex; justify-content:center; align-items:center; }
-  .quote-wrap { max-width:960px; width:100%; text-align:center; margin:0 auto; outline: none; }
-  .quote-slider { position:relative; min-height:110px; }
-
-  .quote {
-    position:absolute;
-    inset:0;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    padding: 18px 28px;
-    box-sizing:border-box;
-    opacity:0;
-    transform: translateY(10px);
-    transition: opacity .56s cubic-bezier(.2,.9,.3,1), transform .56s cubic-bezier(.2,.9,.3,1);
-    pointer-events:none;
-  }
-
-  .quote.active {
-    opacity:1;
-    transform: translateY(0);
-    pointer-events:auto;
-  }
-
-  .quote-text {
-    font-style: italic;
-    font-size: clamp(1.05rem, 1.6vw, 1.35rem);
-    color: #e9f6f3;
-    margin: 0 0 10px;
-    line-height:1.4;
-    max-width:880px;
-  }
-  
-  .quote-author {
-    font-weight:700;
-    color:#bfead6;
-    font-size:0.95rem;
-    margin-top:6px;
-  }
-
-  /* Dots container (auto-generated) */
-  .quote-controls { margin-top:18px; display:flex; gap:8px; justify-content:center; }
-  .q-dot {
-    width:10px; height:10px; border-radius:50%;
-    border:none; background: rgba(255,255,255,0.12);
-    cursor:pointer; transition: transform .18s, background .18s;
-  }
-  .q-dot:hover{ transform: scale(1.15); }
-  .q-dot.active { background: #7cf6b2; box-shadow: 0 4px 14px rgba(124,246,178,0.12); }
-
-  /* small screens */
-  @media (max-width:520px){
-    .quote-wrap { padding: 10px; }
-    .quote-text { font-size: 1rem; }
-  }
-
-  /* Respect reduced motion preference */
-  @media (prefers-reduced-motion: reduce) {
-    .quote { transition: none; transform: none; }
-    .quote.active { opacity:1; }
-  }
-
-/* ===== Update Note Styling ===== */
-#update-note {
-  background-color: transparent;
-  padding-top: 20px;
-  padding-bottom: 20px;
-}
-.update-text {
-  font-size: 1rem;               /* matches footer size */
-  color: #d1d1d1;                /* soft footer text tone */
-  font-style: italic;
-  letter-spacing: 0.5px;
-  text-shadow: 0 0 10px rgba(166, 220, 239, 0.2);  /* soft glow */
-  transition: all 0.3s ease;
-}
-
-.update-text:hover {
-  color: #a6dcef;                /* glow color matches accent */
-  text-shadow: 0 0 15px rgba(166, 220, 239, 0.5);
-}
-</style>
+<button id="toTop" title="Back to top" aria-label="Back to top">↑</button>
 
 <script>
-/*
-  Quote slideshow:
-  - Auto-generates pager dots from number of .quote elements
-  - Auto-advances, pauses on hover/focus
-  - Accessible: container is focusable and aria-live="polite"
-*/
+/* ---------- mobile nav ---------- */
 (function(){
-  const slider = document.querySelector('.quote-slider');
-  if(!slider) return;
-
-  const quotes = Array.from(slider.querySelectorAll('.quote'));
-  if(quotes.length === 0) return;
-
-  const controls = document.querySelector('.quote-controls');
-  // build dots automatically
-  controls.innerHTML = '';
-  const dots = quotes.map((_, i) => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'q-dot' + (i === 0 ? ' active' : '');
-    btn.setAttribute('data-idx', String(i));
-    btn.setAttribute('aria-label', 'Show quote ' + (i+1));
-    controls.appendChild(btn);
-    return btn;
-  });
-
-  let idx = 0;
-  const delay = 5000; // milliseconds per quote
-  let timer = null;
-  let paused = false;
-
-  function show(i){
-    i = ((i % quotes.length) + quotes.length) % quotes.length;
-    quotes.forEach((q, j) => q.classList.toggle('active', j === i));
-    dots.forEach((d, j) => d.classList.toggle('active', j === i));
-    idx = i;
-  }
-
-  function next(){
-    show(idx + 1);
-  }
-
-  function start(){
-    stop();
-    timer = setInterval(() => { if(!paused) next(); }, delay);
-  }
-  function stop(){ if(timer){ clearInterval(timer); timer = null; } }
-
-  // dot click handlers
-  dots.forEach(btn => {
-    btn.addEventListener('click', (ev) => {
-      const i = Number(btn.getAttribute('data-idx'));
-      show(i);
-      start(); // reset interval so user sees chosen quote for full delay
-    });
-  });
-
-  // Pause when user hovers/focuses (friendly)
-  slider.addEventListener('mouseenter', ()=> paused = true);
-  slider.addEventListener('mouseleave', ()=> paused = false);
-  slider.addEventListener('focusin', ()=> paused = true);
-  slider.addEventListener('focusout', ()=> paused = false);
-
-  // Keyboard support: left/right arrows when quote-wrap is focused
-  const wrap = document.querySelector('.quote-wrap');
-  if(wrap){
-    wrap.addEventListener('keydown', (ev)=>{
-      if(ev.key === 'ArrowRight') { next(); start(); ev.preventDefault(); }
-      if(ev.key === 'ArrowLeft') { show(idx - 1); start(); ev.preventDefault(); }
-    });
-  }
-
-  // initialize & start
-  show(0);
-  start();
-
-  // Expose small API for debugging or manual control if desired
-  window._quoteSlider = { show, next, start, stop };
+  const t=document.getElementById('navToggle'), l=document.getElementById('navLinks');
+  t.addEventListener('click',()=>{const open=l.classList.toggle('open'); t.setAttribute('aria-expanded',open);});
+  l.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{l.classList.remove('open'); t.setAttribute('aria-expanded',false);}));
 })();
-</script>
-<!-- ===== end quotes slideshow ===== -->
-<script>
+
+/* ---------- year ---------- */
+document.getElementById('year').textContent=new Date().getFullYear();
+
+/* ---------- typing effect ---------- */
 (function(){
-  // gather items in DOM order
-  const thumbs = Array.from(document.querySelectorAll('.highlight-thumb'));
-  const modal = document.getElementById('hl-modal');
-  const fullImg = document.getElementById('hl-fullimg');
-  const caption = document.getElementById('hl-caption');
-  const closeBtn = modal.querySelector('.hl-close');
-  const prevBtn = modal.querySelector('.hl-prev');
-  const nextBtn = modal.querySelector('.hl-next');
-
-  if (!thumbs.length || !modal) return;
-
-  // each thumb has data-full (image) and we grab the parent card's <p class="muted-small"> as caption
-  const items = thumbs.map(t => {
-    const card = t.closest('.highlight-card') || t.closest('.card');
-    const textNode = card ? card.querySelector('.muted-small') : null;
-    return {
-      img: t.getAttribute('data-full') || t.src,
-      alt: t.alt || '',
-      caption: textNode ? textNode.innerHTML : ''
-    };
-  });
-
-  let idx = 0;
-
-  function openAt(i) {
-    i = (i + items.length) % items.length;
-    idx = i;
-    fullImg.src = items[i].img;
-    fullImg.alt = items[i].alt;
-    caption.innerHTML = items[i].caption;
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+  const phrases=['Quantum Chemistry Researcher','Δ-ML for Covalent Drug Reactivity','Molecular Modeling & Simulation'];
+  const node=document.getElementById('typed');
+  if(!node) return;
+  let p=0,i=0,del=false;
+  function tick(){
+    const cur=phrases[p%phrases.length];
+    if(!del){ node.textContent=cur.slice(0,++i);
+      if(i===cur.length){del=true; return setTimeout(tick,1500);} }
+    else { node.textContent=cur.slice(0,--i);
+      if(i===0){del=false; p++; return setTimeout(tick,260);} }
+    setTimeout(tick, del?28:46);
   }
-  function closeModal() {
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    fullImg.src = '';
-  }
+  setTimeout(tick,600);
+})();
 
-  thumbs.forEach((t, i) => {
-    t.addEventListener('click', () => openAt(i));
+/* ---------- scroll reveal ---------- */
+(function(){
+  const els=document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){els.forEach(e=>e.classList.add('in')); return;}
+  const io=new IntersectionObserver((ents)=>{
+    ents.forEach((e,idx)=>{ if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('in'), Math.min(idx*60,180)); io.unobserve(e.target);} });
+  },{threshold:0.12, rootMargin:'0px 0px -8% 0px'});
+  els.forEach(e=>io.observe(e));
+})();
+
+/* ---------- blog cards ---------- */
+(function(){
+  const posts=[{
+    title:"Understanding the Schrödinger Equation",
+    url:"https://akashexplains.medium.com/everything-that-makes-chemistry-work-bonding-reactions-light-absorption-comes-from-how-a525e0d009fb",
+    date:"06 Nov 2025",
+    excerpt:"An accessible introduction to the Schrödinger equation.",
+    tag:"Series: Electronic Structure Theory",
+    thumb:"https://miro.medium.com/v2/resize:fit:1100/format:webp/1*5SVNCl99dJTWi_UgK7JvCw.jpeg"
+  }];
+  const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const grid=document.getElementById('blogGrid'); if(!grid) return;
+  grid.innerHTML=posts.map(p=>`
+    <article class="blog-card">
+      ${p.thumb?`<img class="blog-thumb" src="${p.thumb}" alt="${esc(p.title)}">`:''}
+      <div class="blog-text">
+        <p class="blog-tag">${esc(p.tag||'Blog')}</p>
+        <h3><a href="${p.url}" target="_blank" rel="noopener">${esc(p.title)}</a></h3>
+        <p>${esc(p.excerpt||'')}</p>
+        <p class="blog-date">${esc(p.date||'')}</p>
+        <a class="blog-readlink" href="${p.url}" target="_blank" rel="noopener">Read on Medium →</a>
+      </div>
+    </article>`).join('');
+})();
+
+/* ---------- lightbox ---------- */
+(function(){
+  const thumbs=Array.from(document.querySelectorAll('.hl-thumb'));
+  const lb=document.getElementById('lb'), img=document.getElementById('lbImg'), cap=document.getElementById('lbCap');
+  if(!thumbs.length) return;
+  const items=thumbs.map(t=>{
+    const card=t.closest('.hl'); const c=card?card.querySelector('.hl-cap'):null;
+    return {src:t.getAttribute('data-full')||t.src, alt:t.alt||'', cap:c?c.innerHTML:''};
   });
-
-  closeBtn.addEventListener('click', closeModal);
-  modal.addEventListener('click', (ev) => {
-    if (ev.target === modal) closeModal();
-  });
-
-  prevBtn.addEventListener('click', () => openAt(idx - 1));
-  nextBtn.addEventListener('click', () => openAt(idx + 1));
-
-  // keyboard support
-  document.addEventListener('keydown', (ev) => {
-    if (modal.getAttribute('aria-hidden') === 'false') {
-      if (ev.key === 'Escape') closeModal();
-      if (ev.key === 'ArrowLeft') openAt(idx - 1);
-      if (ev.key === 'ArrowRight') openAt(idx + 1);
+  let idx=0;
+  function open(i){ idx=(i+items.length)%items.length; img.src=items[idx].src; img.alt=items[idx].alt;
+    cap.innerHTML=items[idx].cap; lb.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+  function close(){ lb.setAttribute('aria-hidden','true'); document.body.style.overflow=''; img.src=''; }
+  thumbs.forEach((t,i)=>t.addEventListener('click',()=>open(i)));
+  document.getElementById('lbClose').addEventListener('click',close);
+  document.getElementById('lbPrev').addEventListener('click',()=>open(idx-1));
+  document.getElementById('lbNext').addEventListener('click',()=>open(idx+1));
+  lb.addEventListener('click',e=>{if(e.target===lb)close();});
+  document.addEventListener('keydown',e=>{
+    if(lb.getAttribute('aria-hidden')==='false'){
+      if(e.key==='Escape')close(); if(e.key==='ArrowLeft')open(idx-1); if(e.key==='ArrowRight')open(idx+1);
     }
   });
 })();
-</script>
-<script>
-(function() {
-  // Helper to set up touch-focus behavior for a container
-  function setupTouchFocus(containerSelector, cardSelector) {
-    const container = document.querySelector(containerSelector);
-    if (!container) return;
 
-    const cards = Array.from(container.querySelectorAll(cardSelector));
-    if (!cards.length) return;
-
-    // On touch/click on a card: enable touch-active on container and focused on clicked card
-    function cardActivate(card, ev) {
-      // avoid activating when clicking controls inside card that should behave normally
-      // (e.g., links). If the target is a link or button, allow normal behavior.
-      const tag = ev.target && ev.target.tagName && ev.target.tagName.toLowerCase();
-      if (tag === 'a' || tag === 'button' || ev.target.closest('a') || ev.target.closest('button')) {
-        return;
-      }
-
-      // mark container active
-      container.classList.add('touch-active');
-
-      // remove focused from all cards, then set on the clicked one
-      cards.forEach(c => c.classList.remove('focused'));
-      card.classList.add('focused');
-
-      // prevent immediate double-click focus issues on some devices
-      // but allow normal click handlers (like your lightbox) to proceed
-    }
-
-    // Deactivate when tapping outside container or pressing Escape
-    function deactivateAll() {
-      container.classList.remove('touch-active');
-      cards.forEach(c => c.classList.remove('focused'));
-    }
-
-    // Add listeners
-    cards.forEach(card => {
-      // Use pointerdown for broad support (touch & mouse)
-      card.addEventListener('pointerdown', function(ev) {
-        // only activate on touch or primary mouse button
-        if (ev.pointerType === 'touch' || ev.pointerType === 'pen' || ev.pointerType === 'mouse') {
-          // If mouse with hover, let the CSS :hover handle desktop. But pointerdown still ok.
-          cardActivate(card, ev);
-        }
-      }, {passive: true});
-
-      // Also support click as fallback
-      card.addEventListener('click', function(ev) {
-        // If already focused and the click target opens lightbox, allow it.
-        // But we still want the focus behavior for touch.
-        cardActivate(card, ev);
-      });
-    });
-
-    // Click/tap outside to clear (listen on document)
-    document.addEventListener('pointerdown', function(ev) {
-      // If click is inside container, do nothing (handled by card listeners)
-      if (container.contains(ev.target)) return;
-      deactivateAll();
-    }, {passive: true});
-
-    // Escape key to clear
-    document.addEventListener('keydown', function(ev) {
-      if (ev.key === 'Escape') deactivateAll();
-    });
-  }
-
-  // Initialize for achievements and projects
-  setupTouchFocus('#achievements', '.highlight-card');
-  setupTouchFocus('#projects', '.project-card');
-
-})();
-</script>
-<!-- Back to Top Button -->
-<button id="backToTop" title="Go to top">↑</button>
-<script>
-// Show or hide the "Back to Top" button
-const backToTopBtn = document.getElementById("backToTop");
-
-window.addEventListener("scroll", () => {
-  if (window.scrollY > 400) {
-    backToTopBtn.classList.add("show");
-  } else {
-    backToTopBtn.classList.remove("show");
-  }
-});
-
-// Scroll to top smoothly when clicked
-backToTopBtn.addEventListener("click", () => {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
+/* ---------- contact form (single, correct handler) ---------- */
+(function(){
+  const form=document.getElementById('contactForm');
+  const ty=document.getElementById('thankYouMessage');
+  const btn=document.getElementById('sendBtn');
+  if(!form) return;
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    btn.disabled=true; const orig=btn.textContent; btn.textContent='Sending…';
+    try{
+      const res=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}});
+      if(res.ok){ form.reset(); btn.style.display='none'; ty.style.display='block'; }
+      else{ ty.style.color='#ff9a9a'; ty.textContent='❌ Oops! Something went wrong. Please try again later.'; ty.style.display='block'; btn.disabled=false; btn.textContent=orig; }
+    }catch(err){ ty.style.color='#ff9a9a'; ty.textContent='⚠️ Network error. Please try again.'; ty.style.display='block'; btn.disabled=false; btn.textContent=orig; }
   });
-});
-</script>
-<script>
-  // if the ORCID icon element has width 0 (font didn't load or glyph missing),
-  // swap to the inline SVG fallback for guaranteed visibility.
-  (function(){
-    const ai = document.querySelector('.ai.ai-orcid');
-    const fallback = document.querySelector('.orcid-fallback');
-    // if the icon element is missing or has zero width, show fallback
-    if(!ai || (ai.offsetWidth === 0 && fallback)){
-      // hide icon-font if present
-      if(ai) ai.style.display = 'none';
-      fallback.style.display = 'block';
-    } else {
-      // ensure fallback hidden if icon font working
-      if(fallback) fallback.style.display = 'none';
-    }
-  })();
+})();
+
+/* ---------- quotes ---------- */
+(function(){
+  const items=Array.from(document.querySelectorAll('.q-item'));
+  const dotsWrap=document.getElementById('qDots'), stage=document.getElementById('qStage');
+  if(!items.length) return;
+  const dots=items.map((_,i)=>{const b=document.createElement('button'); b.className='q-dot'+(i===0?' active':'');
+    b.setAttribute('aria-label','Quote '+(i+1)); dotsWrap.appendChild(b); return b;});
+  let idx=0, paused=false, timer;
+  function show(i){ idx=((i%items.length)+items.length)%items.length;
+    items.forEach((q,j)=>q.classList.toggle('active',j===idx));
+    dots.forEach((d,j)=>d.classList.toggle('active',j===idx)); }
+  function start(){ stop(); timer=setInterval(()=>{if(!paused)show(idx+1);},5000); }
+  function stop(){ if(timer)clearInterval(timer); }
+  dots.forEach((d,i)=>d.addEventListener('click',()=>{show(i);start();}));
+  stage.addEventListener('mouseenter',()=>paused=true);
+  stage.addEventListener('mouseleave',()=>paused=false);
+  stage.addEventListener('focusin',()=>paused=true);
+  stage.addEventListener('focusout',()=>paused=false);
+  stage.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){show(idx+1);start();} if(e.key==='ArrowLeft'){show(idx-1);start();}});
+  show(0); start();
+})();
+
+/* ---------- back to top ---------- */
+(function(){
+  const b=document.getElementById('toTop');
+  window.addEventListener('scroll',()=>{ b.classList.toggle('show', window.scrollY>500); });
+  b.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+})();
 </script>
 </body>
 </html>
