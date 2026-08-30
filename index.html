@@ -630,20 +630,21 @@ body::before {
   display: none;
   position: fixed;
   inset: 0;
-  z-index: 99999;
-  background: rgba(3, 6, 12, 0.92);
+  z-index: 999999;
+  background: rgba(0, 0, 0, 0.92);
   align-items: center;
   justify-content: center;
   padding: 30px;
 }
 
-.hl-modal[aria-hidden="false"] {
+.hl-modal.open {
   display: flex;
 }
 
-.hl-inner {
-  width: min(1100px, 92vw);
-  max-height: 90vh;
+.hl-box {
+  position: relative;
+  width: min(1100px, 94vw);
+  max-height: 92vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -651,97 +652,69 @@ body::before {
   gap: 16px;
 }
 
-.hl-inner img {
+#hl-fullimg {
   display: block;
   max-width: 100%;
-  max-height: 78vh;
+  max-height: 75vh;
   width: auto;
   height: auto;
   object-fit: contain;
   border-radius: 10px;
-  box-shadow: 0 14px 50px rgba(0, 0, 0, 0.65);
+  box-shadow: 0 15px 60px rgba(0, 0, 0, 0.75);
 }
 
-.hl-caption {
-  max-width: 900px;
-  max-height: 15vh;
+#hl-caption {
+  width: min(900px, 90vw);
+  max-height: 16vh;
   overflow-y: auto;
-  color: #e6f2ff;
+  color: #ffffff;
+  font-size: 1rem;
+  line-height: 1.55;
   font-style: italic;
-  font-size: 0.98rem;
-  line-height: 1.5;
   text-align: center;
 }
 
-.hl-close {
-  position: absolute;
-  top: 18px;
-  right: 24px;
-  z-index: 100000;
-  background: rgba(255,255,255,0.08);
-  color: #fff;
+#hl-close {
+  position: fixed;
+  top: 20px;
+  right: 25px;
+  z-index: 1000000;
+  width: 44px;
+  height: 44px;
   border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  color: #ffffff;
+  font-size: 30px;
+  line-height: 1;
   cursor: pointer;
-  font-size: 28px;
 }
 
-.hl-close:hover {
-  background: rgba(255,255,255,0.16);
+#hl-close:hover {
+  background: rgba(255,255,255,0.22);
 }
 
-.hl-prev,
-.hl-next {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 100000;
-  background: rgba(255,255,255,0.08);
-  color: #fff;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 22px;
-}
+@media (max-width: 768px) {
 
-.hl-prev {
-  left: 18px;
-}
-
-.hl-next {
-  right: 18px;
-}
-
-.hl-prev:hover,
-.hl-next:hover {
-  background: rgba(255,255,255,0.16);
-}
-
-@media (max-width: 900px) {
   .hl-modal {
-    padding: 20px;
+    padding: 15px;
   }
 
-  .hl-inner {
-    width: 94vw;
+  #hl-fullimg {
+    max-width: 94vw;
+    max-height: 65vh;
   }
 
-  .hl-inner img {
-    max-height: 68vh;
-  }
-
-  .hl-caption {
-    max-height: 20vh;
+  #hl-caption {
+    width: 92vw;
+    max-height: 22vh;
     font-size: 0.92rem;
   }
-}
 
-/* For small screens: stack modal */
-@media (max-width: 900px) {
-  .hl-inner { grid-template-columns: 1fr; padding: 18px; }
-  .hl-caption { max-height: none; margin-top: 10px; }
+  #hl-close {
+    top: 12px;
+    right: 15px;
+  }
 }
   #education {
   font-weight: 700;
@@ -1207,15 +1180,24 @@ body::before {
     </div>
   </div>
 </section>
-<!-- Lightbox modal (single modal used for all thumbnails) -->
-<div id="hl-modal" class="hl-modal" aria-hidden="true" role="dialog" aria-labelledby="hl-modal-title">
-  <button class="hl-close" aria-label="Close">&times;</button>
-  <div class="hl-inner">
+
+  <!-- ===== Highlights Lightbox ===== -->
+<div id="hl-modal" class="hl-modal" aria-hidden="true">
+
+  <div class="hl-box">
+
+    <button id="hl-close"
+            type="button"
+            aria-label="Close image">
+      &times;
+    </button>
+
     <img id="hl-fullimg" src="" alt="">
-    <div id="hl-caption" class="hl-caption"></div>
+
+    <div id="hl-caption"></div>
+
   </div>
-  <button class="hl-prev" aria-label="Previous">&#10094;</button>
-  <button class="hl-next" aria-label="Next">&#10095;</button>
+
 </div>
   
 <!-- ===== CONTACT SECTION ===== -->
@@ -2202,67 +2184,86 @@ document.addEventListener('DOMContentLoaded', function () {
 <!-- ===== end quotes slideshow ===== -->
 <script>
 (function(){
-  // gather items in DOM order
-  const thumbs = Array.from(document.querySelectorAll('.highlight-thumb'));
-  const modal = document.getElementById('hl-modal');
-  const fullImg = document.getElementById('hl-fullimg');
-  const caption = document.getElementById('hl-caption');
-  const closeBtn = modal.querySelector('.hl-close');
-  const prevBtn = modal.querySelector('.hl-prev');
-  const nextBtn = modal.querySelector('.hl-next');
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
-  if (!thumbs.length || !modal) return;
+  const thumbnails = document.querySelectorAll(".highlight-thumb");
+  const modal = document.getElementById("hl-modal");
+  const fullImg = document.getElementById("hl-fullimg");
+  const caption = document.getElementById("hl-caption");
+  const closeBtn = document.getElementById("hl-close");
 
-  // each thumb has data-full (image) and we grab the parent card's <p class="muted-small"> as caption
-  const items = thumbs.map(t => {
-    const card = t.closest('.highlight-card') || t.closest('.card');
-    const textNode = card ? card.querySelector('.muted-small') : null;
-    return {
-      img: t.getAttribute('data-full') || t.src,
-      alt: t.alt || '',
-      caption: textNode ? textNode.innerHTML : ''
-    };
-  });
-
-  let idx = 0;
-
-  function openAt(i) {
-    i = (i + items.length) % items.length;
-    idx = i;
-    fullImg.src = items[i].img;
-    fullImg.alt = items[i].alt;
-    caption.innerHTML = items[i].caption;
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeModal() {
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    fullImg.src = '';
+  if (!thumbnails.length || !modal || !fullImg || !caption || !closeBtn) {
+    return;
   }
 
-  thumbs.forEach((t, i) => {
-    t.addEventListener('click', () => openAt(i));
+  thumbnails.forEach(function (thumb) {
+
+    thumb.addEventListener("click", function () {
+
+      const imagePath =
+        thumb.getAttribute("data-full") || thumb.getAttribute("src");
+
+      fullImg.src = imagePath;
+      fullImg.alt = thumb.getAttribute("alt") || "";
+
+      const card = thumb.closest(".highlight-card");
+
+      if (card) {
+        const text = card.querySelector(".muted-small");
+        caption.innerHTML = text ? text.innerHTML : "";
+      } else {
+        caption.innerHTML = "";
+      }
+
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    });
+
   });
 
-  closeBtn.addEventListener('click', closeModal);
-  modal.addEventListener('click', (ev) => {
-    if (ev.target === modal) closeModal();
-  });
+  function closeLightbox() {
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    fullImg.src = "";
+    caption.innerHTML = "";
+    document.body.style.overflow = "";
+  }
 
-  prevBtn.addEventListener('click', () => openAt(idx - 1));
-  nextBtn.addEventListener('click', () => openAt(idx + 1));
+  closeBtn.addEventListener("click", closeLightbox);
 
-  // keyboard support
-  document.addEventListener('keydown', (ev) => {
-    if (modal.getAttribute('aria-hidden') === 'false') {
-      if (ev.key === 'Escape') closeModal();
-      if (ev.key === 'ArrowLeft') openAt(idx - 1);
-      if (ev.key === 'ArrowRight') openAt(idx + 1);
+  modal.addEventListener("click", function (event) {
+    if (event.target === modal) {
+      closeLightbox();
     }
   });
-})();
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" &&
+        modal.classList.contains("open")) {
+      closeLightbox();
+    }
+  });
+
+});
 </script>
+
+  <!-- ===== Highlights Lightbox ===== -->
+<div id="hl-modal" class="hl-modal" aria-hidden="true">
+  <div class="hl-box">
+
+    <button id="hl-close" type="button" aria-label="Close image">
+      &times;
+    </button>
+
+    <img id="hl-fullimg" src="" alt="">
+
+    <div id="hl-caption"></div>
+
+  </div>
+</div>
+  
 <!-- Back to Top Button -->
 <button id="backToTop" title="Go to top">↑</button>
 <script>
