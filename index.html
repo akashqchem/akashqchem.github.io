@@ -834,86 +834,6 @@ body::before {
   50%  { transform: translate3d(-3%,2%,0) scale(1.03); opacity: .95; }
   100% { transform: translate3d(2%,-2%,0) scale(1.02); opacity: 1; }
 }
-  /* ===== Blur effect for Highlight cards ===== */
-#achievements .highlight-card {
-  transition: filter 0.3s ease, transform 0.3s ease;
-}
-
-/* When hovering over the whole container */
-#achievements:hover .highlight-card {
-  filter: blur(4px);
-  transform: scale(0.98);
-  opacity: 0.6;
-}
-
-/* When hovering over a single card - keep it sharp and slightly lifted */
-#achievements .highlight-card:hover {
-  filter: blur(0);
-  transform: scale(1.02);
-  opacity: 1;
-  z-index: 2;
-}
-  
-/* ===== Focus/blur effect for Projects (same idea as Achievements) ===== */
-#projects .project-card {
-  transition: filter 280ms cubic-bezier(.2,.9,.3,1),
-              transform 280ms cubic-bezier(.2,.9,.3,1),
-              opacity 220ms ease;
-  will-change: filter, transform, opacity;
-}
-
-/* When hovering anywhere over the projects container, blur all cards */
-#projects:hover .project-card {
-  filter: blur(4px) brightness(.86);
-  transform: scale(0.985);
-  opacity: 0.78;
-  pointer-events: auto; /* keep interactions on hovered one possible */
-}
-
-/* Keep the hovered card sharp and slightly lifted (focus) */
-#projects .project-card:hover {
-  filter: none !important;
-  transform: scale(1.02) !important;
-  opacity: 1 !important;
-  z-index: 5; /* bring it above other (blurred) cards */
-  box-shadow: 0 20px 60px rgba(40,40,120,0.16);
-  transition-duration: 200ms;
-}
-
-/* Optional: more pronounced pop for the image inside hovered card */
-#projects .project-card:hover .highlight-thumb,
-#projects .project-card:hover img {
-  transform: translateY(-6px) scale(1.02);
-}
-/* ===== Touch-friendly blur support for Achievements & Projects ===== */
-
-/* Blur state triggered by container class (used for touch) */
-#achievements.touch-active .highlight-card,
-#projects.touch-active .project-card {
-  filter: blur(4px) brightness(.86);
-  transform: scale(0.985);
-  opacity: 0.78;
-}
-
-/* Keep the hovered or focused card sharp (desktop :hover + touch .focused) */
-#achievements .highlight-card:hover,
-#achievements .highlight-card.focused,
-#projects .project-card:hover,
-#projects .project-card.focused {
-  filter: none !important;
-  transform: scale(1.02) !important;
-  opacity: 1 !important;
-  z-index: 5;
-  box-shadow: 0 20px 60px rgba(40,40,120,0.16);
-}
-
-/* Make the blur lighter on small devices for performance */
-@media (max-width: 900px) {
-  #achievements.touch-active .highlight-card,
-  #projects.touch-active .project-card {
-    filter: blur(2px) brightness(.9);
-  }
-}
   /* Back to Top Button */
 #backToTop {
   position: fixed;
@@ -1465,58 +1385,6 @@ body::before {
   <button class="hl-prev" aria-label="Previous">&#10094;</button>
   <button class="hl-next" aria-label="Next">&#10095;</button>
 </div>
-
-<!-- ===== BLOG (Medium posts) ===== -->
-<section id="blog" class="container" data-aos="fade-up">
-  <h2 class="section-title">Blog</h2>
-
-  <div id="blogGrid" class="blog-grid" style="max-width:1000px; margin:1.2rem auto 3rem; display:grid; grid-template-columns:1fr; gap:18px;">
-    <!-- Cards will be injected here by JS -->
-  </div>
-
-  <div style="text-align:center; margin-top:0.6rem;">
-    <a id="allOnMedium" href="https://akashexplains.medium.com" target="_blank" rel="noopener" class="btn btn-primary"
-       style="display:inline-block; padding:10px 20px; border-radius:10px; text-decoration:none;">
-      View my Medium (all posts)
-    </a>
-  </div>
-</section>
-
-<script>
-/* Blog cards with optional thumbnail (replace the previous renderer) */
-(function(){
-  const posts = [
-    {
-      title: "Understanding the Schrödinger Equation",
-      url: "https://akashexplains.medium.com/everything-that-makes-chemistry-work-bonding-reactions-light-absorption-comes-from-how-a525e0d009fb",
-      date: "06 Nov 2025",
-      excerpt: "An accessible introduction to the Schrödinger equation.",
-      tag: "Series: Electronic Structure Theory",
-      // add your Medium post banner image URL here (right-click image -> Copy image address)
-      thumb: "https://miro.medium.com/v2/resize:fit:1100/format:webp/1*5SVNCl99dJTWi_UgK7JvCw.jpeg" 
-    },
-    // add future posts the same way (thumb optional)
-  ];
-
-  const container = document.getElementById('blogGrid');
-  if (!container) return;
-
-  function makeCard(p){
-    const el = document.createElement('article');
-    el.className = 'card blog-card';
-    el.style.cssText = `
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-      padding: 0;
-      border-radius: 14px;
-      box-shadow: 0 8px 28px rgba(0,0,0,0.45);
-      display:flex;
-      gap:18px;
-      overflow: hidden;
-      transition: transform .18s ease, box-shadow .18s ease;
-    `;
-    el.onmouseenter = () => el.style.transform='translateY(-6px)';
-    el.onmouseleave = () => el.style.transform='translateY(0)';
 
     // Image column (if thumb provided)
     const imgCol = document.createElement('div');
@@ -2656,51 +2524,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const cards = Array.from(container.querySelectorAll(cardSelector));
     if (!cards.length) return;
-
-    // On touch/click on a card: enable touch-active on container and focused on clicked card
-    function cardActivate(card, ev) {
-      // avoid activating when clicking controls inside card that should behave normally
-      // (e.g., links). If the target is a link or button, allow normal behavior.
-      const tag = ev.target && ev.target.tagName && ev.target.tagName.toLowerCase();
-      if (tag === 'a' || tag === 'button' || ev.target.closest('a') || ev.target.closest('button')) {
-        return;
-      }
-
-      // mark container active
-      container.classList.add('touch-active');
-
-      // remove focused from all cards, then set on the clicked one
-      cards.forEach(c => c.classList.remove('focused'));
-      card.classList.add('focused');
-
-      // prevent immediate double-click focus issues on some devices
-      // but allow normal click handlers (like your lightbox) to proceed
-    }
-
-    // Deactivate when tapping outside container or pressing Escape
-    function deactivateAll() {
-      container.classList.remove('touch-active');
-      cards.forEach(c => c.classList.remove('focused'));
-    }
-
-    // Add listeners
-    cards.forEach(card => {
-      // Use pointerdown for broad support (touch & mouse)
-      card.addEventListener('pointerdown', function(ev) {
-        // only activate on touch or primary mouse button
-        if (ev.pointerType === 'touch' || ev.pointerType === 'pen' || ev.pointerType === 'mouse') {
-          // If mouse with hover, let the CSS :hover handle desktop. But pointerdown still ok.
-          cardActivate(card, ev);
-        }
-      }, {passive: true});
-
-      // Also support click as fallback
-      card.addEventListener('click', function(ev) {
-        // If already focused and the click target opens lightbox, allow it.
-        // But we still want the focus behavior for touch.
-        cardActivate(card, ev);
-      });
-    });
 
     // Click/tap outside to clear (listen on document)
     document.addEventListener('pointerdown', function(ev) {
