@@ -179,22 +179,6 @@
   border-radius: 8px;
   font-size: 0.95rem;
 }
-
-  /* ---------- FLOATING FORMULA PARTICLES ---------- */
-  .particle {
-    position: absolute;
-    color: rgba(255,255,255,0.92);
-    font-family:"Times New Roman", Times, serif;
-    font-size: 15px;
-    padding: 6px 10px;
-    border-radius: 10px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-    box-shadow:0 6px 18px rgba(0,0,0,0.45);
-    opacity:0.92;
-    pointer-events:none;
-  }
-  .particle.small{ font-size:14px; opacity:0.9; }
-  .particle.dim{ opacity:0.6; background:transparent; box-shadow:none; color: rgba(220,230,255,0.85); }
   
  /* ---- Publication Card Glow (accent color match) ---- */
 .card.mx-auto {
@@ -213,100 +197,6 @@
     0 0 60px rgba(174, 191, 255, 0.18);
   transform: translateY(-4px);
 }
-
-/* Space and formatting for math/label blocks inside floating particles */
-.particle.small div + div {
-  margin-top: 4px; /* space between “Loss Function:” and its equation */
-}
-
-.particle.p3.small {
-  padding: 8px 10px;  /* adds gentle breathing room inside */
-  line-height: 1.5;   /* improves readability */
-}
-    /* ---------- Kohn-Sham small card styling ---------- */
-.ks-equation {
-  max-width: 480px;      /* keeps the box compact */
-  padding: 14px 18px;
-  text-align: center;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border-radius: 12px;
-  box-shadow: 0 12px 40px rgba(5,6,15,0.55);
-  backdrop-filter: blur(4px) saturate(110%);
-  color: #dfeff6;
-  pointer-events: none;  /* non-interactive (like your other floating particles) */
-  font-family: "Georgia", "Times New Roman", serif;
-  line-height: 1.12;
-}
-
-/* title (bold) */
-.ks-title {
-  font-weight: 700 !important;
-  color: #ffffff !important;
-  margin-bottom: 8px;
-  font-size: 0.95rem;
-  opacity: 1 !important;
-  text-align: center;
-  letter-spacing: 0.2px;
-}
-/* equation single-line */
-.ks-eqn-single {
-  font-style: normal; /* upright for math */
-  color: #cfeff0;
-  margin: 6px 0;
-  font-size: clamp(0.95rem, 1.02vw, 1.02rem);
-  white-space: nowrap;
-  display: inline-block;
-}
-
-/* smaller screens: hide to avoid overlap */
-@media (max-width: 740px) {
-  .ks-equation { display:none; }
-}
-/* responsive: hide floating particle on narrow screens */
-@media (max-width: 740px) {
-  .ks-equation { display:none; }
-}
-/* title */
-.ks-title { 
-  font-weight:700;
-  color: #ffffff;
-  margin-bottom: 8px;
-  font-size: 0.95rem;
-  opacity: 0.98;
-}
-
-/* equation */
-.ks-eqn {
-  font-style: normal; /* keep upright for math */
-  font-family: "Georgia", "Times New Roman", serif;
-  color: #cfeff0;
-  margin: 6px 0;
-  line-height: 1.12;
-  font-size: clamp(0.9rem, 1.05vw, 1.05rem);
-}
-
-/* break equation into lines and emphasize RHS */
-.ks-line { display:block; white-space:nowrap; }
-.ks-line.equals { margin-top: 6px; font-weight:700; color:#ffffff; }
-
-/* small caption under equation */
-.ks-caption {
-  margin-top: 8px;
-  font-size: 0.78rem;
-  color: rgba(255,255,255,0.72);
-  font-style: italic;
-}
-
-/* responsive: keep things neat on smaller screens */
-@media (max-width: 740px) {
-  .ks-equation { display:none; } /* hide floating particle on narrow screens to avoid overlap */
-}   
-  @keyframes float1 { 0%{transform:translateY(0)}50%{transform:translateY(-18px)}100%{transform:translateY(0)}}
-  @keyframes float2 { 0%{transform:translateY(0)}50%{transform:translateY(-28px)}100%{transform:translateY(0)}}
-  @keyframes float3 { 0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
-  .p1{ animation: float1 6.8s ease-in-out infinite; }
-  .p2{ animation: float2 8.6s ease-in-out infinite; }
-  .p3{ animation: float3 7.4s ease-in-out infinite; }
 
   /* ---------- CONTENT ---------- */
   section{ padding:3.25rem 0; }
@@ -1041,25 +931,6 @@ body::before {
   <!-- HERO -->
   <header class="hero">
     <div class="container position-relative">
-
-      <!-- floating ML equations -->
-     <div class="particle p1 small" style="left:12%; top:14%;">
-  <div><strong>Gradient Descent:</strong></div>
-  <div>θ : = θ - α ∇<sub>θ</sub>J(θ)</div>
-</div>
-<!-- Kohn–Sham equation (single-line version) -->
-<div class="particle p2 small dim ks-equation" style="left:14%; top:22%;">
-  <div class="ks-title"><strong>Kohn-Sham equation:</strong></div>
-
-  <div class="ks-eqn-single">
-    (− &#8463;<sup>2</sup> / 2m &nbsp;∇<sup>2</sup> + V<sub>ext</sub>(r) + V<sub>H</sub>(r) + V<sub>xc</sub>[ρ(r)])
-    &nbsp;ψ<sub>i</sub>(r) = E<sub>i</sub> &nbsp;ψ<sub>i</sub>(r)
-  </div>
-</div>
-<div class="particle p3 small" style="left:22%; top:52%;">
-  <div><strong>Loss Function:</strong></div>
-  <div>L(w) = (1/2n)‖y−Xw‖<sub>2</sub><sup>2</sup> + (λ/2)‖w‖<sub>2</sub><sup>2</sup></div>
-</div>
 
       <img src="assets/img/Headshot.jpeg" alt="Akash Shil" class="profile-img mb-3" data-aos="zoom-in">
       <h1 class="hero-title" data-aos="fade-up">Akash Shil</h1>
